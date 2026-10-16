@@ -143,24 +143,44 @@ const CATEGORY_ICONS = [
   { icon: GraduationCap, color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200" },
 ];
 
+import { useDemographic } from "@/context/DemographicContext";
+
 export function CategoryGrid() {
+  const { isElderly } = useDemographic();
+
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+    <section className={`py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b-4 ${
+      isElderly ? "bg-amber-50/30 border-amber-300" : "bg-white border-slate-200"
+    }`}>
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black uppercase tracking-widest text-blue-700 bg-blue-50 px-3.5 py-1 rounded-full border border-blue-200">
-            KHO DỮ LIỆU ĐỜI THỰC
+          <span className={`text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full border ${
+            isElderly ? "bg-amber-100 text-amber-950 border-amber-300 text-sm" : "text-blue-700 bg-blue-50 border-blue-200"
+          }`}>
+            KHO DỮ LIỆU ĐỜI THỰC TẠI VIỆT NAM
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            11 Nhóm Chiêu Thức Thường Gặp
+          <h2 className={
+            isElderly
+              ? "text-3xl sm:text-5xl font-black text-slate-950 tracking-tight"
+              : "text-3xl sm:text-4xl font-black text-slate-900 tracking-tight"
+          }>
+            {isElderly ? "11 NHÓM CHIÊU THỨC LỪA ĐẢO BÁC CẦN BIẾT" : "11 Nhóm Chiêu Thức Thường Gặp"}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed">
-            Được tổng hợp từ các vụ việc thực tế tại Việt Nam, phân loại chi tiết giúp người học dễ dàng nhận diện và phòng ngừa.
+          <p className={
+            isElderly
+              ? "text-xl sm:text-2xl text-slate-900 font-bold leading-relaxed"
+              : "text-base sm:text-lg text-slate-600 font-medium leading-relaxed"
+          }>
+            {isElderly
+              ? "Được tổng hợp từ các vụ án có thật để Bác và gia đình nhận diện thủ đoạn, tuyệt đối không mắc bẫy:"
+              : "Được tổng hợp từ các vụ việc thực tế tại Việt Nam, phân loại chi tiết giúp người học dễ dàng nhận diện và phòng ngừa."}
           </p>
         </div>
 
         {/* Grid Cards - Clean, Readable, Full uncropped illustrations */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className={`grid gap-6 sm:gap-8 ${
+          isElderly ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+        }`}>
           {CATEGORIES_DATA.map((cat, idx) => {
             const iconConfig = CATEGORY_ICONS[idx % CATEGORY_ICONS.length];
             const Icon = iconConfig.icon;
@@ -168,20 +188,26 @@ export function CategoryGrid() {
             return (
               <div
                 key={cat.id}
-                className="rounded-3xl bg-white border border-slate-200 hover:border-blue-400 hover:shadow-lg p-5 flex flex-col justify-between transition-all duration-300 group space-y-4 shadow-xs"
+                className={`rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 group space-y-4 ${
+                  isElderly
+                    ? "bg-white border-4 border-amber-200 hover:border-amber-400 shadow-md"
+                    : "bg-white border border-slate-200 hover:border-blue-400 hover:shadow-lg shadow-xs"
+                }`}
               >
                 {/* Card Top: Icon & Count */}
                 <div className="flex items-center justify-between pb-1">
-                  <div className={`w-9 h-9 rounded-xl ${iconConfig.bg} border flex items-center justify-center shrink-0`}>
-                    <Icon className={`w-5 h-5 ${iconConfig.color}`} />
+                  <div className={`w-11 h-11 rounded-2xl ${iconConfig.bg} border flex items-center justify-center shrink-0`}>
+                    <Icon className={`w-6 h-6 ${iconConfig.color}`} />
                   </div>
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                    {cat.scenariosCount} ải tình huống
+                  <span className={`font-bold px-3 py-1 rounded-full border ${
+                    isElderly ? "text-sm bg-amber-100 text-amber-950 border-amber-300 font-black" : "text-xs bg-blue-50 text-blue-700 border-blue-200"
+                  }`}>
+                    {cat.scenariosCount} tình huống thực tế
                   </span>
                 </div>
 
                 {/* Full Uncropped Illustration Image Display */}
-                <div className="w-full h-44 sm:h-48 rounded-2xl bg-slate-50 border border-slate-200 p-2.5 flex items-center justify-center group-hover:border-blue-200 group-hover:bg-blue-50/20 transition-all">
+                <div className="w-full h-44 sm:h-52 rounded-2xl bg-slate-50 border border-slate-200 p-3 flex items-center justify-center group-hover:bg-blue-50/20 transition-all">
                   <img
                     src={encodeURI(cat.imageUrl)}
                     alt={cat.name}
@@ -190,29 +216,43 @@ export function CategoryGrid() {
                 </div>
 
                 {/* Title & Warning */}
-                <div className="space-y-2 flex-1">
-                  <h3 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
+                <div className="space-y-3 flex-1">
+                  <h3 className={`font-black leading-snug ${
+                    isElderly ? "text-2xl text-slate-950" : "text-base text-slate-900 group-hover:text-blue-600 transition-colors"
+                  }`}>
                     {cat.name}
                   </h3>
 
-                  <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 leading-relaxed font-medium flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <span className="line-clamp-2">{cat.warningNote}</span>
+                  <div className={`p-4 rounded-2xl leading-relaxed flex items-start gap-3 border ${
+                    isElderly
+                      ? "bg-rose-50 border-rose-300 text-slate-950 text-lg font-bold"
+                      : "bg-amber-50/70 border-amber-200 text-xs text-amber-900 font-medium"
+                  }`}>
+                    <AlertTriangle className={`shrink-0 mt-0.5 ${
+                      isElderly ? "w-6 h-6 text-rose-600" : "w-4 h-4 text-amber-600"
+                    }`} />
+                    <span>{cat.warningNote}</span>
                   </div>
                 </div>
 
                 {/* Bottom Target & Action */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium truncate max-w-[190px]">
-                    Đối tượng: <strong className="text-slate-800">{cat.vulnerableTarget}</strong>
+                <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <span className={`truncate max-w-full ${
+                    isElderly ? "text-base font-bold text-slate-900" : "text-xs text-slate-500 font-medium"
+                  }`}>
+                    Nhóm nguy cơ: <strong className={isElderly ? "text-rose-800 font-black" : "text-slate-800"}>{cat.vulnerableTarget}</strong>
                   </span>
 
                   <Link
                     href={`/play/chuong-${idx + 1}`}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-1.5 shadow-xs transition-all shrink-0 cursor-pointer"
+                    className={`w-full sm:w-auto text-center rounded-2xl font-black flex items-center justify-center gap-2 shadow-md transition-all shrink-0 cursor-pointer ${
+                      isElderly
+                        ? "px-6 py-3.5 bg-blue-700 hover:bg-blue-800 text-white text-lg border-b-4 border-blue-950 active:border-b-0 active:translate-y-1"
+                        : "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                    }`}
                   >
-                    <span>Luyện tập</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>{isElderly ? "Bác Xem Cách Phòng Tránh" : "Luyện tập ngay"}</span>
+                    <ArrowRight className={isElderly ? "w-5 h-5" : "w-3.5 h-3.5"} />
                   </Link>
                 </div>
               </div>

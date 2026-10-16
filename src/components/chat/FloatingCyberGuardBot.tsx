@@ -75,8 +75,8 @@ export function FloatingCyberGuardBot() {
     },
   ]);
 
-  // Ẩn chatbot khi đang ở trong trang Luyện tập (/play), trang Kiểm tra chuyên dụng (/chatbot), hoặc Chế độ Người Cao Tuổi
-  if (pathname?.startsWith("/play") || pathname?.startsWith("/chatbot") || userRole === "elderly") {
+  // Ẩn chatbot khi đang ở trong phòng luyện tập / làm bài thi (/play) hoặc trang kiểm tra chuyên dụng (/chatbot) theo đúng bản vẽ thiết kế
+  if (pathname?.startsWith("/play") || pathname?.startsWith("/chatbot")) {
     return null;
   }
 
@@ -169,10 +169,23 @@ export function FloatingCyberGuardBot() {
         <button
           ref={triggerButtonRef}
           onClick={handleToggle}
-          className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer border-2 border-white/80"
+          className={`shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer border-2 ${
+            userRole === "elderly"
+              ? "px-5 py-3.5 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-black text-base border-amber-300 gap-2.5 shadow-2xl"
+              : "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white border-white/80"
+          }`}
           title="Trợ lý an toàn CyberGuard"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6 sm:w-7 sm:h-7" />}
+          {isOpen ? (
+            <X className="w-6 h-6" />
+          ) : userRole === "elderly" ? (
+            <>
+              <Bot className="w-6 h-6" />
+              <span className="whitespace-nowrap">Hỏi Trợ Lý An Toàn</span>
+            </>
+          ) : (
+            <Bot className="w-6 h-6 sm:w-7 sm:h-7" />
+          )}
         </button>
       </div>
 
