@@ -106,7 +106,7 @@ function ChildNavbar() {
   const navLinks = [
     { href: "/", label: "Trang Chủ", icon: Gamepad2 },
     { href: "/play", label: "Phòng Huấn Luyện", icon: Sword },
-    { href: "/chatbot", label: "Trợ Lý AI", icon: Bot },
+    { href: "/chatbot", label: "Trợ Lý An Toàn", icon: Bot },
     { href: "/guide", label: "Bí Kíp Phá Án", icon: Zap },
     ...(isAdmin ? [{ href: "/admin", label: "Quản Trị", isAdminOnly: true }] : []),
   ];
@@ -135,7 +135,7 @@ function ChildNavbar() {
           </Link>
 
           {/* Gamified Nav Links */}
-          <nav className="hidden lg:flex items-center gap-1.5">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => {
               const isActive =
                 pathname === link.href ||
@@ -145,13 +145,13 @@ function ChildNavbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 ${
+                  className={`px-3 py-2 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 whitespace-nowrap ${
                     isActive
-                      ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md border-b-2 border-blue-900 scale-105"
+                      ? "bg-sky-500 text-white shadow-sm"
                       : "text-slate-300 hover:text-white hover:bg-white/10"
                   }`}
                 >
-                  {Icon && <Icon className="w-4 h-4 text-amber-300" />}
+                  {Icon && <Icon className="w-4 h-4 text-amber-300 shrink-0" />}
                   <span>{link.label}</span>
                 </Link>
               );
@@ -159,33 +159,33 @@ function ChildNavbar() {
           </nav>
 
           {/* Gamification Stats: XP, Streak, Avatar & Mode Switcher */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
             {/* Gamified Stats Badges */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/10 border border-white/20 shadow-inner">
-              <div className="flex items-center gap-1 text-xs font-black text-orange-400 bg-orange-950/40 px-2 py-0.5 rounded-lg border border-orange-500/30">
-                <Flame className="w-3.5 h-3.5 fill-orange-400 text-orange-400" />
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white/10 border border-white/15 whitespace-nowrap shrink-0">
+              <div className="flex items-center gap-1 text-xs font-black text-orange-400 bg-orange-950/50 px-2 py-0.5 rounded-md border border-orange-500/30 shrink-0">
+                <Flame className="w-3.5 h-3.5 fill-orange-400 text-orange-400 shrink-0" />
                 <span>3 Ngày</span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-black text-yellow-300 bg-yellow-950/40 px-2 py-0.5 rounded-lg border border-yellow-500/30">
-                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+              <div className="flex items-center gap-1 text-xs font-black text-yellow-300 bg-yellow-950/50 px-2 py-0.5 rounded-md border border-yellow-500/30 shrink-0">
+                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" />
                 <span>250 XP</span>
               </div>
             </div>
 
-            {/* Quick Switch to Elderly Mode */}
+            {/* Quick Switch to Elderly Mode (Non-wrapping pill) */}
             <button
               type="button"
               onClick={() => setUserRole("elderly")}
-              className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-xs font-black transition-all cursor-pointer flex items-center gap-1"
+              className="px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="Chuyển sang giao diện Người Cao Tuổi"
             >
               <span>👴</span>
-              <span className="hidden md:inline">Chế độ</span> <span>Cao Tuổi</span>
+              <span className="whitespace-nowrap">Chế độ Cao Tuổi</span>
             </button>
 
             {/* Auth Button */}
             {user ? (
-              <div className="flex items-center gap-2 bg-white/10 py-1.5 px-3 rounded-2xl border border-white/20">
+              <div className="flex items-center gap-2 bg-white/10 py-1.5 px-3 rounded-xl border border-white/20 shrink-0">
                 <span className="text-xs font-black text-amber-300 max-w-[100px] truncate">
                   {profile?.display_name || user.email?.split("@")[0]}
                 </span>
@@ -200,9 +200,9 @@ function ChildNavbar() {
             ) : (
               <button
                 onClick={() => openAuthModal("signin")}
-                className="px-4 py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs shadow-md border-b-2 border-emerald-700 active:border-b-0 active:translate-y-0.5 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0"
               >
-                <LogIn className="w-3.5 h-3.5" />
+                <LogIn className="w-3.5 h-3.5 shrink-0" />
                 <span>Vào Game</span>
               </button>
             )}

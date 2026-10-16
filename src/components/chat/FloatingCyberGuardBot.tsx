@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useDemographic } from "@/context/DemographicContext";
 import { analyzeRisk } from "@/utils/riskAnalyzer";
 import { RiskAnalysisResult } from "@/types/scenario";
 import { RiskAnalysisCard } from "@/components/chat/RiskAnalysisCard";
@@ -19,6 +20,7 @@ import {
 export function FloatingCyberGuardBot() {
   const pathname = usePathname();
   const { user, openAuthModal } = useAuth();
+  const { userRole } = useDemographic();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -68,13 +70,13 @@ export function FloatingCyberGuardBot() {
   >([
     {
       sender: "bot",
-      text: "Xin chào bạn. Tôi là CyberGuardBot, trợ lý AI chuyên về phát triển năng lực số, an toàn thông tin, phòng chống lừa đảo trực tuyến và hỗ trợ ra quyết định an toàn trên không gian mạng. Bạn nhận được tin nhắn, email, đường link hoặc tình huống đáng ngờ nào không? Vui lòng nhập nội dung để tôi phân tích giúp bạn.",
+      text: "Xin chào bạn! Tôi là CyberGuard — Trợ lý an toàn thông tin hỗ trợ nhận diện và phòng ngừa lừa đảo trực tuyến. Bạn vừa nhận được tin nhắn, cuộc gọi hoặc đường link đáng ngờ nào không? Hãy dán vào đây để tôi kiểm tra giúp bạn nhé!",
       time: "Vừa xong",
     },
   ]);
 
-  // Ẩn chatbot khi đang ở trong phòng luyện tập / làm câu hỏi (theo yêu cầu trong đề tài)
-  if (pathname?.startsWith("/play")) {
+  // Ẩn chatbot khi đang ở trong trang Luyện tập (/play), trang Kiểm tra chuyên dụng (/chatbot), hoặc Chế độ Người Cao Tuổi
+  if (pathname?.startsWith("/play") || pathname?.startsWith("/chatbot") || userRole === "elderly") {
     return null;
   }
 
@@ -163,21 +165,14 @@ export function FloatingCyberGuardBot() {
   return (
     <>
       {/* Floating Trigger Button Fixed at Bottom-Right */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-        {!isOpen && (
-          <div className="hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl border-2 border-sky-200 text-xs font-bold text-slate-800 shadow-lg animate-bounce">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>CyberGuardBot trực tuyến</span>
-          </div>
-        )}
-
+      <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3">
         <button
           ref={triggerButtonRef}
           onClick={handleToggle}
-          className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer border-2 border-white"
-          title="Mở trợ lý AI CyberGuardBot"
+          className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer border-2 border-white/80"
+          title="Trợ lý an toàn CyberGuard"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-7 h-7" />}
+          {isOpen ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6 sm:w-7 sm:h-7" />}
         </button>
       </div>
 
@@ -185,22 +180,22 @@ export function FloatingCyberGuardBot() {
       {isOpen && (
         <div
           ref={chatRef}
-          className="fixed bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[460px] md:w-[490px] max-h-[85vh] h-[620px] bg-white rounded-3xl border-2 border-slate-300 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-200"
+          className="fixed bottom-22 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[460px] md:w-[490px] max-h-[85vh] h-[620px] bg-white rounded-3xl border-2 border-slate-300 shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-200"
         >
           {/* Header */}
-          <div className="p-3.5 sm:p-4 bg-gradient-to-r from-sky-600 to-indigo-600 text-white flex items-center justify-between shadow-xs">
+          <div className="p-3.5 sm:p-4 bg-sky-600 text-white flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-bold text-white shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="font-black text-sm leading-tight flex items-center gap-1.5">
-                  <span>CyberGuardBot</span>
+                  <span>CyberGuard Trợ Lý An Toàn</span>
                   <span className="text-[10px] bg-emerald-400 text-emerald-950 font-black px-1.5 py-0.2 rounded-full">
-                    AI Online
+                    Trực Tuyến
                   </span>
                 </h3>
-                <p className="text-[11px] text-sky-100 font-medium">Trợ lý phân tích an toàn số Scaffolding</p>
+                <p className="text-[11px] text-sky-100 font-medium">Phân tích & nhận diện rủi ro trực tuyến</p>
               </div>
             </div>
 
@@ -210,7 +205,7 @@ export function FloatingCyberGuardBot() {
                   setConversation([
                     {
                       sender: "bot",
-                      text: "Xin chào bạn! Tôi là CyberGuardBot — Trợ lý AI chuyên hỗ trợ phân tích rủi ro và ra quyết định an toàn số. Bạn nhận được tin nhắn, cuộc gọi hoặc đường link đáng ngờ nào không? Hãy nhập vào đây để tôi kiểm tra ngay nhé!",
+                      text: "Xin chào bạn! Tôi là CyberGuard — Trợ lý hỗ trợ nhận diện và phòng ngừa lừa đảo trực tuyến. Bạn nhận được tin nhắn, cuộc gọi hoặc đường link đáng ngờ nào không? Hãy dán vào đây để tôi kiểm tra ngay nhé!",
                       time: "Vừa xong",
                     },
                   ])

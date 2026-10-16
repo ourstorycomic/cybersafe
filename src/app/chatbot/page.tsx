@@ -231,8 +231,8 @@ function ChildChatbotView() {
     {
       id: "msg_welcome",
       sender: "bot",
-      text: "Yo Hiệp Sĩ Số! Tớ là CyberGuard AI 🛡️ Bạn nhận được link lạ hay tin nhắn nghi ngờ? Ném vào đây hoặc bấm các nút chip bên dưới để tớ quét mã độc và bóc mẽ kẻ gian ngay!",
-      timestamp: "AI Guardian",
+      text: "Chào Hiệp Sĩ Số! Tớ là CyberGuard 🛡️ Bạn vừa gặp phải link lạ, tin nhắn dọa nạt hay cuộc gọi mờ ám? Hãy dán nội dung vào đây hoặc bấm các gợi ý bên dưới để cùng tớ bóc tách dấu hiệu lừa đảo nhé!",
+      timestamp: "CyberGuard",
     },
   ]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -277,9 +277,9 @@ function ChildChatbotView() {
       const botMsg: ChatMessage = {
         id: `bot_${Date.now()}`,
         sender: "bot",
-        text: `🛡️ Đã quét xong dữ liệu! Mức độ rủi ro: ${analysis.risk_level.toUpperCase()}. +20 XP Khám Phá!`,
+        text: `🛡️ Đã phân tích xong! Mức độ rủi ro: ${analysis.risk_level.toUpperCase()}. +20 XP Khám Phá!`,
         analysis,
-        timestamp: "CyberGuard Bot",
+        timestamp: "CyberGuard",
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch {
@@ -290,30 +290,30 @@ function ChildChatbotView() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 text-white py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-950 text-white py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header Gaming */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900 to-sky-900 border-2 border-sky-400 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Header Gaming Clean */}
+        <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 text-center sm:text-left">
-            <div className="w-14 h-14 rounded-2xl bg-sky-500/30 border-2 border-sky-300 flex items-center justify-center text-3xl shadow-inner shrink-0 animate-bounce">
-              🤖
+            <div className="w-13 h-13 rounded-2xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-2xl shadow-inner shrink-0">
+              🛡️
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/40">
-                  AI ASSISTANT V2.0
+              <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <span className="text-[11px] font-black uppercase text-amber-300 bg-amber-400/15 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                  TRỢ LÝ AN TOÀN SỐ
                 </span>
                 <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Trực Tuyến
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" /> Trực Tuyến
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white mt-0.5">
+              <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
                 Trợ Lý Soi Bẫy Lừa Đảo CyberGuard
               </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-black/40 px-3.5 py-2 rounded-2xl border border-white/20">
+          <div className="flex items-center gap-2 bg-slate-800/80 px-3.5 py-2 rounded-xl border border-slate-700">
             <Sparkles className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-black text-amber-300">+20 XP mỗi lần phát hiện</span>
           </div>
