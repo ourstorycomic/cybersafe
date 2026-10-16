@@ -4,43 +4,28 @@ import { useState } from "react";
 import Link from "next/link";
 import { OFFICIAL_QUESTION_BANK } from "@/data/officialQuestionBank";
 import { SCENARIO_Q1_1, SCENARIO_Q1_3, SCENARIO_Q2_2 } from "@/data/phase2Scenarios";
-import { PUZZLE_CHAPTERS } from "@/data/puzzleChapters";
 import { Scenario } from "@/types/scenario";
 import { usePlayerJourney } from "@/hooks/usePlayerJourney";
 import { useScenarios } from "@/hooks/useScenarios";
-import { PlayerHeaderBar } from "@/components/game/PlayerHeaderBar";
 import { PuzzleLevelModal } from "@/components/game/PuzzleLevelModal";
-import {
-  Layers,
-  ChevronDown,
-  BookOpen,
-  ArrowRight,
-  ArrowLeft,
-  CheckCircle,
-  Star,
-  Lock,
-  Database,
-  Cloud,
-  Check,
-  X,
-  ExternalLink,
-  RefreshCw,
-  Server,
-  FileCode,
-  Flag,
-  Compass,
-  Award,
-  AlertTriangle,
-  Lightbulb,
-} from "lucide-react";
+import { PreTestModal } from "@/components/auth/PreTestModal";
+import { PlayElderlyView } from "@/components/play/PlayElderlyView";
+import { PlayChildView } from "@/components/play/PlayChildView";
 import { useAuth } from "@/context/AuthContext";
 import { useDemographic } from "@/context/DemographicContext";
-import { PreTestModal } from "@/components/auth/PreTestModal";
-import { WeeklyLeaderboard } from "@/components/game/WeeklyLeaderboard";
+import {
+  Lock,
+  ArrowRight,
+  Database,
+  Server,
+  RefreshCw,
+  FileCode,
+  X,
+} from "lucide-react";
 
 export default function PlayPage() {
   const { user, profile: authProfile, openAuthModal, recordPreTestResult } = useAuth();
-  const { userRole, isElderly, isChild } = useDemographic();
+  const { userRole, isElderly } = useDemographic();
   const { scenarios, supabaseStatus, refreshData } = useScenarios();
 
   // Toàn bộ ngân hàng 39 câu hỏi: ưu tiên từ Supabase Cloud nếu có
@@ -67,12 +52,10 @@ export default function PlayPage() {
     recordLevelResult,
     toggleJuryUnlockedAll,
     resetJourney,
-    isLevelUnlocked,
   } = usePlayerJourney();
 
   const [viewMode, setViewMode] = useState<"map" | "list">("map");
   const [activeModalLevelIndex, setActiveModalLevelIndex] = useState<number | null>(null);
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>("all");
   const [isDbModalOpen, setIsDbModalOpen] = useState(false);
   const [seedLoading, setSeedLoading] = useState(false);
   const [seedStatusMessage, setSeedStatusMessage] = useState<string | null>(null);
@@ -138,11 +121,6 @@ export default function PlayPage() {
   const activeScenario =
     activeModalLevelIndex !== null ? allScenarios[activeModalLevelIndex] : null;
 
-  const filteredBank = allScenarios.filter((s) => {
-    if (selectedCategoryFilter === "all") return true;
-    return s.category === selectedCategoryFilter;
-  });
-
   const handlePreTestComplete = async (
     score: number,
     details: { competencyLevel: string; needsImprovement: string[] }
@@ -168,7 +146,7 @@ export default function PlayPage() {
               Khu Vực 39 Ải Thử Thách
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-              Theo quy định của hệ thống, bạn cần đăng nhập tài khoản bằng SĐT hoặc Email để làm các câu hỏi chính thức, đo lường năng lực và tích lũy huy hiệu.
+              Theo quy định của hệ thống, bạn cần đăng nhập tài khoản bằng SĐT hoặc Email để làm các câu hỏi chính thức, đo lường năng lực và lưu trữ tiến độ.
             </p>
           </div>
 
@@ -203,6 +181,40 @@ export default function PlayPage() {
     );
   }
 
+  // 2. PHÂN TÁCH GIAO DIỆN HOÀN TOÀN: PlayElderlyView (Người Cao Tuổi)
+  if (userRole === "elderly") {
+    return (
+      <div className="min-h-screen bg-amber-50/20 text-slate-950 py-10 px-4 sm:px-6 lg:px-8">
+        <PreTestModal
+          isOpen={showPreTestModal}
+          onComplete={handlePreTestComplete}
+          userDisplayName={authProfile?.display_name || user.email || "Bác"}
+        />
+
+        <PlayElderlyView
+          allScenarios={allScenarios}
+          completedLevels={completedLevels}
+          userDisplayName={authProfile?.display_name || user.email || "Bác"}
+        />
+
+        {/* Modal câu hỏi nếu có */}
+        {activeScenario && activeModalLevelIndex !== null && (
+          <PuzzleLevelModal
+            scenario={activeScenario}
+            levelIndex={activeModalLevelIndex}
+            totalLevels={allScenarios.length}
+            isOpen={true}
+            onClose={handleCloseModal}
+            onCompleteLevel={handleCompleteLevel}
+            onNextLevel={handleNextLevel}
+            hasNext={activeModalLevelIndex < allScenarios.length - 1}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // 3. PHÂN TÁCH GIAO DIỆN HOÀN TOÀN: PlayChildView (Trẻ Em & Học Sinh - Gaming Dashboard)
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       {/* Pre-Test Modal xuất hiện ở lần đăng nhập đầu tiên */}
@@ -213,352 +225,31 @@ export default function PlayPage() {
       />
 
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* 1. PERSONALIZED PLAYER PROFILE & STATUS BAR */}
-        <PlayerHeaderBar
-          profile={profile}
+        <PlayChildView
+          allScenarios={allScenarios}
+          completedLevels={completedLevels}
+          unlockedLevelIndex={unlockedLevelIndex}
           totalXp={totalXp}
           streakDays={streakDays}
           completedCount={completedCount}
           progressPercent={progressPercent}
-          unlockedLevelIndex={unlockedLevelIndex}
           rankTitle={rankTitle}
           rankColor={rankColor}
           isJuryUnlockedAll={isJuryUnlockedAll}
-          viewMode={viewMode}
+          profile={profile}
           supabaseStatus={supabaseStatus}
+          authProfile={authProfile}
+          viewMode={viewMode}
           onToggleViewMode={setViewMode}
           onToggleJuryMode={toggleJuryUnlockedAll}
           onUpdateProfile={updateProfile}
           onResetJourney={resetJourney}
           onContinueActiveLevel={handleContinueActiveLevel}
           onOpenDatabaseInfo={() => setIsDbModalOpen(true)}
+          onSelectLevel={handleSelectLevel}
         />
 
-        {/* Diagnostic Insights: Nội dung cần cải thiện khi người dùng đăng nhập */}
-        {authProfile?.needs_improvement && authProfile.needs_improvement.length > 0 && (
-          <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/70 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-900 uppercase">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <span>Nội dung cần tập trung cải thiện (Theo khảo sát đầu vào):</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {authProfile.needs_improvement.map((topic, i) => (
-                  <span
-                    key={i}
-                    className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-amber-300 text-amber-950"
-                  >
-                    {topic}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <span className="text-[11px] font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full shrink-0">
-              Điểm Pre-test: {authProfile.pretest_score ?? 0}/10
-            </span>
-          </div>
-        )}
-
-        {/* 2. CHÍNH: HUB BẢN ĐỒ CÁC ĐỀ TÀI KHOA HỌC (THEO CHƯƠNG ROUTE RIÊNG) */}
-        {viewMode === "map" ? (
-          <div className="space-y-6">
-            {/* Header Introduction */}
-            <div className="text-center max-w-2xl mx-auto space-y-2">
-              <span className={`uppercase font-mono font-bold tracking-wider ${
-                isElderly ? "text-sm text-blue-900 bg-amber-100 px-3 py-1 rounded-full border border-amber-300" : "text-xs text-sky-800"
-              }`}>
-                {isElderly ? "CHƯƠNG TRÌNH DÀNH RIÊNG CHO BÁC & GIA ĐÌNH" : "11 Vùng Đất Khám Phá & Phòng Ngừa Cạm Bẫy"}
-              </span>
-              <h2 className={
-                isElderly 
-                  ? "text-3xl sm:text-4xl font-black text-slate-950 tracking-tight"
-                  : "text-2xl sm:text-3xl font-black text-slate-900 tracking-tight"
-              }>
-                {isElderly ? "Chọn Chủ Đề Luyện Tập Phòng Tránh Lừa Đảo" : "Chọn Đề Tài Luyện Tập Phản Xạ An Toàn Số"}
-              </h2>
-              <p className={
-                isElderly 
-                  ? "text-lg font-bold text-slate-800 leading-relaxed"
-                  : "text-sm text-slate-600 leading-relaxed"
-              }>
-                {isElderly 
-                  ? "Bác hãy chọn một chủ đề bên dưới để bắt đầu. Mỗi chủ đề đều có hình ảnh to rõ và lời giải thích tận tình."
-                  : "Mỗi đề tài là một tuyến hành trình độc lập gồm các tình huống thực tiễn. Vượt qua từng ải để nhận huy hiệu hiệp sĩ!"}
-              </p>
-            </div>
-
-            {/* Grid of Topics / Chapters */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {PUZZLE_CHAPTERS.map((chapter, idx) => {
-                // Calculate progress within this specific topic
-                const chapterScenarios = chapter.scenarioIds
-                  .map((id) => allScenarios.find((s) => s.scenario_id === id))
-                  .filter(Boolean);
-
-                const completedInChapter = chapterScenarios.filter((s) => {
-                  const gIdx = allScenarios.findIndex((all) => all.scenario_id === s?.scenario_id);
-                  return completedLevels[gIdx]?.passedSafely;
-                }).length;
-
-                const starsInChapter = chapterScenarios.reduce((acc, s) => {
-                  const gIdx = allScenarios.findIndex((all) => all.scenario_id === s?.scenario_id);
-                  return acc + (completedLevels[gIdx]?.stars || 0);
-                }, 0);
-
-                const totalStarsPossible = chapterScenarios.length * 3;
-                const isCompleted = completedInChapter === chapterScenarios.length && chapterScenarios.length > 0;
-                const chapterPercent = Math.round((completedInChapter / chapterScenarios.length) * 100);
-
-                return (
-                  <div
-                    key={chapter.id}
-                    className={`rounded-3xl bg-white transition-all duration-300 flex flex-col justify-between group ${
-                      isElderly
-                        ? "p-6 border-2 border-slate-300 hover:border-blue-700 shadow-md space-y-5"
-                        : "p-5 border border-slate-200/90 hover:border-sky-300 hover:shadow-xl space-y-4"
-                    }`}
-                  >
-                    {/* 1. Header: Topic Code, Stars & Count */}
-                    <div className="flex items-center justify-between pb-1">
-                      <div className="flex items-center gap-2">
-                        <span className={`font-mono font-black rounded-lg ${
-                          isElderly 
-                            ? "text-sm px-3 py-1 bg-amber-100 text-amber-950 border border-amber-300"
-                            : "text-xs px-2.5 py-1 bg-sky-50 text-sky-800 border border-sky-200"
-                        }`}>
-                          {chapter.topicCode}
-                        </span>
-                        <span className={isElderly ? "text-sm font-bold text-slate-700" : "text-xs font-semibold text-slate-500"}>
-                          {chapterScenarios.length} Ải thực tế
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1 font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 text-xs sm:text-sm">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span>
-                          {starsInChapter}/{totalStarsPossible}★
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* 2. FULL UNCROPPED ILLUSTRATION DISPLAY */}
-                    <div className="w-full h-48 sm:h-52 bg-slate-50/80 rounded-2xl overflow-hidden p-2.5 flex items-center justify-center border border-slate-200 group-hover:border-sky-300 group-hover:bg-sky-50/20 transition-all">
-                      <img
-                        src={encodeURI(chapter.imageUrl)}
-                        alt={chapter.title}
-                        className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300 select-none"
-                      />
-                    </div>
-
-                    {/* 3. Text Details */}
-                    <div className="space-y-1.5 flex-1">
-                      <div>
-                        <h3 className={`font-black text-slate-950 leading-snug line-clamp-1 ${
-                          isElderly ? "text-xl sm:text-2xl" : "text-base group-hover:text-sky-700 transition-colors"
-                        }`}>
-                          {chapter.title}
-                        </h3>
-                        <p className={`font-semibold line-clamp-1 ${
-                          isElderly ? "text-base text-slate-700 mt-1" : "text-xs text-slate-500 mt-0.5"
-                        }`}>
-                          {chapter.subtitle}
-                        </p>
-                      </div>
-
-                      {/* Description */}
-                      <p className={`line-clamp-2 leading-relaxed ${
-                        isElderly ? "text-base text-slate-800 font-medium" : "text-xs text-slate-600 font-medium"
-                      }`}>
-                        {chapter.description}
-                      </p>
-                    </div>
-
-                    {/* 4. Progress Bar & Enter Topic Button */}
-                    <div className="space-y-3 pt-3 border-t border-slate-100">
-                      <div className="space-y-1">
-                        <div className={`flex items-center justify-between font-bold ${
-                          isElderly ? "text-xs text-slate-700" : "text-[11px] text-slate-500"
-                        }`}>
-                          <span>
-                            Đã hoàn thành: <strong>{completedInChapter}/{chapterScenarios.length} ải</strong>
-                          </span>
-                          <span className={isCompleted ? "text-emerald-700 font-black" : "text-slate-600"}>
-                            {isCompleted ? "HOÀN TẤT ✓" : `${chapterPercent}%`}
-                          </span>
-                        </div>
-                        <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                          <div
-                            className={`h-full rounded-full transition-all duration-500 ${
-                              isCompleted
-                                ? "bg-emerald-500"
-                                : "bg-gradient-to-r from-sky-500 to-indigo-600"
-                            }`}
-                            style={{ width: `${Math.max(4, chapterPercent)}%` }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Link to dedicated Chapter Road route */}
-                      <Link
-                        href={`/play/${chapter.id}`}
-                        className={`w-full rounded-2xl font-black flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer ${
-                          isElderly
-                            ? "py-4 text-xl bg-blue-700 hover:bg-blue-800 text-white min-h-[56px] border-b-4 border-blue-900"
-                            : isCompleted
-                            ? "py-2.5 text-xs bg-emerald-50 text-emerald-800 border-2 border-emerald-300 hover:bg-emerald-100"
-                            : "py-2.5 text-xs bg-sky-600 hover:bg-sky-700 text-white border-b-2 border-sky-800 active:translate-y-0.5"
-                        }`}
-                      >
-                        <span>{isElderly ? "VÀO HỌC CHỦ ĐỀ NÀY" : isCompleted ? "Xem Lại Bản Đồ Đề Tài" : "Vào Luyện Tập Đề Tài Này"}</span>
-                        <ArrowRight className={isElderly ? "w-6 h-6" : "w-4 h-4"} />
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          /* 3. ALTERNATIVE VIEW: LIST BROWSER */
-          <div className="space-y-5">
-            {/* Filter */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setSelectedCategoryFilter("all")}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategoryFilter === "all"
-                    ? "bg-slate-900 text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                Tất Cả 39 Ải
-              </button>
-              <button
-                onClick={() => setSelectedCategoryFilter("fake_police_authority")}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategoryFilter === "fake_police_authority"
-                    ? "bg-sky-600 text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                Mạo Danh Công Quyền
-              </button>
-              <button
-                onClick={() => setSelectedCategoryFilter("fake_brand_bank")}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategoryFilter === "fake_brand_bank"
-                    ? "bg-indigo-600 text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                Giả Mạo Ngân Hàng
-              </button>
-              <button
-                onClick={() => setSelectedCategoryFilter("online_employment")}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategoryFilter === "online_employment"
-                    ? "bg-purple-600 text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                Lừa Đảo Việc Làm
-              </button>
-              <button
-                onClick={() => setSelectedCategoryFilter("deepfake_multimedia")}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategoryFilter === "deepfake_multimedia"
-                    ? "bg-amber-600 text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
-                }`}
-              >
-                Deepfake & AI
-              </button>
-            </div>
-
-            {/* Grid Cards of Filtered Levels */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredBank.map((scenario) => {
-                const globalIndex = allScenarios.findIndex(
-                  (s) => s.scenario_id === scenario.scenario_id
-                );
-                const isUnlocked = isLevelUnlocked(globalIndex);
-                const progressItem = completedLevels[globalIndex];
-                const isPassed = progressItem?.passedSafely;
-
-                const scenarioChapter = PUZZLE_CHAPTERS.find((c) =>
-                  c.scenarioIds.includes(scenario.scenario_id)
-                );
-
-                return (
-                  <div
-                    key={scenario.scenario_id}
-                    onClick={() => {
-                      if (isUnlocked) handleSelectLevel(globalIndex);
-                    }}
-                    className={`rounded-2xl p-4 border transition-all text-left flex flex-col justify-between space-y-3 ${
-                      !isUnlocked
-                        ? "bg-slate-100/70 border-slate-200 text-slate-400 cursor-not-allowed opacity-60"
-                        : "bg-white border-slate-200 hover:border-sky-300 hover:shadow-md cursor-pointer group"
-                    }`}
-                  >
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-slate-200 shadow-xs">
-                            <img
-                              src={encodeURI(scenarioChapter?.imageUrl || "/images/cybersecurity.png")}
-                              alt={scenario.category_name_vi}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <span className="font-mono text-[10px] font-bold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200">
-                              Ải {globalIndex + 1} • {scenario.scenario_id}
-                            </span>
-                            <h4 className="text-xs font-bold text-slate-900 truncate mt-0.5">
-                              {scenario.category_name_vi}
-                            </h4>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1 shrink-0 ml-2">
-                          {isPassed ? (
-                            <span className="flex items-center gap-0.5 text-xs text-amber-500 font-bold">
-                              <Star className="w-3.5 h-3.5 fill-amber-400" />
-                              {progressItem.stars}★
-                            </span>
-                          ) : isUnlocked ? (
-                            <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full">
-                              Sẵn sàng
-                            </span>
-                          ) : (
-                            <Lock className="w-3.5 h-3.5 text-slate-400" />
-                          )}
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                        {scenario.context}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                      <span className="text-[10px] font-medium text-slate-400">{scenario.skill}</span>
-                      {isUnlocked && (
-                        <span className="text-sky-700 font-bold text-[11px] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                          Chơi ➔
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* 4. MODAL CHALLENGE STAGE */}
+        {/* Modal Thử Thách Câu Hỏi */}
         {activeScenario && activeModalLevelIndex !== null && (
           <PuzzleLevelModal
             scenario={activeScenario}
@@ -572,10 +263,7 @@ export default function PlayPage() {
           />
         )}
 
-        {/* 4. BẢNG XẾP HẠNG TOP 10 TUẦN / CHỦ ĐỀ & VINH DANH */}
-        <WeeklyLeaderboard />
-
-        {/* 5. MODAL SUPABASE DATABASE STATUS & SYNC */}
+        {/* Modal Supabase Database Status & Sync */}
         {isDbModalOpen && (
           <div
             onClick={() => setIsDbModalOpen(false)}
