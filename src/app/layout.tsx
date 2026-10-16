@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+import { DemographicProvider } from "@/context/DemographicContext";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { FloatingCyberGuardBot } from "@/components/chat/FloatingCyberGuardBot";
 
@@ -30,11 +31,13 @@ export default function RootLayout({
     <html lang="vi" className={`${beVietnamPro.variable}`}>
       <body className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-sky-200 selection:text-sky-900">
         <AuthProvider>
-          <Navbar />
-          <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
-          <AuthModal />
-          <FloatingCyberGuardBot />
+          <DemographicProvider>
+            <Navbar />
+            <main className="flex-1 flex flex-col">{children}</main>
+            <Footer />
+            <AuthModal />
+            <FloatingCyberGuardBot />
+          </DemographicProvider>
         </AuthProvider>
       </body>
     </html>

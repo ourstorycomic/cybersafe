@@ -6,6 +6,7 @@ import { BranchingScenarioQuestion } from "@/components/game/BranchingScenarioQu
 import { HotspotQuestion } from "@/components/game/HotspotQuestion";
 import { MultipleChoiceQuestion } from "@/components/game/MultipleChoiceQuestion";
 import { EducationalFeedbackModal } from "@/components/game/EducationalFeedbackModal";
+import { useDemographic } from "@/context/DemographicContext";
 import { X, ArrowLeft, Shield, Award, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -30,6 +31,7 @@ export function PuzzleLevelModal({
   onNextLevel,
   hasNext,
 }: PuzzleLevelModalProps) {
+  const { userRole, isElderly, isChild } = useDemographic();
   const [modalFeedbackState, setModalFeedbackState] = useState<{
     isOpen: boolean;
     passedSafely: boolean;
@@ -110,51 +112,69 @@ export function PuzzleLevelModal({
         className="relative w-full max-w-5xl rounded-3xl bg-slate-50 border-2 border-slate-300 shadow-2xl p-4 sm:p-6 my-2 flex flex-col gap-4 max-h-[95vh] overflow-y-auto cursor-default"
       >
         {/* Top Header Bar - STICKY TOP */}
-        <div className="sticky -top-4 sm:-top-6 -mt-2 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-3 pb-3 bg-slate-50/95 backdrop-blur-md border-b border-slate-200 z-40 flex items-center justify-between gap-3 shadow-2xs">
+        <div className={`sticky -top-4 sm:-top-6 -mt-2 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-3 pb-3 backdrop-blur-md border-b z-40 flex items-center justify-between gap-3 shadow-2xs ${
+          isElderly ? "bg-amber-50/95 border-amber-300" : "bg-slate-50/95 border-slate-200"
+        }`}>
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+              className={`rounded-xl border transition-colors cursor-pointer flex items-center gap-2 font-black ${
+                isElderly 
+                  ? "p-3 sm:px-4 sm:py-2.5 bg-white hover:bg-amber-100 border-slate-400 text-slate-950 text-base" 
+                  : "p-2 sm:px-3 sm:py-1.5 bg-white hover:bg-slate-100 border-slate-300 text-slate-700 text-xs"
+              }`}
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Trở lại bản đồ</span>
+              <ArrowLeft className={isElderly ? "w-6 h-6 text-slate-950" : "w-4 h-4"} />
+              <span className="hidden sm:inline">{isElderly ? "Quay lại bản đồ" : "Trở lại bản đồ"}</span>
             </button>
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-mono font-black text-xs">
+                <span className={`rounded-full font-mono font-black ${
+                  isElderly
+                    ? "px-3 py-1 bg-blue-700 text-white text-sm"
+                    : "px-2.5 py-0.5 bg-blue-600 text-white text-xs"
+                }`}>
                   ẢI {levelNum} / {totalLevels}
                 </span>
-                <span className="text-xs uppercase font-bold text-slate-500">
+                <span className={`uppercase font-bold ${
+                  isElderly ? "text-sm text-slate-700" : "text-xs text-slate-500"
+                }`}>
                   {scenario.scenario_id}
                 </span>
               </div>
-              <h3 className="text-sm sm:text-lg font-black text-slate-900 leading-snug line-clamp-1">
+              <h3 className={`font-black text-slate-950 leading-snug line-clamp-1 ${
+                isElderly ? "text-lg sm:text-2xl" : "text-sm sm:text-lg"
+              }`}>
                 {scenario.category_name_vi}
               </h3>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Countdown Timer Widget (Theo Wireframe) */}
+            {/* Countdown Timer Widget */}
             <div
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border shadow-2xs font-mono font-black text-xs sm:text-sm ${
+              className={`flex items-center gap-1.5 rounded-xl border shadow-2xs font-mono font-black ${
+                isElderly ? "px-4 py-2 text-base border-2" : "px-3 py-1.5 text-xs sm:text-sm"
+              } ${
                 secondsLeft <= 15
                   ? "bg-rose-50 border-rose-300 text-rose-700 animate-pulse"
                   : "bg-white border-slate-300 text-slate-800"
               }`}
               title="Thời gian thực hiện câu hỏi"
             >
-              <Clock className={`w-4 h-4 ${secondsLeft <= 15 ? "text-rose-600" : "text-amber-600"}`} />
+              <Clock className={isElderly ? "w-5 h-5 text-amber-600" : "w-4 h-4 text-amber-600"} />
               <span>{formattedTime}</span>
             </div>
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer border border-slate-200 shrink-0"
+              className={`rounded-xl bg-white hover:bg-slate-100 transition-colors cursor-pointer border shrink-0 ${
+                isElderly ? "p-2.5 border-slate-300 text-slate-800 hover:text-slate-950" : "p-1.5 border-slate-200 text-slate-500 hover:text-slate-900"
+              }`}
               title="Đóng ải (Trở lại)"
             >
-              <X className="w-5 h-5" />
+              <X className={isElderly ? "w-6 h-6" : "w-5 h-5"} />
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { Scenario, StimulusData } from "@/types/scenario";
 import { parseScenarioStory } from "@/utils/scenarioStoryParser";
 import { HighlightKeywords } from "@/utils/textHighlighter";
+import { useDemographic } from "@/context/DemographicContext";
 import { PhoneCall, AlertTriangle, Globe, Lock, Shield, MessageSquare, User, UserCheck } from "lucide-react";
 
 interface StimulusSimulatorProps {
@@ -12,6 +13,7 @@ interface StimulusSimulatorProps {
 }
 
 export function StimulusSimulator({ stimulus, contextText, scenario }: StimulusSimulatorProps) {
+  const { isElderly, isChild } = useDemographic();
   // Parse storyline if scenario is available, or create mock scenario for parser
   const story = scenario
     ? parseScenarioStory(scenario)
@@ -34,17 +36,29 @@ export function StimulusSimulator({ stimulus, contextText, scenario }: StimulusS
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Role & Event Intro Pill - Gọn gàng, súc tích */}
-      <div className="px-3.5 py-2 rounded-2xl bg-blue-50 border border-blue-200 flex flex-wrap items-center justify-between gap-2 text-xs shadow-2xs">
-        <div className="inline-flex items-center gap-1.5 font-bold text-slate-800">
-          <UserCheck className="w-4 h-4 text-blue-600 shrink-0" />
-          <span>Vai trò: <strong className="text-blue-900 font-black">{story.role}</strong></span>
+      {/* Role & Event Intro Pill */}
+      <div
+        className={`rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-2xs ${
+          isElderly
+            ? "px-4 py-3 bg-amber-50 border-2 border-amber-300 text-sm font-bold text-slate-950"
+            : "px-3.5 py-2 bg-blue-50 border border-blue-200 text-xs font-bold text-slate-800"
+        }`}
+      >
+        <div className="inline-flex items-center gap-1.5">
+          <UserCheck className={isElderly ? "w-5 h-5 text-amber-700 shrink-0" : "w-4 h-4 text-blue-600 shrink-0"} />
+          <span>Vai trò của bạn: <strong className={isElderly ? "text-amber-950 font-black text-base" : "text-blue-900 font-black"}>{story.role}</strong></span>
         </div>
-        <span className="text-blue-700 font-semibold">{story.eventIntro}</span>
+        <span className={isElderly ? "text-amber-900 font-extrabold text-xs" : "text-blue-700 font-semibold text-xs"}>
+          {story.eventIntro}
+        </span>
       </div>
 
-      {/* Interactive Device Screen Simulator - Friendly Light Phone Frame */}
-      <div className="rounded-3xl border-2 border-slate-300 bg-white p-3.5 sm:p-4 shadow-xs overflow-hidden relative">
+      {/* Interactive Device Screen Simulator */}
+      <div
+        className={`rounded-3xl bg-white shadow-sm overflow-hidden relative ${
+          isElderly ? "p-5 border-3 border-slate-400" : "p-3.5 sm:p-4 border-2 border-slate-300"
+        }`}
+      >
         <div className="pt-2 pb-1">
           {/* 1. PHONE CALL SIMULATION */}
           {stimulus.type === "phone_call" && (
@@ -85,7 +99,13 @@ export function StimulusSimulator({ stimulus, contextText, scenario }: StimulusS
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
                   <span>Lời thoại phát ra từ loa:</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
+                <p
+                  className={`leading-relaxed ${
+                    isElderly
+                      ? "text-base sm:text-xl text-slate-950 font-black"
+                      : "text-xs sm:text-sm text-slate-800 font-semibold"
+                  }`}
+                >
                   &ldquo;<HighlightKeywords text={displayContent || ""} />&rdquo;
                 </p>
               </div>

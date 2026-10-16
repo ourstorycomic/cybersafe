@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth, AuthTabType } from "@/context/AuthContext";
+import { useDemographic, UserRole } from "@/context/DemographicContext";
 import { AVATAR_OPTIONS } from "@/data/avatars";
 import {
   X,
@@ -34,19 +35,32 @@ export function AuthModal() {
     signUp,
     resetPassword,
   } = useAuth();
+  const { userRole, setUserRole } = useDemographic();
 
   const [identifier, setIdentifier] = useState(""); // SĐT hoặc Email
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [age, setAge] = useState<number | "">("");
-  const [targetGroup, setTargetGroup] = useState<"student" | "elder" | "general">("student");
+  const [targetGroup, setTargetGroup] = useState<"student" | "elder" | "general">(
+    userRole === "elderly" ? "elder" : "student"
+  );
   const [selectedAvatarId, setSelectedAvatarId] = useState("guardian");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleRoleSelect = (role: UserRole) => {
+    setUserRole(role);
+    setTargetGroup(role === "elderly" ? "elder" : "student");
+    if (role === "elderly" && (age === "" || Number(age) < 50)) {
+      setAge(65);
+    } else if (role === "child" && (age === "" || Number(age) >= 18)) {
+      setAge(14);
+    }
+  };
 
   // Tự động gợi ý nhóm đối tượng khi người dùng nhập độ tuổi
   const handleAgeChange = (val: string) => {
@@ -58,10 +72,10 @@ export function AuthModal() {
     setAge(num);
     if (num < 18) {
       setTargetGroup("student");
-    } else if (num >= 55) {
+      setUserRole("child");
+    } else if (num >= 50) {
       setTargetGroup("elder");
-    } else {
-      setTargetGroup("general");
+      setUserRole("elderly");
     }
   };
 
@@ -263,6 +277,57 @@ export function AuthModal() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* BẮT BUỘC CHỌN ĐỐI TƯỢNG (Trẻ Em / Người Cao Tuổi) THEO YÊU CẦU ĐỀ TÀI */}
+          <div className="p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                <span>Bắt Buộc Chọn Đối Tượng Trải Nghiệm:</span>
+              </label>
+              <span className="text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full uppercase">
+                Tự đổi giao diện
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleRoleSelect("child")}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                  userRole === "child"
+                    ? "border-sky-500 bg-sky-50/80 text-sky-950 shadow-xs ring-2 ring-sky-300"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm">
+                  <span className="text-base sm:text-lg">🧒</span>
+                  <span>Trẻ Em (Dưới 18)</span>
+                </div>
+                <p className="text-[11px] text-slate-600 font-medium leading-tight line-clamp-2">
+                  Giao diện trò chơi sôi động, nút 3D, mascot đồng hành.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleRoleSelect("elderly")}
+                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                  userRole === "elderly"
+                    ? "border-amber-600 bg-amber-50/80 text-amber-950 shadow-xs ring-2 ring-amber-300"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm">
+                  <span className="text-base sm:text-lg">👴</span>
+                  <span>Người Cao Tuổi (50+)</span>
+                </div>
+                <p className="text-[11px] text-slate-600 font-medium leading-tight line-clamp-2">
+                  Chữ to rõ, nút bấm khổng lồ, giảm bớt rối mắt & dễ đọc.
+                </p>
+              </button>
+            </div>
+          </div>
+
           {/* Display Name (Only for signup) */}
           {authModalTab === "signup" && (
             <div className="space-y-1.5">

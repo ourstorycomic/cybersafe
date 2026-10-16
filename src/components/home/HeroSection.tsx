@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useDemographic } from "@/context/DemographicContext";
 import {
   ArrowRight,
   ShieldCheck,
@@ -16,10 +17,13 @@ import {
   PhoneCall,
   Flame,
   CheckCircle2,
+  Gamepad2,
+  HeartHandshake,
 } from "lucide-react";
 
 export function HeroSection() {
   const { user, openAuthModal } = useAuth();
+  const { userRole, isElderly, isChild } = useDemographic();
   const router = useRouter();
 
   // Active Hotspot on Phone Mockup
@@ -38,74 +42,126 @@ export function HeroSection() {
       id: 1,
       title: "Mạo danh số gọi",
       badge: "Hotspot 1",
-      detail: "Số điện thoại lạ mạo danh Viện kiểm sát / Công an. Cơ quan điều tra không bao giờ làm việc qua điện thoại.",
+      detail: isElderly
+        ? "Số lạ mạo danh Công an / Tòa án. Công an thật không bao giờ gọi điện đòi tiền!"
+        : "Số điện thoại lạ mạo danh Viện kiểm sát / Công an. Cơ quan điều tra không bao giờ làm việc qua điện thoại.",
       color: "bg-rose-500",
     },
     {
       id: 2,
       title: "Áp lực thời gian",
       badge: "Hotspot 2",
-      detail: "Ép buộc xử lý trong 30 phút - chiêu trò thao túng tâm lý sợ hãi để nạn nhân không kịp hỏi ý kiến người thân.",
+      detail: isElderly
+        ? "Bắt chuyển tiền gấp trong 30 phút để Bác hoảng sợ, không kịp hỏi con cháu!"
+        : "Ép buộc xử lý trong 30 phút - chiêu trò thao túng tâm lý sợ hãi để nạn nhân không kịp hỏi ý kiến người thân.",
       color: "bg-amber-500",
     },
     {
       id: 3,
       title: "Đòi chuyển tiền",
       badge: "Hotspot 3",
-      detail: "Yêu cầu chuyển 50 triệu vào 'Tài khoản tạm giữ'. Pháp luật Việt Nam KHÔNG CÓ tài khoản tạm giữ qua chuyển khoản cá nhân.",
+      detail: isElderly
+        ? "Bác tuyệt đối KHÔNG chuyển tiền vào bất kỳ tài khoản cá nhân nào!"
+        : "Yêu cầu chuyển 50 triệu vào 'Tài khoản tạm giữ'. Pháp luật Việt Nam KHÔNG CÓ tài khoản tạm giữ qua chuyển khoản cá nhân.",
       color: "bg-rose-600",
     },
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-sky-50/30 to-white text-slate-900 border-b border-slate-200 py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-16 relative z-10">
+    <section className={`relative overflow-hidden border-b py-12 sm:py-20 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
+      isElderly 
+        ? "bg-amber-50/40 border-amber-200 text-slate-950" 
+        : "bg-gradient-to-b from-blue-50/70 via-sky-50/30 to-white border-slate-200 text-slate-900"
+    }`}>
+      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16 relative z-10">
         {/* Main Grid: Value Proposition + Realistic Simulation Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Heading & CTAs */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            {/* Mascot Banner for Child or Trust Badge for Elderly */}
+            {isChild ? (
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-100 to-amber-200 border-2 border-amber-300 shadow-xs">
+                <span className="text-2xl animate-bounce">🛡️</span>
+                <span className="text-sm font-black text-amber-900">
+                  Hiệp Sĩ Số ơi: Cùng giải cứu không gian mạng khỏi kẻ gian!
+                </span>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-100/80 border border-amber-300 text-amber-950 text-sm font-black">
+                <HeartHandshake className="w-5 h-5 text-amber-700" />
+                <span>Chế độ chữ to, rõ ràng dành cho Bác & Gia đình</span>
+              </div>
+            )}
+
             {/* Main Headline */}
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.18]">
-                Xây dựng phản xạ số,{" "}
-                <span className="text-blue-600">
-                  nâng cao nhận thức, năng lực phòng ngừa
-                </span>{" "}
-                trên không gian mạng.
-              </h1>
-              <p className="text-base sm:text-lg text-slate-700 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Nền tảng thực hành tình huống tương tác thực tế đầu tiên tại Việt Nam, mô phỏng 39 kịch bản đời thực giúp học sinh và người cao tuổi chủ động nhận diện bẫy thao túng tâm lý, giữ an toàn tài sản số.
-              </p>
+              {isElderly ? (
+                <>
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 tracking-tight leading-[1.2]">
+                    Phòng Ngừa Lừa Đảo,{" "}
+                    <span className="text-blue-700 underline decoration-amber-400 decoration-wavy">
+                      Bảo Vệ Tiền Tiết Kiệm
+                    </span>{" "}
+                    Của Bác.
+                  </h1>
+                  <p className="text-xl sm:text-2xl text-slate-900 font-bold leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    Chỉ dẫn ngắn gọn, dễ hiểu giúp Bác nhận diện ngay các cuộc gọi mạo danh và tin nhắn lừa đảo.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.18]">
+                    Hóa thân Hiệp sĩ số,{" "}
+                    <span className="text-blue-600">
+                      phá vỡ 39 cạm bẫy
+                    </span>{" "}
+                    kẻ gian trên mạng!
+                  </h1>
+                  <p className="text-base sm:text-lg text-slate-700 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    Trải nghiệm game nhập vai phá án cực cuốn, giúp bạn nhận diện các chiêu trò lừa đảo qua mạng, nạp game ảo và tin nhắn giả mạo.
+                  </p>
+                </>
+              )}
             </div>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <button
                 onClick={handleStartTraining}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-md hover-lift flex items-center justify-center gap-2.5 cursor-pointer transition-all border-b-4 border-blue-800 active:border-b-0 active:translate-y-1"
+                className={
+                  isElderly
+                    ? "w-full sm:w-auto px-10 py-5 sm:py-6 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-2xl shadow-xl flex items-center justify-center gap-3 cursor-pointer transition-all border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 min-h-[72px]"
+                    : "w-full sm:w-auto px-8 py-4.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-lg flex items-center justify-center gap-2.5 cursor-pointer transition-all border-b-6 border-blue-800 active:border-b-0 active:translate-y-1.5 hover:scale-[1.02]"
+                }
               >
-                <span>Vào Luyện Tập Ngay</span>
-                <ArrowRight className="w-5 h-5 text-blue-100" />
+                <span>{isElderly ? "BẮT ĐẦU LUYỆN TẬP NGAY" : "🎮 BẮT ĐẦU PHÁ ÁN NGAY"}</span>
+                <ArrowRight className={isElderly ? "w-7 h-7 text-white" : "w-5 h-5 text-blue-100"} />
               </button>
 
               <button
                 onClick={() => router.push("/about")}
-                className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold text-base shadow-xs hover-lift flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className={
+                  isElderly
+                    ? "w-full sm:w-auto px-8 py-5 rounded-2xl bg-white hover:bg-amber-100 text-slate-900 border-2 border-slate-400 font-black text-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-all min-h-[72px]"
+                    : "w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 font-bold text-base shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                }
               >
-                <span>Tìm Hiểu Dự Án</span>
+                <span>{isElderly ? "Xem Hướng Dẫn" : "Tìm Hiểu Thêm"}</span>
               </button>
             </div>
 
             {/* Trust Assurance */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-slate-600 pt-3">
-              <span className="flex items-center gap-1.5 font-semibold">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                100% Miễn phí & Không yêu cầu mật khẩu ngân hàng
+            <div className={`flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-3 ${
+              isElderly ? "text-base font-bold text-slate-900" : "text-xs font-semibold text-slate-600"
+            }`}>
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className={isElderly ? "w-6 h-6 text-emerald-700" : "w-4 h-4 text-emerald-600"} />
+                100% Miễn phí & Tuyệt đối bảo mật
               </span>
-              <span className="hidden sm:inline text-slate-300">•</span>
-              <span className="flex items-center gap-1.5 font-semibold">
-                <Lock className="w-4 h-4 text-blue-600" />
-                Bảo mật dữ liệu học tập cá nhân
+              <span className="hidden sm:inline text-slate-400">•</span>
+              <span className="flex items-center gap-1.5">
+                <Lock className={isElderly ? "w-6 h-6 text-blue-700" : "w-4 h-4 text-blue-600"} />
+                Không bao giờ hỏi mật khẩu của Bác
               </span>
             </div>
           </div>
@@ -236,95 +292,167 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* 4-Step Core Response Framework - Sơ Đồ Khối (Flowchart) / SmartArt To Rõ Ràng (Size Up) */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-8">
+        {/* 4-Step Core Response Framework */}
+        <div className={`p-6 sm:p-10 rounded-3xl border shadow-sm space-y-6 sm:space-y-8 ${
+          isElderly ? "bg-white border-2 border-slate-400" : "bg-white border-slate-200"
+        }`}>
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs uppercase font-black text-blue-700 tracking-widest px-3.5 py-1 bg-blue-50 rounded-full border border-blue-200">
-              QUY TRÌNH ỨNG PHÓ CHUẨN QUỐC GIA
+            <span className={`text-xs uppercase font-black tracking-widest px-3.5 py-1 rounded-full border ${
+              isElderly 
+                ? "bg-amber-100 text-amber-950 border-amber-300 text-sm" 
+                : "bg-blue-50 text-blue-700 border-blue-200"
+            }`}>
+              {isElderly ? "BẢN GHI NHỚ DÀNH CHO BÁC" : "⚔️ BÍ KÍP 4 BƯỚC HIỆP SĨ SỐ"}
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              4 Bước Phản Xạ An Toàn Số Cho Mọi Tình Huống
+            <h2 className={
+              isElderly 
+                ? "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight"
+                : "text-2xl sm:text-4xl font-black text-slate-900 tracking-tight"
+            }>
+              {isElderly ? "4 Điều Nhất Quyết Phải Làm Khi Có Số Lạ Gọi Đến" : "4 Chiêu Thức Phản Xạ Đánh Bại Mọi Cạm Bẫy"}
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-medium">
-              Ghi nhớ quy tắc liên kết 4 bước theo trình tự trước khi thực hiện bất kỳ thao tác hay giao dịch nào
+            <p className={
+              isElderly
+                ? "text-lg sm:text-xl text-slate-800 font-bold"
+                : "text-sm sm:text-base text-slate-600 font-medium"
+            }>
+              {isElderly 
+                ? "Bác hãy ghi nhớ 4 bước này trước khi bấm vào bất cứ tin nhắn hay nghe lời ai đó qua điện thoại:"
+                : "Tuyệt chiêu nhận diện và tự bảo vệ tài khoản khi lướt mạng xã hội và chơi game:"}
             </p>
           </div>
 
           {/* Sơ đồ khối SmartArt có mũi tên liên kết từ trái sang phải */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 relative">
             {/* Step 1 */}
-            <div className="relative p-6 rounded-2xl bg-rose-50/60 border-2 border-rose-200 shadow-xs flex flex-col justify-between gap-4 group hover:border-rose-300 transition-all">
+            <div className={`relative p-5 sm:p-6 rounded-2xl border-2 shadow-xs flex flex-col justify-between gap-4 transition-all ${
+              isElderly 
+                ? "bg-rose-50 border-rose-400" 
+                : "bg-rose-50/60 border-rose-200 hover:border-rose-300"
+            }`}>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-black px-3 py-1 rounded-lg bg-rose-600 text-white shadow-xs">
+                  <span className={`font-mono font-black px-3 py-1 rounded-lg bg-rose-600 text-white shadow-xs ${
+                    isElderly ? "text-sm" : "text-xs"
+                  }`}>
                     Bước 01
                   </span>
-                  <Octagon className="w-7 h-7 text-rose-600" />
+                  <Octagon className={isElderly ? "w-8 h-8 text-rose-700" : "w-7 h-7 text-rose-600"} />
                 </div>
-                <h3 className="font-black text-slate-900 text-xl sm:text-2xl mb-1.5">DỪNG LẠI</h3>
-                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                  Không bấm vào link lạ, không chuyển tiền, không đọc mã OTP khi đang bị hối thúc.
+                <h3 className={`font-black text-slate-950 mb-1.5 ${isElderly ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                  DỪNG LẠI
+                </h3>
+                <p className={`font-semibold leading-relaxed ${isElderly ? "text-lg text-slate-950" : "text-xs sm:text-sm text-slate-700"}`}>
+                  {isElderly 
+                    ? "Không nghe theo lời giục giã. Không vội chuyển tiền. Bác hãy cúp máy ngay!" 
+                    : "Không click link lạ, không gửi mã thẻ game, không đọc mã OTP cho ai."}
                 </p>
               </div>
-              <div className="text-xs font-bold text-rose-800 bg-rose-100 border border-rose-200 p-2.5 rounded-xl text-center">
-                🛑 Bình tĩnh 30 giây
+              <div className={`font-bold p-2.5 rounded-xl text-center border ${
+                isElderly 
+                  ? "text-base font-black text-rose-950 bg-rose-200 border-rose-300" 
+                  : "text-xs text-rose-800 bg-rose-100 border-rose-200"
+              }`}>
+                🛑 Cúp máy / Dừng lại ngay
               </div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative p-6 rounded-2xl bg-amber-50/60 border-2 border-amber-200 shadow-xs flex flex-col justify-between gap-4 group hover:border-amber-300 transition-all">
+            <div className={`relative p-5 sm:p-6 rounded-2xl border-2 shadow-xs flex flex-col justify-between gap-4 transition-all ${
+              isElderly 
+                ? "bg-amber-50 border-amber-400" 
+                : "bg-amber-50/60 border-amber-200 hover:border-amber-300"
+            }`}>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-black px-3 py-1 rounded-lg bg-amber-600 text-white shadow-xs">
+                  <span className={`font-mono font-black px-3 py-1 rounded-lg bg-amber-600 text-white shadow-xs ${
+                    isElderly ? "text-sm" : "text-xs"
+                  }`}>
                     Bước 02
                   </span>
-                  <Search className="w-7 h-7 text-amber-600" />
+                  <Search className={isElderly ? "w-8 h-8 text-amber-700" : "w-7 h-7 text-amber-600"} />
                 </div>
-                <h3 className="font-black text-slate-900 text-xl sm:text-2xl mb-1.5">KIỂM TRA</h3>
-                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                  Soi kỹ tên miền (.gov.vn, .com.vn), tệp đính kèm (.apk) và số điện thoại người gọi.
+                <h3 className={`font-black text-slate-950 mb-1.5 ${isElderly ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                  KIỂM TRA
+                </h3>
+                <p className={`font-semibold leading-relaxed ${isElderly ? "text-lg text-slate-950" : "text-xs sm:text-sm text-slate-700"}`}>
+                  {isElderly 
+                    ? "Công an thật không làm việc qua điện thoại. Mọi người đòi tiền đều là kẻ gian." 
+                    : "Soi kỹ tên trang web lạ, nick giả mạo bạn bè và link tặng quà 0 đồng."}
                 </p>
               </div>
-              <div className="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 p-2.5 rounded-xl text-center">
-                🔍 Soi kỹ chi tiết lạ
+              <div className={`font-bold p-2.5 rounded-xl text-center border ${
+                isElderly 
+                  ? "text-base font-black text-amber-950 bg-amber-200 border-amber-300" 
+                  : "text-xs text-amber-800 bg-amber-100 border-amber-200"
+              }`}>
+                🔍 Kiểm tra số điện thoại lạ
               </div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative p-6 rounded-2xl bg-sky-50/60 border-2 border-sky-200 shadow-xs flex flex-col justify-between gap-4 group hover:border-sky-300 transition-all">
+            <div className={`relative p-5 sm:p-6 rounded-2xl border-2 shadow-xs flex flex-col justify-between gap-4 transition-all ${
+              isElderly 
+                ? "bg-sky-50 border-sky-400" 
+                : "bg-sky-50/60 border-sky-200 hover:border-sky-300"
+            }`}>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-black px-3 py-1 rounded-lg bg-sky-600 text-white shadow-xs">
+                  <span className={`font-mono font-black px-3 py-1 rounded-lg bg-sky-600 text-white shadow-xs ${
+                    isElderly ? "text-sm" : "text-xs"
+                  }`}>
                     Bước 03
                   </span>
-                  <PhoneForwarded className="w-7 h-7 text-sky-600" />
+                  <PhoneForwarded className={isElderly ? "w-8 h-8 text-sky-700" : "w-7 h-7 text-sky-600"} />
                 </div>
-                <h3 className="font-black text-slate-900 text-xl sm:text-2xl mb-1.5">XÁC MINH</h3>
-                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                  Gọi điện thoại thông thường cho người thân hoặc liên hệ số hotline chính thức.
+                <h3 className={`font-black text-slate-950 mb-1.5 ${isElderly ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                  HỎI Ý KIẾN
+                </h3>
+                <p className={`font-semibold leading-relaxed ${isElderly ? "text-lg text-slate-950" : "text-xs sm:text-sm text-slate-700"}`}>
+                  {isElderly 
+                    ? "Gọi điện ngay cho con cháu hoặc Công an xã/phường gần nhà để hỏi lại." 
+                    : "Hỏi ngay bố mẹ, thầy cô hoặc anh chị trước khi làm theo chỉ dẫn của người lạ."}
                 </p>
               </div>
-              <div className="text-xs font-bold text-sky-800 bg-sky-100 border border-sky-200 p-2.5 rounded-xl text-center">
-                📞 Kênh độc lập
+              <div className={`font-bold p-2.5 rounded-xl text-center border ${
+                isElderly 
+                  ? "text-base font-black text-sky-950 bg-sky-200 border-sky-300" 
+                  : "text-xs text-sky-800 bg-sky-100 border-sky-200"
+              }`}>
+                📞 Gọi cho người thân ngay
               </div>
             </div>
 
             {/* Step 4 */}
-            <div className="relative p-6 rounded-2xl bg-emerald-50/60 border-2 border-emerald-200 shadow-xs flex flex-col justify-between gap-4 group hover:border-emerald-300 transition-all">
+            <div className={`relative p-5 sm:p-6 rounded-2xl border-2 shadow-xs flex flex-col justify-between gap-4 transition-all ${
+              isElderly 
+                ? "bg-emerald-50 border-emerald-400" 
+                : "bg-emerald-50/60 border-emerald-200 hover:border-emerald-300"
+            }`}>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-black px-3 py-1 rounded-lg bg-emerald-600 text-white shadow-xs">
+                  <span className={`font-mono font-black px-3 py-1 rounded-lg bg-emerald-600 text-white shadow-xs ${
+                    isElderly ? "text-sm" : "text-xs"
+                  }`}>
                     Bước 04
                   </span>
-                  <ShieldCheck className="w-7 h-7 text-emerald-600" />
+                  <ShieldCheck className={isElderly ? "w-8 h-8 text-emerald-700" : "w-7 h-7 text-emerald-600"} />
                 </div>
-                <h3 className="font-black text-slate-900 text-xl sm:text-2xl mb-1.5">HÀNH ĐỘNG</h3>
-                <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
-                  Chỉ thực hiện giao dịch khi đã xác thực 100% người nhận là đúng sự thật.
+                <h3 className={`font-black text-slate-950 mb-1.5 ${isElderly ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                  AN TOÀN
+                </h3>
+                <p className={`font-semibold leading-relaxed ${isElderly ? "text-lg text-slate-950" : "text-xs sm:text-sm text-slate-700"}`}>
+                  {isElderly 
+                    ? "Giữ chặt tiền trong sổ tiết kiệm. Bác đã an toàn không bị kẻ xấu lừa!" 
+                    : "Chúc mừng bạn đã bảo vệ an toàn danh tính số và tài khoản của mình!"}
                 </p>
               </div>
-              <div className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 p-2.5 rounded-xl text-center">
-                🛡️ An toàn tài sản số
+              <div className={`font-bold p-2.5 rounded-xl text-center border ${
+                isElderly 
+                  ? "text-base font-black text-emerald-950 bg-emerald-200 border-emerald-300" 
+                  : "text-xs text-emerald-800 bg-emerald-100 border-emerald-200"
+              }`}>
+                🛡️ Tiền an toàn 100%
               </div>
             </div>
           </div>
@@ -333,3 +461,4 @@ export function HeroSection() {
     </section>
   );
 }
+
