@@ -4,8 +4,7 @@ import { useState } from "react";
 import { analyzeRisk } from "@/utils/riskAnalyzer";
 import { RiskAnalysisResult } from "@/types/scenario";
 import { RiskAnalysisCard } from "@/components/chat/RiskAnalysisCard";
-import { saveChatbotConsultation } from "@/lib/supabase";
-
+import { useDemographic } from "@/context/DemographicContext";
 import {
   Bot,
   Send,
@@ -13,7 +12,14 @@ import {
   User,
   ShieldCheck,
   ShieldAlert,
-  HelpCircle,
+  AlertTriangle,
+  PhoneCall,
+  Sparkles,
+  Zap,
+  Sword,
+  Search,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -24,35 +30,229 @@ interface ChatMessage {
   timestamp: string;
 }
 
-export default function ChatbotPage() {
+/**
+ * 1. ElderlyChatbotView: Dành riêng cho Người Cao Tuổi
+ * Triết lý: BỎ HOÀN TOÀN chat bong bóng rườm rà.
+ * Thay bằng Form kiểm tra an toàn 1 cột siêu to:
+ * - Ô nhập text khổng lồ.
+ * - Nút "Kiểm tra an toàn ngay" siêu to.
+ * - Kết quả trả về chữ siêu lớn: "1. NGUY CƠ GÌ? 2. CẦN LÀM GÌ TIẾP THEO?".
+ */
+function ElderlyChatbotView() {
+  const [inputText, setInputText] = useState("");
+  const [result, setResult] = useState<RiskAnalysisResult | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const sampleElderlyQueries = [
+    {
+      label: "Ví dụ: Con đang cấp cứu chuyển tiền gấp",
+      text: "Con đang bị tai nạn nguy kịch cấp cứu ở bệnh viện, mẹ chuyển gấp 50 triệu vào số tài khoản bác sĩ 104882xxxx để mổ gấp!",
+    },
+    {
+      label: "Ví dụ: Công an dọa bắt chuyển tiền tạm giữ",
+      text: "Tôi là cán bộ công an điều tra, tài khoản ông đang dính đường dây ma túy, yêu cầu chuyển 50 triệu vào tài khoản thanh tra ngay trong 30 phút.",
+    },
+    {
+      label: "Ví dụ: Lỗi VNeID bấm vào link lạ",
+      text: "Hồ sơ định danh VNeID của ông bị lỗi, hãy bấm vào link vneid-capnhat.top để tải ứng dụng cài đặt gấp.",
+    },
+    {
+      label: "Ví dụ: Trúng thưởng xe máy nộp phí",
+      text: "Chúc mừng Bác đã trúng xe máy SH 0 đồng, vui lòng chuyển khoản trước 2 triệu tiền phí vận chuyển để nhận xe.",
+    },
+  ];
+
+  const handleInspect = async () => {
+    if (!inputText.trim()) return;
+    setIsAnalyzing(true);
+    try {
+      const res = await analyzeRisk(inputText);
+      setResult(res);
+    } catch {
+      // Fallback
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleReset = () => {
+    setInputText("");
+    setResult(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-amber-50/20 text-slate-950 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-10">
+        {/* Header khung to rõ */}
+        <div className="rounded-3xl bg-amber-50 border-4 border-amber-300 p-8 sm:p-10 shadow-md text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-200 text-amber-950 font-black text-base sm:text-lg">
+            <span>👴</span>
+            <span>CÔNG CỤ KIỂM TRA DÀNH CHO BÁC</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+            KIỂM TRA AN TOÀN TIN NHẮN & SỐ LẠ
+          </h1>
+
+          <p className="text-xl sm:text-2xl text-slate-900 font-bold max-w-2xl mx-auto leading-relaxed">
+            Bác nhận được tin nhắn hay cuộc gọi nghi ngờ? Bác chỉ cần dán hoặc gõ nội dung vào ô bên dưới để hệ thống kiểm tra ngay:
+          </p>
+        </div>
+
+        {/* 4 Nút tình huống mẫu to đùng */}
+        <div className="space-y-3">
+          <span className="text-base sm:text-lg font-black text-slate-800 block">
+            Hoặc Bác bấm thử một tình huống mẫu thường gặp:
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {sampleElderlyQueries.map((item, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setInputText(item.text);
+                  setResult(null);
+                }}
+                className="p-4 rounded-2xl bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amber-500 text-left text-base sm:text-lg font-black text-slate-900 shadow-xs cursor-pointer transition-all"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Ô nhập text khổng lồ */}
+        <div className="space-y-4">
+          <div className="relative">
+            <textarea
+              rows={5}
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Bác hãy nhập nội dung tin nhắn hoặc số điện thoại lạ vào đây..."
+              className="w-full p-6 sm:p-7 rounded-3xl border-4 border-slate-400 focus:border-blue-700 bg-white text-slate-950 text-xl sm:text-2xl font-bold leading-relaxed shadow-md focus:outline-none placeholder:text-slate-400 min-h-[180px]"
+            />
+          </div>
+
+          {/* Nút bấm kiểm tra siêu to khổng lồ */}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={handleInspect}
+              disabled={!inputText.trim() || isAnalyzing}
+              className="w-full sm:flex-1 py-5 sm:py-6 rounded-3xl bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-black text-2xl sm:text-3xl shadow-xl flex items-center justify-center gap-3 cursor-pointer transition-all border-b-8 border-blue-950 active:border-b-0 active:translate-y-2 min-h-[76px]"
+            >
+              <Search className="w-8 h-8 text-white" />
+              <span>{isAnalyzing ? "Đang kiểm tra cho Bác..." : "BẤM VÀO ĐÂY ĐỂ KIỂM TRA NGAY"}</span>
+            </button>
+
+            {inputText && (
+              <button
+                onClick={handleReset}
+                className="w-full sm:w-auto px-8 py-5 rounded-3xl bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-400 font-black text-xl shadow-xs cursor-pointer min-h-[76px]"
+              >
+                Xóa làm lại
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* KẾT QUẢ TRẢ VỀ: TEXT SIÊU LỚN, GẠCH ĐẦU DÒNG RÕ RÀNG */}
+        {result && (
+          <div className="p-8 sm:p-10 rounded-3xl bg-white border-4 border-slate-400 shadow-xl space-y-8 animate-in fade-in duration-200">
+            {/* 1. NGUY CƠ GÌ? */}
+            <div className="space-y-3 pb-6 border-b-2 border-slate-200">
+              <span className="text-base uppercase font-black px-4 py-1.5 rounded-full bg-rose-100 text-rose-900 border-2 border-rose-300 inline-block">
+                1. KẾT QUẢ PHÂN TÍCH: NGUY CƠ GÌ?
+              </span>
+              <div className="flex items-center gap-3 pt-1">
+                <AlertTriangle className="w-9 h-9 text-rose-600 shrink-0" />
+                <h3 className="text-3xl sm:text-4xl font-black text-rose-800">
+                  {result.risk_level === "high" || result.risk_level === "emergency"
+                    ? "CẢNH BÁO: ĐÂY LÀ CHIÊU TRÒ LỪA ĐẢO NGUY HIỂM!"
+                    : "CẢNH BÁO: CÓ DẤU HIỆU ĐÁNG NGỜ!"}
+                </h3>
+              </div>
+              <p className="text-xl sm:text-2xl font-bold text-slate-900 leading-relaxed">
+                {result.summary}
+              </p>
+            </div>
+
+            {/* 2. CẦN LÀM GÌ TIẾP THEO? */}
+            <div className="space-y-4">
+              <span className="text-base uppercase font-black px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-950 border-2 border-emerald-300 inline-block">
+                2. BÁC CẦN LÀM GÌ TIẾP THEO?
+              </span>
+
+              <div className="space-y-3">
+                <div className="p-5 rounded-2xl bg-rose-50 border-3 border-rose-400 flex items-start gap-4">
+                  <span className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                    1
+                  </span>
+                  <p className="text-xl sm:text-2xl font-black text-rose-950">
+                    CÚP MÁY NGAY LẬP TỨC. Tuyệt đối không nghe theo lời hăm dọa hay giục giã.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-amber-50 border-3 border-amber-400 flex items-start gap-4">
+                  <span className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                    2
+                  </span>
+                  <p className="text-xl sm:text-2xl font-black text-amber-950">
+                    GỌI ĐIỆN CHO CON CHÁU hoặc Công an xã/phường gần nhà để xác minh lại sự việc.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-400 flex items-start gap-4">
+                  <span className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                    3
+                  </span>
+                  <p className="text-xl sm:text-2xl font-black text-emerald-950">
+                    GIỮ CHẶT TIỀN. Công an thật KHÔNG BAO GIỜ yêu cầu Bác chuyển tiền qua điện thoại!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 2. ChildChatbotView: Dành riêng cho Học sinh & Trẻ em
+ * Triết lý: Gaming Assistant ngầu lòi phong cách Discord / Sci-fi Pastel.
+ * - Nút "Gợi ý nhanh" dạng Chip để bấm luôn không cần gõ.
+ * - Chat feed sinh động với Mascot CyberGuard Bot.
+ * - Thưởng XP sau mỗi lần phát hiện bẫy lừa đảo.
+ */
+function ChildChatbotView() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "msg_welcome",
       sender: "bot",
-      text: "Xin chào bạn. Tôi là Trợ Lý Tư Vấn An Toàn Số. Bạn có thể dán nội dung tin nhắn, số điện thoại hoặc đường link bạn nghi ngờ vào đây để hệ thống phân tích mức độ rủi ro và khuyến nghị biện pháp xử lý an toàn.",
-      timestamp: "Hệ thống",
+      text: "Yo Hiệp Sĩ Số! Tớ là CyberGuard AI 🛡️ Bạn nhận được link lạ hay tin nhắn nghi ngờ? Ném vào đây hoặc bấm các nút chip bên dưới để tớ quét mã độc và bóc mẽ kẻ gian ngay!",
+      timestamp: "AI Guardian",
     },
   ]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  // Mẫu tình huống thử nghiệm
-  const sampleScenarios = [
+  const quickPromptChips = [
     {
-      label: "Tin nhắn yêu cầu chuyển tiền cấp cứu",
-      text: "Con đang bị tai nạn giao thông nguy kịch cấp cứu ở bệnh viện Chợ Rẫy, mẹ chuyển gấp 50 triệu vào số tài khoản bác sĩ 104882xxxx để mổ gấp!",
+      label: "🎮 Link tặng skin / robux miễn phí",
+      text: "Nhận 10.000 Robux và skin súng Free Fire 0 đồng tại https://nhanquafree-game2026.vip! Đăng nhập nick và mật khẩu ngay.",
     },
     {
-      label: "Yêu cầu cập nhật VNeID tải tệp .apk",
-      text: "Hồ sơ VNeID mức 2 bị lỗi cư trú, bấm vào https://vneid-capnhat.top/app.apk để tải bản vá trước 17h00 nếu không sẽ bị khóa mã định danh.",
+      label: "⚠️ Dọa khóa acc trong 24h",
+      text: "Cảnh báo: Tài khoản của bạn bị tố cáo gian lận. Truy cập https://hotro-khoa-acc.top để xác thực nếu không sẽ bị xóa vĩnh viễn.",
     },
     {
-      label: "Mạo danh cơ quan điều tra dọa lệnh bắt",
-      text: "Tôi là cán bộ công an C03, tài khoản ông đang dính vụ án ma túy 40 tỷ, yêu cầu chuyển tiền vào tài khoản tạm giữ để thanh tra.",
+      label: "💸 Bạn quen mượn tiền nạp thẻ",
+      text: "Ê bạn ơi, tớ đang bị kẹt chuyển tiền mua thẻ game, bạn chuyển khoản giúp tớ 200k vào số tk này tí tớ trả lại gấp đôi nhé!",
     },
     {
-      label: "Thông báo trúng thưởng nộp lệ phí nhận xe",
-      text: "Chúc mừng bạn đã trúng thưởng 01 xe máy Honda SH 150i, vui lòng chuyển khoản trước 2.500.000đ tiền phí vận chuyển để nhận xe.",
+      label: "📦 Shipper giả đòi chuyển cọc",
+      text: "Bạn có đơn hàng Shopee 0 đồng trúng thưởng xe máy, chuyển trước 500k phí ship vào stk cá nhân để bưu tá giao hàng.",
     },
   ];
 
@@ -61,227 +261,164 @@ export default function ChatbotPage() {
     if (!query.trim() || isAnalyzing) return;
 
     const userMsgId = `user_${Date.now()}`;
-    const newUserMsg: ChatMessage = {
+    const userMsg: ChatMessage = {
       id: userMsgId,
       sender: "user",
       text: query,
-      timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+      timestamp: "Bạn",
     };
 
-    setMessages((prev) => [...prev, newUserMsg]);
-    setInput("");
+    setMessages((prev) => [...prev, userMsg]);
+    if (!textToSend) setInput("");
     setIsAnalyzing(true);
 
     try {
-      const result = await analyzeRisk(query);
-      const botMsgId = `bot_${Date.now()}`;
-      const newBotMsg: ChatMessage = {
-        id: botMsgId,
+      const analysis = await analyzeRisk(query);
+      const botMsg: ChatMessage = {
+        id: `bot_${Date.now()}`,
         sender: "bot",
-        text: `Hệ thống đã hoàn tất phân tích đối chiếu với ${result.detected_red_flags.length} dấu hiệu được ghi nhận:`,
-        analysis: result,
-        timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+        text: `🛡️ Đã quét xong dữ liệu! Mức độ rủi ro: ${analysis.risk_level.toUpperCase()}. +20 XP Khám Phá!`,
+        analysis,
+        timestamp: "CyberGuard Bot",
       };
-
-      setMessages((prev) => [...prev, newBotMsg]);
-
-      // Lưu kết quả tư vấn lên Supabase Cloud
-      saveChatbotConsultation({
-        inputText: query,
-        riskLevel: result.risk_level,
-        riskScore: result.risk_score,
-        analysisSummary: result.summary,
-        detectedFlags: result.detected_red_flags,
-      });
-    } catch (err) {
-      console.error("Lỗi khi phân tích rủi ro:", err);
+      setMessages((prev) => [...prev, botMsg]);
+    } catch {
+      // Fallback
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const handleResetChat = () => {
-    setMessages([
-      {
-        id: "msg_welcome",
-        sender: "bot",
-        text: "Đoạn hội thoại đã được làm mới. Bạn có thể nhập tình huống cần phân tích.",
-        timestamp: "Hệ thống",
-      },
-    ]);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 text-white py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Banner Header - Human, Calm & Professional */}
-        <div className="p-6 rounded-3xl bg-white border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-xs">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-6 h-6" />
+        {/* Header Gaming */}
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-900 to-sky-900 border-2 border-sky-400 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="w-14 h-14 rounded-2xl bg-sky-500/30 border-2 border-sky-300 flex items-center justify-center text-3xl shadow-inner shrink-0 animate-bounce">
+              🤖
             </div>
-
             <div>
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                  Tư Vấn An Toàn Số
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase text-amber-300 bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/40">
+                  AI ASSISTANT V2.0
                 </span>
-                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  Đối chiếu 39 quy tắc nhận diện
+                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Trực Tuyến
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
-                Kiểm Tra Tin Nhắn & Đường Link Khả Nghi
+              <h1 className="text-2xl sm:text-3xl font-black text-white mt-0.5">
+                Trợ Lý Soi Bẫy Lừa Đảo CyberGuard
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
-                Nhập nội dung tin nhắn, số điện thoại hoặc đường link để nhận khuyến nghị phòng tránh an toàn.
-              </p>
             </div>
           </div>
 
-          <button
-            onClick={handleResetChat}
-            className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-200 shrink-0"
-          >
-            <RotateCcw className="w-3.5 h-3.5" /> Làm mới
-          </button>
+          <div className="flex items-center gap-2 bg-black/40 px-3.5 py-2 rounded-2xl border border-white/20">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-black text-amber-300">+20 XP mỗi lần phát hiện</span>
+          </div>
         </div>
 
-
-        {/* STATIC PRIVACY WARNING BANNER */}
-        <div className="p-3.5 rounded-2xl bg-slate-100 border border-slate-300 text-slate-700 flex items-center gap-2.5 text-xs font-semibold shadow-xs">
-          <ShieldAlert className="w-4 h-4 text-slate-600 shrink-0" />
-          <span>
-            Cảnh báo an toàn: Hệ thống tuyệt đối không yêu cầu người dùng cung cấp mật khẩu, mã OTP, số thẻ ngân hàng hoặc dữ liệu cá nhân cho chatbot.
-          </span>
-        </div>
-
-        {/* Chat History Box */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 min-h-[460px] max-h-[680px] overflow-y-auto space-y-5 shadow-xs">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex gap-3.5 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-            >
-              {/* Bot Avatar */}
-              {msg.sender === "bot" && (
-                <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 mt-1 text-slate-700">
-                  <Bot className="w-5 h-5" />
-                </div>
-              )}
-
-              {/* Message Bubble Container */}
-              <div
-                className={`max-w-[90%] sm:max-w-[85%] space-y-3 ${
-                  msg.sender === "user" ? "items-end" : "items-start"
-                }`}
-              >
-                {/* Text Bubble */}
-                <div
-                  className={`p-4 rounded-2xl text-sm leading-relaxed ${
-                    msg.sender === "user"
-                      ? "bg-sky-600 text-white rounded-tr-sm ml-auto font-medium shadow-xs"
-                      : "bg-slate-50 border border-slate-200 text-slate-900 rounded-tl-sm font-medium"
-                  }`}
-                >
-                  <p>{msg.text}</p>
-                  <div
-                    className={`text-[11px] mt-1.5 ${
-                      msg.sender === "user" ? "text-right text-sky-100" : "text-left text-slate-400"
-                    }`}
-                  >
-                    {msg.timestamp}
-                  </div>
-                </div>
-
-                {/* If bot response includes analysis card */}
-                {msg.analysis && (
-                  <div className="w-full">
-                    <RiskAnalysisCard analysis={msg.analysis} />
-                  </div>
-                )}
-              </div>
-
-              {/* User Avatar */}
-              {msg.sender === "user" && (
-                <div className="w-9 h-9 rounded-xl bg-slate-200 flex items-center justify-center shrink-0 mt-1 text-slate-700">
-                  <User className="w-5 h-5" />
-                </div>
-              )}
-            </div>
-          ))}
-
-          {isAnalyzing && (
-            <div className="flex gap-3 items-center p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium">
-              <div className="w-8 h-8 rounded-xl bg-sky-100 flex items-center justify-center text-sky-700 shrink-0">
-                <Bot className="w-4 h-4 animate-spin" />
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2 text-slate-900 font-bold">
-                  <span>Hệ thống đang đối chiếu dữ liệu nhận diện rủi ro...</span>
-                  <span className="flex gap-1 items-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 animate-bounce" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 animate-bounce [animation-delay:0.15s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-600 animate-bounce [animation-delay:0.3s]" />
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500">
-                  Kiểm tra tính xác thực, đầu số gửi tin và các dấu hiệu bất thường
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-
-        {/* Quick Sample Prompts Chips */}
+        {/* Quick Prompt Chips (Bấm luôn không cần gõ) */}
         <div className="space-y-2">
-          <div className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Tình huống kiểm thử nhanh:</span>
-          </div>
+          <span className="text-xs font-black uppercase text-sky-300 tracking-wider flex items-center gap-1.5">
+            <Zap className="w-4 h-4 text-amber-400" />
+            <span>Gợi ý tình huống nhanh (Click để thử ngay):</span>
+          </span>
           <div className="flex flex-wrap gap-2">
-            {sampleScenarios.map((sample, idx) => (
+            {quickPromptChips.map((chip, idx) => (
               <button
                 key={idx}
-                onClick={() => handleSend(sample.text)}
-                className="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 transition-all cursor-pointer shadow-xs"
+                onClick={() => handleSend(chip.text)}
+                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-sky-400 text-xs font-bold text-sky-200 hover:text-white transition-all cursor-pointer shadow-xs hover:scale-102"
               >
-                {sample.label}
+                {chip.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Input Form */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSend();
-          }}
-          className="relative flex items-center"
-        >
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Dán nội dung tin nhắn, số điện thoại lạ hoặc đường link bạn nghi ngờ vào đây..."
-            className="w-full pl-4 pr-28 py-3.5 rounded-xl bg-white border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-200 outline-none text-sm text-slate-900 placeholder:text-slate-400 font-medium shadow-xs transition-all"
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isAnalyzing}
-            className={`absolute right-2 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
-              input.trim() && !isAnalyzing
-                ? "bg-sky-600 hover:bg-sky-700 text-white shadow-xs"
-                : "bg-slate-200 text-slate-400 cursor-not-allowed"
-            }`}
-          >
-            <span>Phân tích</span>
-            <Send className="w-3.5 h-3.5" />
-          </button>
-        </form>
+        {/* Chat Conversation Box (Discord / Game Style) */}
+        <div className="rounded-3xl bg-slate-900/90 border-2 border-white/20 shadow-2xl overflow-hidden flex flex-col h-[520px]">
+          {/* Messages Feed */}
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+              >
+                {msg.sender === "bot" && (
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-lg shrink-0 shadow-md">
+                    🛡️
+                  </div>
+                )}
+
+                <div
+                  className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 space-y-3 ${
+                    msg.sender === "user"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md"
+                      : "bg-white/10 backdrop-blur-md border border-white/20 text-slate-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 pb-1 border-b border-white/10">
+                    <span>{msg.timestamp}</span>
+                  </div>
+
+                  <p className="text-sm leading-relaxed">{msg.text}</p>
+
+                  {/* Hiển thị thẻ phân tích rủi ro nếu có */}
+                  {msg.analysis && (
+                    <div className="pt-2">
+                      <RiskAnalysisCard analysis={msg.analysis} />
+                    </div>
+                  )}
+                </div>
+
+                {msg.sender === "user" && (
+                  <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black text-xs shrink-0 shadow-md">
+                    BẠN
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Input & 3D Send Button Bar */}
+          <div className="p-3 sm:p-4 bg-slate-950/80 border-t border-white/15 flex items-center gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              placeholder="Dán link lạ hoặc tin nhắn đáng ngờ vào đây để CyberGuard soi..."
+              className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-400"
+            />
+
+            <button
+              onClick={() => handleSend()}
+              disabled={!input.trim() || isAnalyzing}
+              className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-white font-black text-xs sm:text-sm shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <Send className="w-4 h-4 text-white" />
+              <span className="hidden sm:inline">Quét Ngay</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+/**
+ * Main ChatbotPage
+ * Render ElderlyChatbotView hoặc ChildChatbotView dựa trên userRole từ Context
+ */
+export default function ChatbotPage() {
+  const { userRole } = useDemographic();
+
+  if (userRole === "elderly") {
+    return <ElderlyChatbotView />;
+  }
+
+  return <ChildChatbotView />;
 }
