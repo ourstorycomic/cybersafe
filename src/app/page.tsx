@@ -18,8 +18,8 @@ import { PhoneCall, ShieldAlert, ArrowRight, Search, HeartHandshake } from "luci
  */
 function ElderlyHomeView() {
   return (
-    <div className="flex flex-col min-h-screen bg-amber-50/20 text-slate-950">
-      {/* 1. Hero khổng lồ: Slogan & 3 Quy tắc cốt lõi */}
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+      {/* 1. Hero: Slogan & 3 Quy tắc an toàn cốt lõi */}
       <HeroSection />
 
       {/* 2. Giới thiệu Mục tiêu, Đối tượng & 4 Chức năng nền tảng */}
@@ -34,81 +34,85 @@ function ElderlyHomeView() {
       {/* 5. Theo dõi năng lực, điểm số & các kỹ năng cần lưu ý */}
       <SkillProgressDashboard />
 
-      {/* 6. Đường dây nóng & Lời dặn an toàn dành cho Bác */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white border-t-4 border-amber-300">
-        <div className="max-w-4xl mx-auto space-y-10">
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-rose-100 text-rose-900 font-black text-base sm:text-lg border-2 border-rose-300">
-              <PhoneCall className="w-5 h-5 text-rose-600" />
-              <span>ĐƯỜNG DÂY NÓNG CỨU HỘ KHẨN CẤP</span>
+      {/* 6. Đường dây nóng & Kênh cứu hộ khẩn cấp */}
+      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-50 text-rose-800 font-bold text-xs sm:text-sm border border-rose-200">
+              <PhoneCall className="w-4 h-4 text-rose-600" />
+              <span>ĐƯỜNG DÂY NÓNG HỖ TRỢ KHẨN CẤP</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight">
-              KHI NGHI NGỜ BỊ LỪA ĐẢO, BÁC HÃY GỌI NGAY:
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+              Khi nghi ngờ bị lừa đảo, hãy liên hệ ngay:
             </h2>
-            <p className="text-xl sm:text-2xl text-slate-900 font-bold leading-relaxed">
-              Các số điện thoại miễn phí, hoạt động 24/7 của cơ quan chức năng:
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+              Các số điện thoại miễn phí cước gọi, hoạt động 24/7 của các cơ quan chức năng:
             </p>
           </div>
 
-          {/* Hotline Cards 1 cột to rõ */}
+          {/* Hotline Cards */}
           <div className="space-y-4">
-            <div className="p-6 sm:p-8 rounded-3xl bg-rose-50 border-4 border-rose-400 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
-              <div className="flex items-center gap-5 text-center sm:text-left">
-                <span className="text-5xl">🚨</span>
+            <div className="p-5 sm:p-6 rounded-2xl bg-white border border-rose-200 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs">
+              <div className="flex items-center gap-4 text-center sm:text-left">
+                <div className="w-12 h-12 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-6 h-6" />
+                </div>
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-rose-900">
-                    CÔNG AN TOÀN QUỐC
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                    Tổng đài Cảnh sát phản ứng nhanh 113
                   </h3>
-                  <p className="text-lg sm:text-xl font-bold text-slate-900 mt-1">
-                    Báo án khẩn cấp, tin báo tội phạm & tố giác lừa đảo chiếm đoạt tài sản
+                  <p className="text-sm sm:text-base text-slate-600 mt-0.5">
+                    Tiếp nhận tin báo tội phạm, tố giác hành vi lừa đảo chiếm đoạt tài sản khẩn cấp.
                   </p>
                 </div>
               </div>
               <a
                 href="tel:113"
-                className="px-8 sm:px-10 py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-2xl shadow-md border-b-4 border-rose-900 active:border-b-0 active:translate-y-1 transition-all whitespace-nowrap"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-bold text-base shadow-sm border border-rose-900 active:scale-98 transition-all text-center shrink-0"
               >
-                GỌI 113
+                Gọi 113
               </a>
             </div>
 
-            <div className="p-6 sm:p-8 rounded-3xl bg-blue-50 border-4 border-blue-400 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
-              <div className="flex items-center gap-5 text-center sm:text-left">
-                <span className="text-5xl">📞</span>
+            <div className="p-5 sm:p-6 rounded-2xl bg-white border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs">
+              <div className="flex items-center gap-4 text-center sm:text-left">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                  <PhoneCall className="w-6 h-6" />
+                </div>
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-blue-900">
-                    TỔNG ĐÀI TIẾP NHẬN PHẢN ÁNH CUỘC GỌI RÁC & LỪA ĐẢO
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                    Tổng đài Tiếp nhận phản ánh cuộc gọi & tin nhắn rác 156
                   </h3>
-                  <p className="text-lg sm:text-xl font-bold text-slate-900 mt-1">
+                  <p className="text-sm sm:text-base text-slate-600 mt-0.5">
                     Bộ Thông tin & Truyền thông (Cục An toàn thông tin Quốc gia)
                   </p>
                 </div>
               </div>
               <a
                 href="tel:156"
-                className="px-8 sm:px-10 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-2xl shadow-md border-b-4 border-blue-900 active:border-b-0 active:translate-y-1 transition-all whitespace-nowrap"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-base shadow-sm border border-blue-900 active:scale-98 transition-all text-center shrink-0"
               >
-                GỌI 156
+                Gọi 156
               </a>
             </div>
           </div>
 
-          {/* Hai nút hành động to rõ ràng */}
-          <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* Hai nút hành động chuẩn giao diện */}
+          <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/play"
-              className="p-6 sm:p-7 rounded-3xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xl sm:text-2xl text-center shadow-lg border-b-6 border-blue-950 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3"
+              className="p-4 sm:p-5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-base sm:text-lg text-center shadow-sm border border-blue-900 transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>VÀO PHÒNG TẬP LUYỆN</span>
-              <ArrowRight className="w-6 h-6" />
+              <span>Vào Phòng Luyện Tập</span>
+              <ArrowRight className="w-5 h-5" />
             </Link>
 
             <Link
               href="/chatbot"
-              className="p-6 sm:p-7 rounded-3xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xl sm:text-2xl text-center shadow-lg border-b-6 border-amber-900 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3"
+              className="p-4 sm:p-5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-base sm:text-lg text-center border border-slate-300 transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Search className="w-6 h-6" />
-              <span>KIỂM TRA TIN NHẮN LẠ</span>
+              <Search className="w-5 h-5 text-slate-700" />
+              <span>Kiểm Tra Tin Nhắn Nghi Ngờ</span>
             </Link>
           </div>
         </div>

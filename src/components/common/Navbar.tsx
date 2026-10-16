@@ -27,61 +27,91 @@ import { useDemographic } from "@/context/DemographicContext";
  * Ẩn sạch mọi menu con rườm rà, thuật ngữ công nghệ, không gian thoáng đãng.
  */
 function ElderlyNavbar() {
+  const pathname = usePathname();
   const { user, profile, openAuthModal, signOut } = useAuth();
   const { setUserRole } = useDemographic();
 
+  const elderlyLinks = [
+    { href: "/", label: "Trang Chủ" },
+    { href: "/play", label: "Phòng Luyện Tập" },
+    { href: "/chatbot", label: "Kiểm Tra Tin Nhắn" },
+    { href: "/guide", label: "Cẩm Nang An Toàn" },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b-4 border-amber-300 bg-amber-50/95 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 sm:h-24">
-          {/* Logo khổng lồ cho người lớn tuổi */}
-          <Link href="/" className="flex items-center gap-3 sm:gap-4 shrink-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-md">
-              <Shield className="w-7 h-7 sm:w-8 sm:h-8" />
+        <div className="flex items-center justify-between h-18 sm:h-20">
+          {/* Logo trang trọng cho người lớn tuổi */}
+          <Link href="/" className="flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-xs">
+              <Shield className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-black text-2xl sm:text-3xl text-slate-950 tracking-tight flex items-center gap-1.5">
-                CyberSafe <span className="text-amber-800">Quest</span>
+              <span className="font-bold text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-1.5">
+                CyberSafe <span className="text-blue-700">Quest</span>
               </span>
-              <span className="text-sm sm:text-base text-amber-950 font-black block -mt-1">
-                Chế độ Dễ Dùng Cho Bác
+              <span className="text-xs text-slate-500 font-semibold block -mt-0.5">
+                Giao diện Dễ đọc & Trợ năng
               </span>
             </div>
           </Link>
 
-          {/* Cụm chức năng tối giản: Đổi chế độ + Đăng xuất / Đăng nhập to rõ */}
-          <div className="flex items-center gap-3 sm:gap-5">
-            {/* Nút chuyển sang chế độ Trẻ em nếu cần */}
+          {/* Menu điều hướng rõ ràng cho người lớn tuổi */}
+          <nav className="hidden md:flex items-center gap-2">
+            {elderlyLinks.map((link) => {
+              const isActive =
+                pathname === link.href ||
+                (link.href !== "/" && pathname?.startsWith(link.href));
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+                    isActive
+                      ? "bg-blue-50 text-blue-800 border border-blue-200"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-slate-100"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Cụm chức năng: Đổi chế độ + Đăng nhập/Đăng xuất trang nhã */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            {/* Nút chuyển sang chế độ Trẻ em */}
             <button
               type="button"
               onClick={() => setUserRole("child")}
-              className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 text-xs sm:text-sm font-black shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
-              title="Bấm vào đây để chuyển sang giao diện Trẻ em / Học sinh"
+              className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs sm:text-sm font-bold cursor-pointer transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
+              title="Chuyển sang giao diện Trẻ em / Học sinh"
             >
               <span>🧒</span>
-              <span className="hidden sm:inline">Chuyển sang</span> <span>Trẻ em</span>
+              <span>Giao diện Trẻ em</span>
             </button>
 
             {/* Auth Button */}
             {user ? (
-              <div className="flex items-center gap-3">
-                <span className="hidden md:inline text-base font-black text-slate-950 bg-amber-100/90 px-3.5 py-2 rounded-xl border border-amber-300">
+              <div className="flex items-center gap-2">
+                <span className="hidden lg:inline text-sm font-bold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                   {profile?.display_name || user.email?.split("@")[0] || "Học Viên"}
                 </span>
                 <button
                   onClick={() => signOut()}
-                  className="px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-base sm:text-lg shadow-md cursor-pointer transition-all flex items-center gap-2 border-b-4 border-rose-900 active:border-b-0 active:translate-y-1"
+                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm shadow-xs cursor-pointer transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
                 >
-                  <LogOut className="w-5 h-5 text-white" />
+                  <LogOut className="w-4 h-4 text-white" />
                   <span>Đăng Xuất</span>
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => openAuthModal("signin")}
-                className="px-6 py-3.5 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-lg sm:text-xl shadow-lg cursor-pointer transition-all flex items-center gap-2 border-b-4 border-blue-950 active:border-b-0 active:translate-y-1"
+                className="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap shrink-0"
               >
-                <LogIn className="w-6 h-6 text-white" />
+                <LogIn className="w-4 h-4 text-white" />
                 <span>Đăng Nhập</span>
               </button>
             )}

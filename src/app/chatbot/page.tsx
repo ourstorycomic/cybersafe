@@ -81,30 +81,30 @@ function ElderlyChatbotView() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50/20 text-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header khung to rõ */}
-        <div className="rounded-3xl bg-amber-50 border-4 border-amber-300 p-8 sm:p-10 shadow-md text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-200 text-amber-950 font-black text-base sm:text-lg">
-            <span>👴</span>
-            <span>CÔNG CỤ KIỂM TRA DÀNH CHO BÁC</span>
+    <div className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Header khung trang nhã, tương phản cao */}
+        <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-xs text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-blue-900 font-bold text-xs sm:text-sm border border-blue-200">
+            <ShieldCheck className="w-4 h-4 text-blue-700" />
+            <span>CHUYÊN MỤC KIỂM TRA AN TOÀN SỐ</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
-            KIỂM TRA AN TOÀN TIN NHẮN & SỐ LẠ
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
+            Kiểm Tra An Toàn Tin Nhắn & Số Điện Thoại Lạ
           </h1>
 
-          <p className="text-xl sm:text-2xl text-slate-900 font-bold max-w-2xl mx-auto leading-relaxed">
-            Bác nhận được tin nhắn hay cuộc gọi nghi ngờ? Bác chỉ cần dán hoặc gõ nội dung vào ô bên dưới để hệ thống kiểm tra ngay:
+          <p className="text-base sm:text-lg text-slate-600 font-normal max-w-2xl mx-auto leading-relaxed">
+            Khi nhận được tin nhắn hay cuộc gọi nghi vấn, quý độc giả hãy dán hoặc gõ nội dung vào ô bên dưới để trợ lý phân tích và hướng dẫn các bước xử lý an toàn:
           </p>
         </div>
 
-        {/* 4 Nút tình huống mẫu to đùng */}
-        <div className="space-y-3">
-          <span className="text-base sm:text-lg font-black text-slate-800 block">
-            Hoặc Bác bấm thử một tình huống mẫu thường gặp:
+        {/* 4 Nút tình huống mẫu rõ ràng */}
+        <div className="space-y-2.5">
+          <span className="text-sm sm:text-base font-bold text-slate-800 block">
+            Hoặc chọn một tình huống mẫu thường gặp để xem cách phân tích:
           </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {sampleElderlyQueries.map((item, idx) => (
               <button
                 key={idx}
@@ -113,7 +113,7 @@ function ElderlyChatbotView() {
                   setInputText(item.text);
                   setResult(null);
                 }}
-                className="p-4 rounded-2xl bg-white hover:bg-amber-100 border-2 border-slate-300 hover:border-amber-500 text-left text-base sm:text-lg font-black text-slate-900 shadow-xs cursor-pointer transition-all"
+                className="p-3.5 rounded-xl bg-white hover:bg-blue-50/50 border border-slate-200 hover:border-blue-500 text-left text-sm sm:text-base font-medium text-slate-800 shadow-2xs cursor-pointer transition-colors"
               >
                 {item.label}
               </button>
@@ -121,33 +121,33 @@ function ElderlyChatbotView() {
           </div>
         </div>
 
-        {/* Ô nhập text khổng lồ */}
+        {/* Ô nhập văn bản */}
         <div className="space-y-4">
           <div className="relative">
             <textarea
-              rows={5}
+              rows={4}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Bác hãy nhập nội dung tin nhắn hoặc số điện thoại lạ vào đây..."
-              className="w-full p-6 sm:p-7 rounded-3xl border-4 border-slate-400 focus:border-blue-700 bg-white text-slate-950 text-xl sm:text-2xl font-bold leading-relaxed shadow-md focus:outline-none placeholder:text-slate-400 min-h-[180px]"
+              placeholder="Nhập hoặc dán nội dung tin nhắn, lời thoại cuộc gọi lạ vào đây..."
+              className="w-full p-4 sm:p-5 rounded-xl border border-slate-300 focus:border-blue-700 bg-white text-slate-900 text-base sm:text-lg font-normal leading-relaxed shadow-2xs focus:outline-none placeholder:text-slate-400 min-h-[140px]"
             />
           </div>
 
-          {/* Nút bấm kiểm tra siêu to khổng lồ */}
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          {/* Nút bấm kiểm tra chuẩn giao diện */}
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             <button
               onClick={handleInspect}
               disabled={!inputText.trim() || isAnalyzing}
-              className="w-full sm:flex-1 py-5 sm:py-6 rounded-3xl bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-black text-2xl sm:text-3xl shadow-xl flex items-center justify-center gap-3 cursor-pointer transition-all border-b-8 border-blue-950 active:border-b-0 active:translate-y-2 min-h-[76px]"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 disabled:opacity-50 text-white font-bold text-base sm:text-lg shadow-sm flex items-center justify-center gap-2.5 cursor-pointer transition-colors border border-blue-900 active:scale-98"
             >
-              <Search className="w-8 h-8 text-white" />
-              <span>{isAnalyzing ? "Đang kiểm tra cho Bác..." : "BẤM VÀO ĐÂY ĐỂ KIỂM TRA NGAY"}</span>
+              <Search className="w-5 h-5 text-white" />
+              <span>{isAnalyzing ? "Đang phân tích dữ liệu..." : "Kiểm tra độ an toàn"}</span>
             </button>
 
             {inputText && (
               <button
                 onClick={handleReset}
-                className="w-full sm:w-auto px-8 py-5 rounded-3xl bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-400 font-black text-xl shadow-xs cursor-pointer min-h-[76px]"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-base transition-colors cursor-pointer"
               >
                 Xóa làm lại
               </button>
@@ -155,58 +155,58 @@ function ElderlyChatbotView() {
           </div>
         </div>
 
-        {/* KẾT QUẢ TRẢ VỀ: TEXT SIÊU LỚN, GẠCH ĐẦU DÒNG RÕ RÀNG */}
+        {/* KẾT QUẢ TRẢ VỀ: RÕ RÀNG, CHUẨN TỶ LỆ, DỄ TIẾP CẬN */}
         {result && (
-          <div className="p-8 sm:p-10 rounded-3xl bg-white border-4 border-slate-400 shadow-xl space-y-8 animate-in fade-in duration-200">
+          <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
             {/* 1. NGUY CƠ GÌ? */}
-            <div className="space-y-3 pb-6 border-b-2 border-slate-200">
-              <span className="text-base uppercase font-black px-4 py-1.5 rounded-full bg-rose-100 text-rose-900 border-2 border-rose-300 inline-block">
+            <div className="space-y-2.5 pb-5 border-b border-slate-200">
+              <span className="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200 inline-block">
                 1. KẾT QUẢ PHÂN TÍCH: NGUY CƠ GÌ?
               </span>
-              <div className="flex items-center gap-3 pt-1">
-                <AlertTriangle className="w-9 h-9 text-rose-600 shrink-0" />
-                <h3 className="text-3xl sm:text-4xl font-black text-rose-800">
+              <div className="flex items-center gap-2.5 pt-1">
+                <AlertTriangle className="w-6 h-6 text-rose-600 shrink-0" />
+                <h3 className="text-xl sm:text-2xl font-bold text-rose-800">
                   {result.risk_level === "high" || result.risk_level === "emergency"
-                    ? "CẢNH BÁO: ĐÂY LÀ CHIÊU TRÒ LỪA ĐẢO NGUY HIỂM!"
-                    : "CẢNH BÁO: CÓ DẤU HIỆU ĐÁNG NGỜ!"}
+                    ? "Cảnh báo: Đây là chiêu trò lừa đảo nguy hiểm!"
+                    : "Cảnh báo: Có dấu hiệu đáng ngờ!"}
                 </h3>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-slate-900 leading-relaxed">
+              <p className="text-base sm:text-lg font-normal text-slate-800 leading-relaxed">
                 {result.summary}
               </p>
             </div>
 
             {/* 2. CẦN LÀM GÌ TIẾP THEO? */}
-            <div className="space-y-4">
-              <span className="text-base uppercase font-black px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-950 border-2 border-emerald-300 inline-block">
-                2. BÁC CẦN LÀM GÌ TIẾP THEO?
+            <div className="space-y-3.5">
+              <span className="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 inline-block">
+                2. HƯỚNG DẪN ỨNG PHÓ AN TOÀN
               </span>
 
               <div className="space-y-3">
-                <div className="p-5 rounded-2xl bg-rose-50 border-3 border-rose-400 flex items-start gap-4">
-                  <span className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200 flex items-start gap-3.5">
+                  <span className="w-8 h-8 rounded-lg bg-rose-700 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">
                     1
                   </span>
-                  <p className="text-xl sm:text-2xl font-black text-rose-950">
-                    CÚP MÁY NGAY LẬP TỨC. Tuyệt đối không nghe theo lời hăm dọa hay giục giã.
+                  <p className="text-base sm:text-lg font-semibold text-rose-950 leading-relaxed">
+                    Dừng cuộc gọi và không làm theo. Giữ bình tĩnh, tuyệt đối không chuyển tiền hoặc cung cấp mã OTP theo lời giục giã hay hăm dọa.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-amber-50 border-3 border-amber-400 flex items-start gap-4">
-                  <span className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 flex items-start gap-3.5">
+                  <span className="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">
                     2
                   </span>
-                  <p className="text-xl sm:text-2xl font-black text-amber-950">
-                    GỌI ĐIỆN CHO CON CHÁU hoặc Công an xã/phường gần nhà để xác minh lại sự việc.
+                  <p className="text-base sm:text-lg font-semibold text-amber-950 leading-relaxed">
+                    Chủ động liên hệ người thân hoặc cơ quan chức năng địa phương để kiểm chứng lại tính xác thực của sự việc.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-400 flex items-start gap-4">
-                  <span className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl shrink-0 mt-0.5">
+                <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-start gap-3.5">
+                  <span className="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-base shrink-0 mt-0.5">
                     3
                   </span>
-                  <p className="text-xl sm:text-2xl font-black text-emerald-950">
-                    GIỮ CHẶT TIỀN. Công an thật KHÔNG BAO GIỜ yêu cầu Bác chuyển tiền qua điện thoại!
+                  <p className="text-base sm:text-lg font-semibold text-emerald-950 leading-relaxed">
+                    Nguyên tắc bất di bất dịch: Cơ quan công an và viện kiểm sát KHÔNG BAO GIỜ yêu cầu chuyển tiền hay làm việc qua điện thoại.
                   </p>
                 </div>
               </div>

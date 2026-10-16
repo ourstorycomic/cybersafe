@@ -8,21 +8,21 @@ import { UserRole } from "@/context/DemographicContext";
 
 export function getDemographicHeading(role: UserRole, customExtra: string = ""): string {
   if (role === "elderly") {
-    return `text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-snug ${customExtra}`;
+    return `text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-snug ${customExtra}`;
   }
   return `text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight ${customExtra}`;
 }
 
 export function getDemographicBody(role: UserRole, customExtra: string = ""): string {
   if (role === "elderly") {
-    return `text-lg sm:text-xl font-bold text-slate-950 leading-relaxed ${customExtra}`;
+    return `text-base sm:text-lg font-medium text-slate-800 leading-relaxed ${customExtra}`;
   }
   return `text-sm sm:text-base font-semibold text-slate-800 leading-normal ${customExtra}`;
 }
 
 export function getDemographicSubText(role: UserRole, customExtra: string = ""): string {
   if (role === "elderly") {
-    return `text-base sm:text-lg font-bold text-slate-800 leading-normal ${customExtra}`;
+    return `text-sm sm:text-base font-normal text-slate-600 leading-normal ${customExtra}`;
   }
   return `text-xs sm:text-sm font-medium text-slate-600 leading-normal ${customExtra}`;
 }
@@ -33,12 +33,12 @@ export function getDemographicButton(
 ): string {
   if (role === "elderly") {
     if (variant === "primary") {
-      return "py-5 sm:py-6 px-8 sm:px-10 rounded-3xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-black text-xl sm:text-2xl shadow-xl border-3 border-blue-950 flex items-center justify-center gap-3 cursor-pointer hover:scale-[1.01] transition-all";
+      return "py-3.5 px-6 sm:px-8 rounded-xl bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-bold text-base sm:text-lg shadow-sm border border-blue-900 flex items-center justify-center gap-2.5 cursor-pointer transition-colors";
     }
     if (variant === "secondary") {
-      return "py-4 sm:py-5 px-6 sm:px-8 rounded-3xl bg-amber-100 hover:bg-amber-200 text-slate-950 font-black text-lg sm:text-xl border-3 border-amber-400 flex items-center justify-center gap-2.5 cursor-pointer transition-colors";
+      return "py-3 px-6 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-base border border-slate-300 flex items-center justify-center gap-2 cursor-pointer transition-colors";
     }
-    return "py-5 px-8 rounded-3xl bg-rose-700 hover:bg-rose-800 text-white font-black text-xl border-3 border-rose-950 flex items-center justify-center gap-3 cursor-pointer";
+    return "py-3.5 px-6 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-bold text-base border border-rose-900 flex items-center justify-center gap-2 cursor-pointer transition-colors";
   }
 
   // Child: 3D chunky game buttons with playful active bounce
@@ -53,20 +53,20 @@ export function getDemographicButton(
 
 export function getDemographicCard(role: UserRole, customExtra: string = ""): string {
   if (role === "elderly") {
-    return `rounded-3xl bg-white border-3 border-slate-400 p-6 sm:p-8 shadow-md text-slate-950 ${customExtra}`;
+    return `rounded-2xl bg-white border border-slate-300 p-6 sm:p-7 shadow-xs text-slate-900 ${customExtra}`;
   }
   return `rounded-3xl bg-white border-2 border-sky-200 p-5 sm:p-6 shadow-sm border-b-4 border-sky-300 text-slate-900 ${customExtra}`;
 }
 
 export function getDemographicPageBackground(role: UserRole): string {
   if (role === "elderly") {
-    return "bg-amber-50/30 text-slate-950";
+    return "bg-slate-50 text-slate-900";
   }
   return "bg-gradient-to-b from-sky-50/50 via-white to-blue-50/40 text-slate-900";
 }
 
 /**
- * Trợ lý Mascot hội thoại cho Trẻ Em vs Hướng dẫn lớn cho Người Cao Tuổi
+ * Trợ lý Mascot hội thoại cho Trẻ Em vs Hướng dẫn chuyên nghiệp cho Người Lớn Tuổi
  */
 export function getDemographicMascotMessage(
   role: UserRole,
@@ -76,21 +76,21 @@ export function getDemographicMascotMessage(
     switch (context) {
       case "quiz_prompt":
         return {
-          avatarEmoji: "👵",
-          title: "HƯỚNG DẪN DÀNH CHO BÁC",
-          message: "Bác hãy nhìn kỹ tình huống bên trái, sau đó chọn 1 ô chữ to bên phải mà Bác thấy an toàn nhất.",
+          avatarEmoji: "🛡️",
+          title: "HƯỚNG DẪN XỬ LÝ TÌNH HUỐNG",
+          message: "Quan sát kỹ các thông tin ở phần mô phỏng bên trái và chọn phương án xử lý bảo đảm an toàn nhất ở bên phải.",
         };
       case "danger_warning":
         return {
           avatarEmoji: "⚠️",
-          title: "CẢNH BÁO NGUY HIỂM",
+          title: "CẢNH BÁO AN TOÀN",
           message: "Tuyệt đối không chuyển tiền và không cung cấp mật khẩu, mã OTP cho bất kỳ ai gọi điện thoại.",
         };
       case "level_passed":
         return {
           avatarEmoji: "✅",
-          title: "BÁC ĐÃ XỬ LÝ RẤT CHUẨN XÁC!",
-          message: "Chúc mừng Bác đã bảo vệ thành công an toàn tài sản và không bị kẻ gian thao túng.",
+          title: "XỬ LÝ CHÍNH XÁC VÀ AN TOÀN",
+          message: "Chúc mừng quý học viên đã nhận biết chính xác dấu hiệu và bảo vệ an toàn tài sản trước bẫy thao túng tâm lý.",
         };
     }
   }

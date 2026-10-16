@@ -56,22 +56,22 @@ export function MultipleChoiceQuestion({
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Dynamic Action Prompt - Tối ưu riêng biệt cho Trẻ em (Mascot 3D) và Người cao tuổi (Chữ to, giản lược rối mắt) */}
+      {/* Dynamic Action Prompt - Tối ưu riêng biệt cho Trẻ em (Mascot 3D) và Người lớn tuổi (Rõ ràng, trang trọng, tương phản cao) */}
       <div
-        className={`rounded-3xl border shadow-sm transition-all ${
+        className={`rounded-2xl border transition-all ${
           isElderly
-            ? "p-5 sm:p-6 bg-amber-50/70 border-3 border-amber-300 space-y-3"
-            : "p-4 sm:p-5 bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-300 space-y-2"
+            ? "p-4 sm:p-5 bg-blue-50/50 border border-blue-200 space-y-2 shadow-2xs"
+            : "p-4 sm:p-5 bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-300 space-y-2 shadow-sm"
         }`}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-xl sm:text-2xl">{mascotInfo.avatarEmoji}</span>
+            <span className={isElderly ? "text-lg" : "text-xl sm:text-2xl"}>{mascotInfo.avatarEmoji}</span>
             <span
-              className={`font-black uppercase tracking-wider ${
+              className={`font-bold uppercase tracking-wider ${
                 isElderly
-                  ? "text-sm sm:text-base text-amber-950"
-                  : "text-xs sm:text-sm text-sky-800"
+                  ? "text-xs sm:text-sm text-blue-900"
+                  : "text-xs sm:text-sm text-sky-800 font-black"
               }`}
             >
               {mascotInfo.title}
@@ -79,36 +79,34 @@ export function MultipleChoiceQuestion({
           </div>
 
           <span
-            className={`font-black uppercase tracking-wide rounded-full px-3 py-1 ${
+            className={`font-semibold uppercase tracking-wide rounded-full px-3 py-1 ${
               isElderly
-                ? "bg-amber-200 text-amber-950 text-xs border border-amber-400"
-                : "bg-sky-200 text-sky-900 text-[10px] border border-sky-300"
+                ? "bg-blue-100 text-blue-900 text-xs border border-blue-200"
+                : "bg-sky-200 text-sky-900 text-[10px] border border-sky-300 font-black"
             }`}
           >
-            {isElderly ? "Cỡ chữ lớn • Thân thiện" : "Chế độ Trò Chơi"}
+            {isElderly ? "Giao diện Dễ đọc" : "Chế độ Trò Chơi"}
           </span>
         </div>
 
         <h3
-          className={`font-black leading-snug ${
+          className={`leading-snug ${
             isElderly
-              ? "text-xl sm:text-2xl lg:text-3xl text-slate-950"
-              : "text-base sm:text-lg text-slate-900"
+              ? "text-lg sm:text-xl lg:text-2xl font-bold text-slate-900"
+              : "text-base sm:text-lg font-black text-slate-900"
           }`}
         >
           {story.questionPrompt}
         </h3>
 
         <p
-          className={`font-bold ${
+          className={`${
             isElderly
-              ? "text-base sm:text-lg text-amber-950"
-              : "text-xs sm:text-sm text-slate-600"
+              ? "text-sm sm:text-base font-normal text-slate-700"
+              : "text-xs sm:text-sm font-bold text-slate-600"
           }`}
         >
-          {isElderly
-            ? "👉 Bác hãy chọn 1 ô chữ to bên dưới rồi bấm nút NỘP BÀI."
-            : mascotInfo.message}
+          {mascotInfo.message}
         </p>
       </div>
 
@@ -117,24 +115,24 @@ export function MultipleChoiceQuestion({
         {options.map((opt, idx) => {
           const isSelected = selectedOptionId === opt.id;
           let containerStyle = isElderly
-            ? "bg-white border-3 border-slate-400 hover:bg-amber-50/60 hover:border-blue-700 text-slate-950 shadow-sm"
+            ? "bg-white border border-slate-300 hover:bg-blue-50/40 hover:border-blue-600 text-slate-900 shadow-2xs"
             : "bg-white border-2 border-sky-200 border-b-4 border-sky-300 hover:bg-sky-50/50 hover:border-sky-500 text-slate-900 shadow-2xs";
 
           if (isSubmitted) {
             if (opt.is_correct) {
               containerStyle = isElderly
-                ? "bg-emerald-50 border-3 border-emerald-700 text-emerald-950 font-black shadow-md ring-2 ring-emerald-300"
+                ? "bg-emerald-50 border-2 border-emerald-600 text-emerald-950 font-bold shadow-xs"
                 : "bg-emerald-50 border-2 border-emerald-500 border-b-6 border-emerald-700 text-emerald-950 font-black";
             } else if (isSelected && !opt.is_correct) {
               containerStyle = isElderly
-                ? "bg-rose-50 border-3 border-rose-700 text-rose-950 font-black shadow-md"
+                ? "bg-rose-50 border-2 border-rose-600 text-rose-950 font-bold shadow-xs"
                 : "bg-rose-50 border-2 border-rose-500 border-b-6 border-rose-700 text-rose-950 font-black";
             } else {
-              containerStyle = "bg-slate-100 border-2 border-slate-200 text-slate-400 opacity-50";
+              containerStyle = "bg-slate-100 border border-slate-200 text-slate-400 opacity-50";
             }
           } else if (isSelected) {
             containerStyle = isElderly
-              ? "bg-blue-50 border-3 border-blue-700 text-blue-950 font-black shadow-md ring-4 ring-blue-200 scale-[1.01]"
+              ? "bg-blue-50/90 border-2 border-blue-700 text-blue-950 font-bold shadow-xs ring-2 ring-blue-100"
               : "bg-sky-50 border-2 border-blue-600 border-b-6 border-blue-800 text-blue-950 font-black shadow-sm scale-[1.01]";
           }
 
@@ -148,33 +146,35 @@ export function MultipleChoiceQuestion({
                 if (!isSubmitted) setSelectedOptionId(opt.id);
               }}
               className={`transition-all cursor-pointer flex flex-col gap-2 ${
-                isElderly ? "p-5 sm:p-6 rounded-3xl" : "p-3.5 sm:p-4 rounded-2xl"
+                isElderly ? "p-4 sm:p-5 rounded-xl" : "p-3.5 sm:p-4 rounded-2xl"
               } ${containerStyle}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 sm:gap-4 w-full">
                   <div
-                    className={`flex items-center justify-center font-black shrink-0 mt-0.5 transition-colors border ${
+                    className={`flex items-center justify-center shrink-0 mt-0.5 transition-colors border ${
                       isElderly
-                        ? "w-11 h-11 sm:w-12 sm:h-12 rounded-2xl text-xl sm:text-2xl border-2"
-                        : "w-8 h-8 rounded-xl text-sm"
+                        ? "w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-sm sm:text-base font-bold"
+                        : "w-8 h-8 rounded-xl text-sm font-black"
                     } ${
                       isSelected
-                        ? "bg-blue-600 text-white border-blue-800 shadow-sm"
+                        ? "bg-blue-700 text-white border-blue-900 shadow-xs"
                         : "bg-slate-100 text-slate-700 border-slate-300"
                     }`}
                   >
                     {isSubmitted && opt.is_correct ? (
-                      <CheckCircle2 className={isElderly ? "w-7 h-7 text-emerald-600" : "w-5 h-5 text-emerald-600"} />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                     ) : isSubmitted && isSelected && !opt.is_correct ? (
-                      <XCircle className={isElderly ? "w-7 h-7 text-rose-600" : "w-5 h-5 text-rose-600"} />
+                      <XCircle className="w-5 h-5 text-rose-600" />
                     ) : (
                       letter
                     )}
                   </div>
                   <span
-                    className={`font-black leading-relaxed pt-0.5 ${
-                      isElderly ? "text-lg sm:text-xl lg:text-2xl text-slate-950" : "text-sm sm:text-base text-slate-900"
+                    className={`leading-relaxed pt-0.5 ${
+                      isElderly
+                        ? "text-base sm:text-lg text-slate-900 font-semibold"
+                        : "text-sm sm:text-base text-slate-900 font-black"
                     }`}
                   >
                     <HighlightKeywords text={cleanText} />
@@ -185,13 +185,13 @@ export function MultipleChoiceQuestion({
               {/* In-line explanation if submitted */}
               {isSubmitted && (isSelected || opt.is_correct) && (
                 <div
-                  className={`mt-2 p-3 sm:p-4 rounded-2xl border text-slate-950 font-bold leading-relaxed ${
+                  className={`mt-2 p-3 sm:p-4 rounded-xl border leading-relaxed ${
                     opt.is_correct
                       ? "bg-emerald-50/90 border-emerald-300 text-emerald-950"
                       : "bg-rose-50/90 border-rose-300 text-rose-950"
-                  } ${isElderly ? "text-base sm:text-lg" : "text-xs sm:text-sm"}`}
+                  } ${isElderly ? "text-sm sm:text-base font-medium" : "text-xs sm:text-sm font-bold"}`}
                 >
-                  <strong className="font-black">Giải thích an toàn: </strong>
+                  <strong className="font-bold">Giải thích an toàn: </strong>
                   {opt.explanation}
                 </div>
               )}
@@ -204,12 +204,12 @@ export function MultipleChoiceQuestion({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
         <button
           onClick={handleReset}
-          className={`rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-300 ${
-            isElderly ? "py-4 px-6 text-base" : "py-2.5 px-4 text-xs"
+          className={`rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-300 ${
+            isElderly ? "py-3 px-5 text-sm" : "py-2.5 px-4 text-xs"
           }`}
         >
           <RotateCcw className="w-4 h-4" />
-          <span>{isElderly ? "Chọn Lại Phương Án Khác" : "Làm lại câu này"}</span>
+          <span>{isElderly ? "Chọn lại phương án khác" : "Làm lại câu này"}</span>
         </button>
 
         {!isSubmitted ? (
@@ -218,10 +218,10 @@ export function MultipleChoiceQuestion({
             disabled={!selectedOptionId}
             className={
               isElderly
-                ? `py-5 sm:py-6 px-10 rounded-3xl font-black text-xl sm:text-2xl flex items-center justify-center gap-3 transition-all ${
+                ? `py-3.5 px-7 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all ${
                     selectedOptionId
-                      ? "bg-blue-700 hover:bg-blue-800 text-white shadow-xl border-3 border-blue-950 cursor-pointer active:scale-98"
-                      : "bg-slate-200 text-slate-400 border-2 border-slate-300 cursor-not-allowed"
+                      ? "bg-blue-700 hover:bg-blue-800 text-white shadow-sm border border-blue-900 cursor-pointer active:scale-98"
+                      : "bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed"
                   }`
                 : `py-4 px-8 rounded-2xl font-black text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all ${
                     selectedOptionId
@@ -230,9 +230,9 @@ export function MultipleChoiceQuestion({
                   }`
             }
           >
-            <Check className={isElderly ? "w-7 h-7" : "w-5 h-5"} />
-            <span>{isElderly ? "NỘP BÀI XÁC NHẬN" : "Xác Nhận Lựa Chọn"}</span>
-            <ArrowRight className={isElderly ? "w-6 h-6" : "w-5 h-5"} />
+            <Check className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
+            <span>{isElderly ? "Xác nhận câu trả lời" : "Xác Nhận Lựa Chọn"}</span>
+            <ArrowRight className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
           </button>
         ) : (
           <div className="flex items-center gap-3">
@@ -241,12 +241,12 @@ export function MultipleChoiceQuestion({
                 onClick={onNextQuestion}
                 className={
                   isElderly
-                    ? "w-full sm:w-auto py-5 sm:py-6 px-10 rounded-3xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xl sm:text-2xl border-3 border-emerald-950 shadow-xl flex items-center justify-center gap-3 cursor-pointer transition-all"
+                    ? "w-full sm:w-auto py-3.5 px-7 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-base sm:text-lg border border-emerald-900 shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                     : "w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base sm:text-lg border-b-6 border-emerald-700 active:border-b-0 active:translate-y-1 shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all animate-pulse"
                 }
               >
-                <span>{isElderly ? "SANG ẢI TIẾP THEO" : "Qua Câu Tiếp Theo"}</span>
-                <ArrowRight className={isElderly ? "w-6 h-6" : "w-5 h-5"} />
+                <span>{isElderly ? "Tiếp tục sang tình huống tiếp theo" : "Qua Câu Tiếp Theo"}</span>
+                <ArrowRight className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
               </button>
             )}
           </div>

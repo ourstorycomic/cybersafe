@@ -48,36 +48,24 @@ export function SkillProgressDashboard() {
   ];
 
   return (
-    <section className={`py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b-4 ${
-      isElderly ? "bg-amber-50/20 border-amber-300" : "bg-slate-50/80 border-slate-200"
-    }`}>
-      <div className={`max-w-6xl mx-auto p-6 sm:p-10 rounded-3xl space-y-8 ${
-        isElderly ? "bg-white border-4 border-amber-300 shadow-md" : "bg-white border border-slate-200 shadow-sm"
-      }`}>
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+      <div className="max-w-6xl mx-auto p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <div>
-            <span className={`text-xs uppercase font-black tracking-widest px-3.5 py-1 rounded-full border ${
-              isElderly ? "bg-amber-100 text-amber-950 border-amber-300 text-sm" : "bg-blue-50 text-blue-700 border-blue-200 font-mono"
-            }`}>
-              THEO DÕI NĂNG LỰC & TIẾN BỘ
+            <span className="text-xs uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border bg-blue-50 text-blue-800 border-blue-200">
+              Theo Dõi Năng Lực & Tiến Độ
             </span>
-            <h2 className={
-              isElderly
-                ? "text-3xl sm:text-5xl font-black text-slate-950 mt-2"
-                : "text-2xl sm:text-3xl font-black text-slate-900 mt-2"
-            }>
-              {isElderly ? "TIẾN ĐỘ RÈN LUYỆN & KỸ NĂNG CỦA BÁC" : "Bảng Đánh Giá Kỹ Năng An Toàn Số"}
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">
+              {isElderly ? "Tiến Trình Rèn Luyện & Đánh Giá Năng Lực Số" : "Bảng Đánh Giá Kỹ Năng An Toàn Số"}
             </h2>
           </div>
 
-          <div className={`p-4 rounded-2xl text-right ${
-            isElderly ? "bg-amber-100/80 border-2 border-amber-300 text-left md:text-right" : "bg-blue-50/60 border border-blue-200"
-          }`}>
-            <div className={`font-bold ${isElderly ? "text-base text-slate-900" : "text-xs text-slate-600"}`}>
-              {isElderly ? "Chỉ số an toàn của Bác" : "Chỉ số năng lực tổng hợp"}
+          <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-left md:text-right">
+            <div className="font-medium text-xs text-slate-600">
+              {isElderly ? "Chỉ số an toàn tổng hợp" : "Chỉ số năng lực tổng hợp"}
             </div>
-            <div className={`font-black ${isElderly ? "text-2xl text-amber-900" : "text-lg sm:text-xl text-blue-700"}`}>
+            <div className="font-bold text-lg sm:text-xl text-blue-700">
               84% • Mức An Toàn Tốt
             </div>
           </div>
@@ -93,29 +81,23 @@ export function SkillProgressDashboard() {
             {competencies.map((comp, idx) => (
               <div
                 key={idx}
-                className={`rounded-2xl flex flex-col justify-between gap-3.5 transition-all ${
-                  isElderly
-                    ? "p-6 bg-amber-50/60 border-2 border-amber-300 shadow-xs"
-                    : "p-5 bg-slate-50 border border-slate-200 shadow-xs hover:border-blue-300"
-                }`}
+                className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3 transition-all hover:border-blue-300"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <h3 className={`font-black ${isElderly ? "text-xl sm:text-2xl text-slate-950" : "text-sm sm:text-base text-slate-900"}`}>
+                    <h3 className="font-bold text-base sm:text-lg text-slate-900">
                       {comp.name}
                     </h3>
-                    <span className={`font-bold px-2.5 py-1 rounded-lg border ${
-                      isElderly ? "text-base font-black bg-white text-amber-950 border-amber-400" : "text-xs bg-white text-slate-700 border-slate-200"
-                    }`}>
+                    <span className="font-bold text-xs sm:text-sm px-2.5 py-1 rounded-md border bg-slate-50 text-slate-700 border-slate-200">
                       {comp.score}% • {comp.level}
                     </span>
                   </div>
-                  <p className={`leading-relaxed ${isElderly ? "text-lg font-bold text-slate-900" : "text-xs text-slate-600 font-normal"}`}>
+                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
                     {comp.desc}
                   </p>
                 </div>
 
-                <div className={`w-full bg-slate-200 rounded-full overflow-hidden ${isElderly ? "h-3.5" : "h-2.5"}`}>
+                <div className="w-full bg-slate-200 rounded-full overflow-hidden h-2.5">
                   <div
                     className={`h-full rounded-full transition-all duration-700 ${comp.barColor}`}
                     style={{ width: `${comp.score}%` }}

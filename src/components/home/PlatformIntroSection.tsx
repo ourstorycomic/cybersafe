@@ -21,19 +21,19 @@ export function PlatformIntroSection() {
     {
       role: "Người cao tuổi & Gia đình",
       desc: "Trang bị phản xạ nhận diện các cuộc gọi giả mạo Công an/Viện kiểm sát, tin nhắn lừa đảo cấp cứu, bẫy trúng thưởng quà 0 đồng và bảo vệ tài sản tích lũy an toàn.",
-      icon: "👴",
+      icon: HeartHandshake,
       highlight: "Giao diện to, rõ, dễ thao tác",
     },
     {
       role: "Trẻ em, Học sinh & Sinh viên",
       desc: "Hóa thân Hiệp sĩ số phá bẫy hack tài khoản game, lừa đảo skin súng/robux, bẫy 'việc nhẹ lương cao' và thói quen bảo vệ dữ liệu cá nhân trên mạng xã hội.",
-      icon: "🧒",
+      icon: Gamepad2,
       highlight: "Trải nghiệm Game tương tác sinh động",
     },
     {
       role: "Cộng đồng Công dân số",
       desc: "Nâng cao nhận thức bảo mật, chuẩn hóa quy trình xác minh số lạ, kiểm tra liên kết độc hại và phòng ngừa các thủ đoạn lừa đảo công nghệ cao mới nhất.",
-      icon: "🛡️",
+      icon: ShieldCheck,
       highlight: "Khung năng lực số chuẩn hóa",
     },
   ];
@@ -75,105 +75,106 @@ export function PlatformIntroSection() {
 
   if (isElderly) {
     return (
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-amber-50/40 border-b-4 border-amber-300">
-        <div className="max-w-4xl mx-auto space-y-14">
-          {/* Header 1 cột to rõ */}
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-amber-200 text-amber-950 font-black text-base sm:text-lg border-2 border-amber-400">
-              <Target className="w-5 h-5 text-amber-800" />
-              <span>GIỚI THIỆU VỀ NỀN TẢNG AN TOÀN SỐ</span>
+      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12">
+          {/* Header chuẩn mực, thanh lịch */}
+          <div className="text-center space-y-3 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs sm:text-sm font-bold">
+              <Target className="w-4 h-4 text-blue-700" />
+              <span>Giới Thiệu Nền Tảng An Toàn Số</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
-              MỤC TIÊU, ĐỐI TƯỢNG & CHỨC NĂNG
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
+              Mục Tiêu, Đối Tượng & Chức Năng Của Hệ Thống
             </h2>
-            <p className="text-xl sm:text-2xl font-bold text-slate-900 leading-relaxed max-w-3xl mx-auto">
-              Nền tảng học tập cộng đồng vì một không gian mạng an toàn cho người cao tuổi, học sinh và mọi gia đình Việt Nam.
+            <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed">
+              Nền tảng hỗ trợ cộng đồng phòng ngừa các thủ đoạn lừa đảo công nghệ cao, bảo vệ an toàn tài chính cho người lớn tuổi và các gia đình Việt Nam.
             </p>
           </div>
 
           {/* 1. Mục tiêu cốt lõi */}
-          <div className="p-8 sm:p-10 rounded-3xl bg-white border-4 border-blue-600 shadow-md space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-3xl font-black shrink-0">
-                🎯
-              </span>
+          <div className="p-6 sm:p-7 rounded-2xl bg-blue-50/50 border border-blue-200 shadow-xs space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center font-bold shrink-0">
+                <Target className="w-5 h-5" />
+              </div>
               <div>
-                <span className="text-sm font-black uppercase text-blue-800 tracking-wider">
-                  MỤC TIÊU CỐT LÕI
+                <span className="text-xs font-bold uppercase text-blue-700 tracking-wider">
+                  Mục tiêu đề tài
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-black text-slate-950">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
                   Phát hiện & Phòng ngừa các hình thức lừa đảo trực tuyến
                 </h3>
               </div>
             </div>
-            <p className="text-xl sm:text-2xl font-bold text-slate-900 leading-relaxed pl-2 sm:pl-18">
-              Giúp Bác và người thân trong gia đình nâng cao cảnh giác, xây dựng phản xạ an toàn, nhận biết các chiêu trò giả mạo tinh vi qua điện thoại, tin nhắn để tuyệt đối không bị mất tiền và lộ thông tin cá nhân.
+            <p className="text-base sm:text-lg text-slate-700 leading-relaxed pl-0 sm:pl-13">
+              Hỗ trợ người cao tuổi và gia đình rèn luyện phản xạ nhận diện các bẫy tâm lý mạo danh cơ quan nhà nước, cuộc gọi dọa nạt và liên kết độc hại, giúp bảo vệ an toàn tài sản tích lũy và thông tin cá nhân.
             </p>
           </div>
 
           {/* 2. Đối tượng phục vụ */}
-          <div className="space-y-6">
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-950 text-center flex items-center justify-center gap-3">
-              <Users className="w-8 h-8 text-amber-700" />
-              <span>NỀN TẢNG PHỤC VỤ AI?</span>
+          <div className="space-y-4">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
+              <Users className="w-6 h-6 text-blue-700" />
+              <span>Đối Tượng Phục Vụ Trọng Tâm</span>
             </h3>
 
-            <div className="space-y-4">
-              {targetAudiences.map((target, idx) => (
-                <div
-                  key={idx}
-                  className="p-6 sm:p-7 rounded-3xl bg-white border-3 border-amber-300 shadow-sm flex items-start gap-5"
-                >
-                  <span className="text-4xl shrink-0 p-2 rounded-2xl bg-amber-100 border border-amber-300">
-                    {target.icon}
-                  </span>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h4 className="text-2xl sm:text-3xl font-black text-slate-950">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {targetAudiences.map((target, idx) => {
+                const TargetIcon = target.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200">
+                          <TargetIcon className="w-5 h-5" />
+                        </div>
+                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                          {target.highlight}
+                        </span>
+                      </div>
+                      <h4 className="text-lg font-bold text-slate-900">
                         {target.role}
                       </h4>
-                      <span className="text-sm font-black px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300">
-                        {target.highlight}
-                      </span>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        {target.desc}
+                      </p>
                     </div>
-                    <p className="text-xl font-bold text-slate-900 leading-relaxed">
-                      {target.desc}
-                    </p>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* 3. 4 Chức năng hỗ trợ Bác */}
-          <div className="space-y-6">
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-950 text-center flex items-center justify-center gap-3">
-              <ShieldCheck className="w-8 h-8 text-emerald-700" />
-              <span>4 CHỨC NĂNG CHÍNH CỦA HỆ THỐNG</span>
+          {/* 3. 4 Chức năng chính */}
+          <div className="space-y-4">
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
+              <ShieldCheck className="w-6 h-6 text-emerald-700" />
+              <span>4 Chức Năng Cốt Lõi Của Nền Tảng</span>
             </h3>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {coreFeatures.map((feat, idx) => {
                 const Icon = feat.icon;
                 return (
                   <div
                     key={feat.id}
-                    className="p-6 sm:p-8 rounded-3xl bg-white border-3 border-slate-300 hover:border-blue-500 shadow-sm space-y-3 transition-colors"
+                    className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5 flex flex-col justify-between"
                   >
-                    <div className="flex items-center gap-4">
-                      <span className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xl shrink-0">
-                        {idx + 1}
-                      </span>
-                      <div>
-                        <span className="text-xs sm:text-sm font-black uppercase text-blue-700 tracking-wider">
-                          {feat.badge}
-                        </span>
-                        <h4 className="text-2xl sm:text-3xl font-black text-slate-950">
-                          {feat.title}
-                        </h4>
+                    <div className="flex items-center justify-between">
+                      <div className="w-9 h-9 rounded-xl bg-slate-100 text-blue-700 flex items-center justify-center font-bold">
+                        <Icon className="w-5 h-5" />
                       </div>
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                        {feat.badge}
+                      </span>
                     </div>
-                    <p className="text-xl font-bold text-slate-900 leading-relaxed pl-2 sm:pl-16">
+                    <h4 className="text-base sm:text-lg font-bold text-slate-900">
+                      {idx + 1}. {feat.title}
+                    </h4>
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {feat.desc}
                     </p>
                   </div>
@@ -206,19 +207,21 @@ export function PlatformIntroSection() {
 
         {/* 3 Đối tượng phục vụ */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {targetAudiences.map((target, idx) => (
-            <div
-              key={idx}
-              className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 hover:border-sky-400/60 shadow-xl space-y-4 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-3xl p-3 rounded-2xl bg-slate-900 border border-slate-700 group-hover:scale-110 transition-transform">
-                  {target.icon}
-                </span>
-                <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                  {target.highlight}
-                </span>
-              </div>
+          {targetAudiences.map((target, idx) => {
+            const TargetIcon = target.icon;
+            return (
+              <div
+                key={idx}
+                className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 hover:border-sky-400/60 shadow-xl space-y-4 transition-all group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="p-3 rounded-2xl bg-slate-900 border border-slate-700 group-hover:scale-110 transition-transform text-sky-400">
+                    <TargetIcon className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                    {target.highlight}
+                  </span>
+                </div>
               <div>
                 <h3 className="text-xl font-black text-white group-hover:text-amber-400 transition-colors">
                   {target.role}
@@ -228,8 +231,9 @@ export function PlatformIntroSection() {
                 </p>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
 
         {/* 4 Chức năng cốt lõi */}
         <div className="space-y-6">

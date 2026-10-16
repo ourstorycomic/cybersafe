@@ -112,50 +112,44 @@ export function DemoQuizSection() {
   };
 
   return (
-    <section id="demo-quiz" className={`py-12 sm:py-20 border-b ${
-      isElderly ? "bg-amber-50/20 border-amber-200" : "bg-white border-slate-200"
+    <section id="demo-quiz" className={`py-12 sm:py-16 border-b ${
+      isElderly ? "bg-white border-slate-200" : "bg-white border-slate-200"
     }`}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className={`inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider font-mono border ${
-            isElderly ? "bg-amber-100 text-amber-950 border-amber-300" : "bg-blue-50 border-blue-200 text-blue-800"
-          }`}>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border bg-blue-50 border-blue-200 text-blue-800">
             <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
             <span>Trải Nghiệm Thử Ngay (Không Cần Đăng Nhập)</span>
           </div>
           <h2 className={
             isElderly 
-              ? "text-3xl sm:text-5xl font-black text-slate-950 tracking-tight"
+              ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
               : "text-3xl sm:text-4xl font-black text-slate-900 tracking-tight"
           }>
-            {isElderly ? "Thử Thách Nhận Diện Nhanh Cho Bác" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
+            {isElderly ? "Bài Tập Thực Hành Mẫu Nhận Diện Tình Huống" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
           </h2>
           <p className={
             isElderly 
-              ? "text-lg sm:text-xl text-slate-900 font-bold"
+              ? "text-base sm:text-lg text-slate-600 font-medium"
               : "text-sm sm:text-base text-slate-600 font-medium"
           }>
             {isElderly 
-              ? "Bác hãy bấm chọn đáp án đúng nhất để kiểm tra khả năng phòng ngừa bẫy lừa đảo:"
+              ? "Quý độc giả hãy lựa chọn phương án xử lý an toàn nhất trong tình huống giả định sau:"
               : "Thử tài nhận diện bẫy thao túng tâm lý và dấu hiệu lừa đảo phổ biến trước khi vào trọn bộ 39 ải:"}
           </p>
 
           {/* Toggle between 2 demo questions */}
-          <div className="inline-flex items-center p-1.5 rounded-2xl bg-slate-100 border border-slate-300 gap-2 pt-2">
+          <div className="inline-flex items-center p-1.5 rounded-xl bg-slate-100 border border-slate-200 gap-2 pt-1.5">
             {demoScenarios.map((demo, idx) => (
               <button
                 key={demo.id}
                 type="button"
                 onClick={() => handleSwitchQuestion(idx)}
-                className={`px-4 sm:px-6 py-2.5 rounded-xl font-bold transition-all cursor-pointer ${
-                  isElderly ? "text-base font-black" : "text-xs font-bold"
-                } ${
+                className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs sm:text-sm ${
                   activeDemoIdx === idx
-                    ? isElderly
-                      ? "bg-blue-700 text-white shadow-md font-black"
-                      : "bg-white text-blue-700 shadow-xs border border-slate-200 font-black"
-                    : "text-slate-700 hover:text-slate-950"
+                    ? "bg-white text-blue-700 shadow-xs border border-slate-200 font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 {demo.badge}
@@ -178,19 +172,15 @@ export function DemoQuizSection() {
         )}
 
         {/* Demo Stage: Left Scenario + Right Interaction */}
-        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 items-start rounded-3xl p-5 sm:p-8 shadow-sm border-2 ${
-          isElderly ? "bg-white border-slate-300" : "bg-slate-50 border-slate-200"
-        }`}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start rounded-2xl p-5 sm:p-7 shadow-xs border border-slate-200 bg-white">
           {/* Left: Device Simulator Mockup */}
-          <div className="lg:col-span-5 space-y-3">
-            <div className={`uppercase font-black flex items-center gap-1.5 ${
-              isElderly ? "text-sm text-slate-900" : "text-xs text-slate-500"
-            }`}>
+          <div className="lg:col-span-5 space-y-2.5">
+            <div className="uppercase font-bold text-xs text-slate-500 flex items-center gap-1.5">
               <ShieldAlert className="w-4 h-4 text-rose-600" />
               <span>Tình huống giả định</span>
             </div>
 
-            <div className="rounded-2xl bg-white border-2 border-slate-300 shadow-sm overflow-hidden">
+            <div className="rounded-xl bg-white border border-slate-200 shadow-2xs overflow-hidden">
               {/* Phone Header */}
               <div className="bg-slate-100 px-4 py-2 text-xs font-mono text-slate-700 border-b border-slate-200 flex items-center justify-between font-bold">
                 <span>09:41</span>
@@ -198,23 +188,19 @@ export function DemoQuizSection() {
               </div>
 
               {/* Message Content */}
-              <div className="p-4 sm:p-5 space-y-3">
+              <div className="p-4 sm:p-5 space-y-2.5">
                 <div className="flex items-center gap-2 font-bold text-slate-900 pb-2 border-b border-slate-100">
                   {activeDemoIdx === 0 ? (
-                    <PhoneCall className="w-5 h-5 text-rose-600 shrink-0" />
+                    <PhoneCall className="w-4 h-4 text-rose-600 shrink-0" />
                   ) : (
-                    <MessageSquare className="w-5 h-5 text-blue-600 shrink-0" />
+                    <MessageSquare className="w-4 h-4 text-blue-600 shrink-0" />
                   )}
-                  <span className={isElderly ? "text-base font-black" : "text-xs font-bold"}>
+                  <span className="text-xs sm:text-sm font-bold text-slate-900">
                     {currentScenario.stimulus.caller}
                   </span>
                 </div>
 
-                <div className={`p-4 rounded-xl border leading-relaxed font-semibold ${
-                  isElderly 
-                    ? "bg-amber-50/70 border-amber-300 text-slate-950 text-lg sm:text-xl font-bold" 
-                    : "bg-slate-50 border-slate-200 text-xs sm:text-sm text-slate-800 font-medium"
-                }`}>
+                <div className="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm sm:text-base font-normal leading-relaxed">
                   {currentScenario.stimulus.content}
                 </div>
               </div>
@@ -223,19 +209,11 @@ export function DemoQuizSection() {
 
           {/* Right: Question & Options */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="space-y-2">
-              <span className={`uppercase font-bold tracking-wider inline-block px-2.5 py-0.5 rounded-md border ${
-                isElderly 
-                  ? "text-sm font-black text-blue-900 bg-blue-100 border-blue-300" 
-                  : "text-[11px] font-bold text-blue-700 bg-blue-50 border-blue-200"
-              }`}>
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 uppercase tracking-wider inline-block px-2.5 py-0.5 rounded-md">
                 {currentScenario.title}
               </span>
-              <h3 className={
-                isElderly
-                  ? "text-xl sm:text-2xl font-black text-slate-950 leading-snug"
-                  : "text-sm sm:text-base font-black text-slate-900 leading-snug"
-              }>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                 {currentScenario.question}
               </h3>
             </div>
@@ -246,17 +224,13 @@ export function DemoQuizSection() {
                 const isSelected = selectedOption === oIdx;
                 const letter = String.fromCharCode(65 + oIdx);
 
-                let optStyle = isElderly
-                  ? "border-2 border-slate-300 bg-white hover:border-blue-600 text-slate-950"
-                  : "border-slate-200 bg-white hover:border-slate-300 text-slate-800";
+                let optStyle = "border-slate-200 bg-white hover:border-slate-300 text-slate-800";
 
                 if (isSelected && !submitted) {
-                  optStyle = isElderly
-                    ? "border-blue-700 bg-blue-50 text-slate-950 font-black ring-4 ring-blue-200"
-                    : "border-blue-600 bg-blue-50/80 text-blue-950 font-bold ring-2 ring-blue-200";
+                  optStyle = "border-blue-700 bg-blue-50/70 text-slate-900 font-semibold ring-2 ring-blue-200";
                 } else if (submitted) {
                   if (opt.isCorrect) {
-                    optStyle = "border-emerald-600 bg-emerald-50 text-emerald-950 font-black";
+                    optStyle = "border-emerald-600 bg-emerald-50 text-emerald-950 font-bold";
                   } else if (isSelected && !opt.isCorrect) {
                     optStyle = "border-rose-400 bg-rose-50 text-rose-950 line-through opacity-75";
                   }
@@ -267,24 +241,18 @@ export function DemoQuizSection() {
                     key={oIdx}
                     type="button"
                     onClick={() => handleSelect(oIdx)}
-                    className={`w-full text-left rounded-2xl transition-all cursor-pointer flex items-start gap-4 ${
-                      isElderly ? "p-5 sm:p-6" : "p-3.5"
-                    } ${isChild ? "border-b-4 hover:-translate-y-0.5" : "border-2"} ${optStyle}`}
+                    className={`w-full text-left rounded-xl transition-all cursor-pointer flex items-start gap-3 p-3.5 sm:p-4 border ${optStyle}`}
                   >
                     <span
-                      className={`font-black flex items-center justify-center shrink-0 ${
-                        isElderly ? "w-10 h-10 text-lg rounded-xl" : "w-6 h-6 text-xs rounded-lg mt-0.5"
-                      } ${
+                      className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 ${
                         isSelected
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-100 text-slate-700 border border-slate-300"
+                          ? "bg-blue-700 text-white"
+                          : "bg-slate-100 text-slate-700 border border-slate-200"
                       }`}
                     >
                       {letter}
                     </span>
-                    <span className={`leading-relaxed ${
-                      isElderly ? "text-lg sm:text-xl font-bold text-slate-950" : "text-xs sm:text-sm"
-                    }`}>
+                    <span className="text-sm sm:text-base leading-relaxed text-slate-800 font-medium">
                       {opt.text}
                     </span>
                   </button>
@@ -299,38 +267,28 @@ export function DemoQuizSection() {
                   type="button"
                   disabled={selectedOption === null}
                   onClick={handleSubmit}
-                  className={
-                    isElderly
-                      ? "w-full py-5 rounded-2xl bg-blue-700 hover:bg-blue-800 disabled:opacity-40 text-white font-black text-2xl shadow-lg cursor-pointer transition-all flex items-center justify-center gap-3 min-h-[68px]"
-                      : isChild
-                      ? "w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-black text-base shadow-lg cursor-pointer transition-all border-b-6 border-blue-800 active:border-b-0 active:translate-y-1.5 flex items-center justify-center gap-2"
-                      : "w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black text-xs sm:text-sm shadow-md cursor-pointer transition-all flex items-center justify-center gap-2"
-                  }
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm sm:text-base shadow-sm cursor-pointer transition-all flex items-center justify-center gap-2"
                 >
-                  <CheckCircle className={isElderly ? "w-7 h-7" : "w-4 h-4"} />
-                  <span>{isElderly ? "XÁC NHẬN CÂU TRẢ LỜI" : "Xác Nhận Đáp Án"}</span>
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Xác nhận phương án xử lý</span>
                 </button>
               </div>
             ) : (
-              <div className={`p-5 rounded-2xl border space-y-2 animate-in fade-in duration-200 ${
-                isElderly ? "bg-amber-50/80 border-2 border-amber-300" : "bg-white border border-slate-200"
-              }`}>
-                <div className="flex items-center gap-2 font-black uppercase tracking-wider">
+              <div className="p-4 sm:p-5 rounded-xl border bg-slate-50 border-slate-200 space-y-2 animate-in fade-in duration-200">
+                <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
                   {currentScenario.options[selectedOption!].isCorrect ? (
-                    <span className={`text-emerald-800 flex items-center gap-1.5 ${isElderly ? "text-xl" : "text-xs"}`}>
-                      <ShieldCheck className={isElderly ? "w-6 h-6 text-emerald-700" : "w-4 h-4 text-emerald-600"} />
-                      {isElderly ? "Bác đã trả lời rất chuẩn xác!" : "Phản xạ chính xác!"}
+                    <span className="text-emerald-700 flex items-center gap-1.5">
+                      <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                      Lựa chọn chính xác và an toàn!
                     </span>
                   ) : (
-                    <span className={`text-rose-800 flex items-center gap-1.5 ${isElderly ? "text-xl" : "text-xs"}`}>
-                      <AlertTriangle className={isElderly ? "w-6 h-6 text-rose-700" : "w-4 h-4 text-rose-600"} />
-                      {isElderly ? "Bác cần đặc biệt cảnh giác điểm này:" : "Cần lưu ý điểm này!"}
+                    <span className="text-rose-700 flex items-center gap-1.5">
+                      <AlertTriangle className="w-5 h-5 text-rose-600" />
+                      Lưu ý rủi ro trong phương án này:
                     </span>
                   )}
                 </div>
-                <p className={`leading-relaxed font-semibold ${
-                  isElderly ? "text-lg sm:text-xl text-slate-950" : "text-xs sm:text-sm text-slate-700 font-medium"
-                }`}>
+                <p className="text-sm text-slate-700 leading-relaxed font-medium">
                   {currentScenario.options[selectedOption!].explanation}
                 </p>
               </div>
@@ -339,28 +297,16 @@ export function DemoQuizSection() {
         </div>
 
         {/* Call to action for full 39 levels & chatbot */}
-        <div className={`p-6 sm:p-8 rounded-3xl border-2 flex flex-col sm:flex-row items-center justify-between gap-6 ${
-          isElderly 
-            ? "bg-amber-100/70 border-amber-300" 
-            : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
-        }`}>
-          <div className="space-y-1.5 text-center sm:text-left">
-            <h3 className={
-              isElderly 
-                ? "text-2xl sm:text-3xl font-black text-slate-950"
-                : "text-lg sm:text-xl font-black text-slate-900"
-            }>
+        <div className="p-6 sm:p-8 rounded-2xl border bg-slate-50 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="space-y-1 text-center sm:text-left">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900">
               {isElderly 
-                ? "Bác muốn luyện tập trọn bộ 39 tình huống thực tế?" 
+                ? "Luyện tập trọn bộ 39 tình huống thực tế cùng nền tảng" 
                 : "Muốn chinh phục trọn bộ 39 ải và đồng hành cùng CyberGuardBot?"}
             </h3>
-            <p className={
-              isElderly 
-                ? "text-lg font-bold text-slate-900"
-                : "text-xs sm:text-sm text-slate-600 font-medium"
-            }>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
               {isElderly 
-                ? "Đăng ký hoàn toàn miễn phí bằng Số điện thoại để tự tin tránh xa mọi cạm bẫy lừa đảo."
+                ? "Đăng ký miễn phí bằng Số điện thoại hoặc Email để lưu lại tiến trình, kiểm tra thang đo năng lực và sử dụng trợ lý an toàn số."
                 : "Đăng nhập miễn phí bằng SĐT hoặc Email để rèn luyện kịch bản phân nhánh (Branching), khoanh vùng đáng ngờ (Hotspot) và lưu thang đo năng lực."}
             </p>
           </div>
@@ -368,14 +314,10 @@ export function DemoQuizSection() {
           <button
             type="button"
             onClick={() => openAuthModal("signup")}
-            className={
-              isElderly
-                ? "w-full sm:w-auto px-8 py-5 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-black text-xl shadow-xl flex items-center justify-center gap-3 cursor-pointer transition-all shrink-0 min-h-[64px]"
-                : "w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-md hover-lift flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0"
-            }
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-sm sm:text-base shadow-sm hover-lift flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0"
           >
-            <span>{isElderly ? "ĐĂNG KÝ HỌC MIỄN PHÍ" : "Tạo Tài Khoản Rèn Luyện Ngay"}</span>
-            <ArrowRight className={isElderly ? "w-6 h-6" : "w-4 h-4"} />
+            <span>Đăng ký tham gia miễn phí</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
