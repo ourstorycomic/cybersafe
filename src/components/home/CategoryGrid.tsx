@@ -160,7 +160,7 @@ export function CategoryGrid() {
           <span className={`text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full border ${
             isElderly ? "bg-blue-50 text-blue-900 border-blue-200" : "text-amber-900 bg-amber-100 border-amber-300"
           }`}>
-            {isElderly ? "Kho Dữ Liệu Đời Thực Tại Việt Nam" : "👾 ĐẤU TRƯỜNG 11 TRÙM BẪY LỪA ĐẢO • BẢN ĐỒ THÁM TỬ"}
+            {isElderly ? "Kho Dữ Liệu Đời Thực Tại Việt Nam" : "Bản Đồ 11 Nhóm Chiêu Thức Lừa Đảo Phổ Biến"}
           </span>
           <h2 className={
             isElderly
@@ -250,13 +250,15 @@ export function CategoryGrid() {
               >
                 {/* Card Top: Boss Badge & XP reward */}
                 <div className="flex items-center justify-between pb-1">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-300">
                       Ải #{cat.code}
                     </span>
-                    <span className="flex items-center text-amber-500 text-xs">
-                      {"⭐".repeat(Math.min(3, Math.max(1, (idx % 3) + 1)))}
-                    </span>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: Math.min(3, Math.max(1, (idx % 3) + 1)) }).map((_, sIdx) => (
+                        <Star key={sIdx} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
                   </div>
 
                   <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">

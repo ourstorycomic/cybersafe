@@ -24,6 +24,11 @@ import {
   CheckCircle2,
   Crosshair,
   ShieldAlert,
+  Gift,
+  CreditCard,
+  Timer,
+  AlertCircle,
+  Play,
 } from "lucide-react";
 import { playClickBeep, playSuccessChime, playWarningBlip } from "@/utils/gameAudio";
 
@@ -208,8 +213,9 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
                   Không hoảng sợ, không bấm link, không chuyển tiền, không đọc mã OTP khi đang bị hối thúc.
                 </p>
               </div>
-              <div className="text-xs font-semibold text-rose-800 bg-rose-50 border border-rose-200 p-2 rounded-lg text-center">
-                🛑 Bình tĩnh 30 giây
+              <div className="text-xs font-semibold text-rose-800 bg-rose-50 border border-rose-200 p-2 rounded-lg text-center flex items-center justify-center gap-1.5">
+                <Octagon className="w-3.5 h-3.5 text-rose-600" />
+                <span>Bình tĩnh 30 giây</span>
               </div>
             </div>
 
@@ -227,8 +233,9 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
                   Soi kỹ tên miền (.gov.vn, .com.vn), tệp đính kèm (.apk) và số điện thoại người gọi.
                 </p>
               </div>
-              <div className="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 p-2 rounded-lg text-center">
-                🔍 Soi kỹ chi tiết lạ
+              <div className="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 p-2 rounded-lg text-center flex items-center justify-center gap-1.5">
+                <Search className="w-3.5 h-3.5 text-amber-600" />
+                <span>Soi kỹ chi tiết lạ</span>
               </div>
             </div>
 
@@ -246,8 +253,9 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
                   Cúp máy ngay. Gọi điện thoại trực tiếp cho con cháu hoặc gọi hotline chính thức của cơ quan.
                 </p>
               </div>
-              <div className="text-xs font-semibold text-blue-800 bg-blue-50 border border-blue-200 p-2 rounded-lg text-center">
-                📞 Kênh độc lập
+              <div className="text-xs font-semibold text-blue-800 bg-blue-50 border border-blue-200 p-2 rounded-lg text-center flex items-center justify-center gap-1.5">
+                <PhoneForwarded className="w-3.5 h-3.5 text-blue-600" />
+                <span>Kênh độc lập</span>
               </div>
             </div>
 
@@ -265,8 +273,9 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
                   Chỉ thực hiện thao tác khi đã xác thực 100% người liên hệ là đúng sự thật.
                 </p>
               </div>
-              <div className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2 rounded-lg text-center">
-                🛡️ An toàn tài sản số
+              <div className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2 rounded-lg text-center flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>An toàn tài sản số</span>
               </div>
             </div>
           </div>
@@ -287,7 +296,9 @@ function ChildHero({ onStart }: { onStart: () => void }) {
   const demoTraps = [
     {
       id: "trap-robux",
-      label: "🎮 Tặng 10.000 Robux 0đ",
+      label: "Tặng 10.000 Robux 0đ",
+      icon: Gift,
+      iconColor: "text-purple-600",
       sender: "Bot Nạp Quà Roblox",
       message: "Chúc mừng! Bạn trúng 10.000 Robux miễn phí. Bấm vào link nhanqua-roblox2026.vip và nhập nick + mật khẩu ngay!",
       redFlag: "Link giả mạo (.vip), đòi nhập MẬT KHẨU tài khoản game!",
@@ -297,7 +308,9 @@ function ChildHero({ onStart }: { onStart: () => void }) {
     },
     {
       id: "trap-ban",
-      label: "⚠️ Dọa khóa nick trong 15p",
+      label: "Dọa khóa nick trong 15p",
+      icon: AlertTriangle,
+      iconColor: "text-amber-600",
       sender: "Admin Game Giả Mạo",
       message: "Cảnh báo: Nick của bạn bị tố cáo gian lận. Truy cập hotro-khoa-acc.top để xác minh, nếu không nick sẽ bị xóa vĩnh viễn!",
       redFlag: "Tạo áp lực sợ hãi gấp rút 15 phút để bạn hoảng loạn click link!",
@@ -307,7 +320,9 @@ function ChildHero({ onStart }: { onStart: () => void }) {
     },
     {
       id: "trap-money",
-      label: "💸 Bạn quen mượn tiền nạp thẻ",
+      label: "Bạn quen mượn tiền nạp thẻ",
+      icon: CreditCard,
+      iconColor: "text-emerald-600",
       sender: "Zalo Bạn Thân (Bị Hack)",
       message: "Ê bạn ơi, nick tớ đang kẹt tiền nạp game, chuyển khoản giúp tớ 200k vào số này tí tớ trả lại gấp đôi nhé!",
       redFlag: "Tài khoản bạn bè bị hack chiếm quyền điều khiển để đi vay mượn tiền!",
@@ -336,10 +351,10 @@ function ChildHero({ onStart }: { onStart: () => void }) {
       <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         {/* Left Column: Gamified Call to Action */}
         <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-          {/* Mission Tag Header with animated pulse */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-sky-50 border-2 border-sky-300 text-sky-900 font-black text-xs sm:text-sm shadow-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>🚀 ĐẤU TRƯỜNG HIỆP SĨ SỐ • RÈN PHẢN XẠ PHÁ BẪY</span>
+          {/* Mission Tag Header */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-300 text-sky-900 font-bold text-xs sm:text-sm shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+            <span>Đấu trường Hiệp Sĩ Số • Rèn phản xạ phá bẫy</span>
           </div>
 
           {/* Game Title: Punchy & Bold */}
@@ -364,7 +379,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
 
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5 text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-xl">
-                  <Flame className="w-4 h-4 fill-orange-500 text-orange-500 animate-bounce" />
+                  <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
                   <span>3 Ngày Streak</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
@@ -387,10 +402,10 @@ function ChildHero({ onStart }: { onStart: () => void }) {
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
             <button
               onClick={onStart}
-              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-lg sm:text-xl shadow-lg border-b-6 border-emerald-700 active:border-b-0 active:translate-y-1.5 transition-all cursor-pointer flex items-center justify-center gap-3"
+              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-base sm:text-lg shadow-lg border-b-6 border-emerald-700 active:border-b-0 active:translate-y-1.5 transition-all cursor-pointer flex items-center justify-center gap-3"
             >
-              <Sword className="w-6 h-6 text-amber-200 animate-pulse" />
-              <span>VÀO PHÁ ÁN NGAY! (+100 XP)</span>
+              <Play className="w-5 h-5 fill-current" />
+              <span>VÀO PHÁ ÁN NGAY (+100 XP)</span>
               <ArrowRight className="w-5 h-5 text-white" />
             </button>
 
@@ -399,7 +414,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
               onClick={() => playClickBeep()}
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border-2 border-slate-300 border-b-4 border-slate-400 active:border-b-2 active:translate-y-0.5 shadow-xs transition-all flex items-center justify-center gap-2"
             >
-              <Zap className="w-5 h-5 text-amber-500" />
+              <Timer className="w-4 h-4 text-amber-600" />
               <span>Thử Thách Nhanh 30s</span>
             </a>
           </div>
@@ -410,8 +425,10 @@ function ChildHero({ onStart }: { onStart: () => void }) {
           <div className="w-full max-w-md rounded-3xl bg-white p-5 sm:p-6 border-2 border-sky-300 shadow-xl space-y-4 relative">
             {/* Scanner Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🔍</span>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                  <Search className="w-4 h-4 text-sky-700" />
+                </div>
                 <div>
                   <h3 className="font-black text-sm sm:text-base text-slate-900">
                     Máy Soi Bẫy Lừa Đảo Mini
@@ -430,27 +447,30 @@ function ChildHero({ onStart }: { onStart: () => void }) {
 
             {/* 3 Clickable Trap Buttons */}
             <div className="grid grid-cols-1 gap-2">
-              {demoTraps.map((trap, idx) => (
-                <button
-                  key={trap.id}
-                  onClick={() => handleSelectTrap(idx)}
-                  className={`p-2.5 rounded-xl text-left font-bold text-xs sm:text-sm transition-all border-2 cursor-pointer flex items-center justify-between ${
-                    activeTrapIdx === idx
-                      ? "bg-sky-50 border-sky-500 text-sky-950 shadow-xs scale-101"
-                      : "bg-slate-50 border-slate-200 text-slate-700 hover:border-sky-300 hover:bg-white"
-                  }`}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-sky-500" />
-                    <span>{trap.label}</span>
-                  </span>
-                  {activeTrapIdx === idx && (
-                    <span className="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
-                      Đang soi
+              {demoTraps.map((trap, idx) => {
+                const TrapIcon = trap.icon;
+                return (
+                  <button
+                    key={trap.id}
+                    onClick={() => handleSelectTrap(idx)}
+                    className={`p-2.5 rounded-xl text-left font-bold text-xs sm:text-sm transition-all border-2 cursor-pointer flex items-center justify-between ${
+                      activeTrapIdx === idx
+                        ? "bg-sky-50 border-sky-500 text-sky-950 shadow-xs scale-101"
+                        : "bg-slate-50 border-slate-200 text-slate-700 hover:border-sky-300 hover:bg-white"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <TrapIcon className={`w-4 h-4 ${trap.iconColor} shrink-0`} />
+                      <span>{trap.label}</span>
                     </span>
-                  )}
-                </button>
-              ))}
+                    {activeTrapIdx === idx && (
+                      <span className="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                        Đang soi
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Simulated Chat Bubble on Device */}

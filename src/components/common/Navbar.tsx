@@ -17,6 +17,7 @@ import {
   Bot,
   Gamepad2,
   HeartHandshake,
+  Users,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useDemographic } from "@/context/DemographicContext";
@@ -127,7 +128,7 @@ function ElderlyNavbar() {
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold"
               title="Chuyển sang Chế độ Trẻ Em"
             >
-              🎮
+              <Gamepad2 className="w-4 h-4 text-indigo-600" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -211,7 +212,7 @@ function ChildNavbar() {
                 CyberSafe <span className="text-blue-700">Quest</span>
               </span>
               <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 block -mt-1 tracking-wider uppercase">
-                🛡️ Hiệp Sĩ Số Nhí
+                Hiệp Sĩ Số Nhí
               </span>
             </div>
           </Link>
@@ -244,11 +245,11 @@ function ChildNavbar() {
           <div className="hidden sm:flex items-center gap-2 xl:gap-3 shrink-0">
             {/* Gamified Stats Badges: Full badges on xl, compact on lg */}
             <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 whitespace-nowrap shrink-0">
-              <div className="flex items-center gap-1 text-xs font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md border border-orange-200 shrink-0">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md border border-orange-200 shrink-0">
                 <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500 shrink-0" />
                 <span>3 Ngày</span>
               </div>
-              <div className="flex items-center gap-1 text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200 shrink-0">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200 shrink-0">
                 <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" />
                 <span>250 XP</span>
               </div>
@@ -274,7 +275,7 @@ function ChildNavbar() {
               className="px-2.5 xl:px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="Chuyển sang giao diện Người Cao Tuổi"
             >
-              <span>🛡️</span>
+              <Users className="w-3.5 h-3.5 text-slate-600" />
               <span className="hidden xl:inline">Chế độ Cao Tuổi</span>
               <span className="xl:hidden">Cao Tuổi</span>
             </button>
@@ -312,7 +313,7 @@ function ChildNavbar() {
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold"
               title="Chuyển sang Chế độ Cao Tuổi"
             >
-              🛡️
+              <Users className="w-4 h-4 text-slate-700" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

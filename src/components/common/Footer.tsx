@@ -193,8 +193,8 @@ function ChildFooter() {
         {/* Banner */}
         <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-sky-50 via-indigo-50 to-blue-50 border border-sky-200 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
           <div className="flex items-center gap-4 text-center md:text-left">
-            <div className="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-2xl shadow-sm shrink-0">
-              🛡️
+            <div className="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <Shield className="w-7 h-7 text-white" />
             </div>
             <div>
               <div className="text-xs font-black uppercase text-blue-700 tracking-wider">

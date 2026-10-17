@@ -38,9 +38,9 @@ export function QuickMiniChallenge() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-5 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 font-bold">
                 <Zap className="w-3.5 h-3.5 text-amber-600" />
-                <span>{isChild ? "⚡ SPEED RUN 30S • ĐẤU TRƯỜNG PHẢN XẠ" : "Thử Thách Phản Xạ Nhanh 30 Giây"}</span>
+                <span>Thử Thách Phản Xạ Nhanh 30 Giây</span>
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">

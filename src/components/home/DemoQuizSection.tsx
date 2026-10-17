@@ -181,11 +181,13 @@ export function DemoQuizSection() {
 
         {/* Child Mascot Dialogue Banner */}
         {isChild && (
-          <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-sky-50 to-indigo-50 border-2 border-sky-200">
-            <span className="text-3xl animate-bounce">🛡️</span>
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-sky-50/80 border border-sky-200">
+            <div className="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <ShieldCheck className="w-5 h-5 text-white" />
+            </div>
             <div>
-              <span className="text-xs font-black uppercase text-sky-800">Hiệp Sĩ Số mách bạn:</span>
-              <p className="text-sm font-bold text-slate-800">
+              <span className="text-xs font-bold uppercase text-sky-800 tracking-wide">Hiệp Sĩ Số Gợi Ý:</span>
+              <p className="text-sm font-semibold text-slate-800">
                 Hãy đọc kỹ tin nhắn bên trái rồi chọn xem đáp án nào giúp giữ an toàn nhé!
               </p>
             </div>

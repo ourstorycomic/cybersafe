@@ -143,14 +143,15 @@ export function PlayChildView({
         <div className="space-y-6">
           {/* Header Introduction */}
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs uppercase font-mono font-black text-sky-800 tracking-wider bg-sky-100 px-3.5 py-1 rounded-full border border-sky-300 inline-block">
-              🌟 11 VÙNG ĐẤT THÁM TỬ NHÍ & TRỌN BỘ 39 ẢI PHÁ ÁN
+            <span className="text-xs uppercase font-mono font-bold text-sky-800 tracking-wider bg-sky-100 px-3.5 py-1 rounded-full border border-sky-300 inline-flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-sky-700" />
+              <span>11 VÙNG ĐẤT THÁM TỬ & TRỌN BỘ 39 ẢI PHÁ ÁN</span>
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Chọn Hành Trình Vượt Ải Hiệp Sĩ
             </h2>
             <p className="text-sm font-medium text-slate-600">
-              Hoàn thành từng ải để nhận trọn vẹn 3 sao ⭐ và mở khóa các ải tiếp theo. Không thể bỏ qua (skip)!
+              Hoàn thành từng ải để nhận trọn vẹn 3 sao và mở khóa các ải tiếp theo. Không thể bỏ qua (skip)!
             </p>
           </div>
 

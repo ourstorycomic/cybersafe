@@ -12,6 +12,7 @@ import {
   Sparkles,
   HeartHandshake,
   ArrowRight,
+  Zap,
 } from "lucide-react";
 
 export function PlatformIntroSection() {
@@ -209,7 +210,7 @@ export function PlatformIntroSection() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase flex items-center gap-2">
-              <span className="text-xl">🛡️</span>
+              <ShieldCheck className="w-5 h-5 text-sky-600" />
               <span>3 Biệt Đội Bảo Vệ Trọng Tâm</span>
             </h3>
             <span className="text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">
@@ -219,12 +220,12 @@ export function PlatformIntroSection() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {targetAudiences.map((target, idx) => {
-              const TargetIcon = target.icon;
               const squadThemes = [
-                { bg: "bg-sky-50 border-sky-300 text-sky-700", chip: "Gamer & Học sinh", emoji: "🎮" },
-                { bg: "bg-emerald-50 border-emerald-300 text-emerald-700", chip: "Gia đình an toàn", emoji: "👨‍👩‍👧" },
-                { bg: "bg-amber-50 border-amber-300 text-amber-700", chip: "Trợ thủ ông bà", emoji: "👴" },
-              ][idx] || { bg: "bg-blue-50 border-blue-300 text-blue-700", chip: target.highlight, emoji: "🛡️" };
+                { bg: "bg-sky-50 border-sky-300 text-sky-700", chip: "Gamer & Học sinh", icon: Gamepad2 },
+                { bg: "bg-emerald-50 border-emerald-300 text-emerald-700", chip: "Gia đình an toàn", icon: Users },
+                { bg: "bg-amber-50 border-amber-300 text-amber-700", chip: "Trợ thủ ông bà", icon: HeartHandshake },
+              ][idx] || { bg: "bg-blue-50 border-blue-300 text-blue-700", chip: target.highlight, icon: ShieldCheck };
+              const SquadIcon = squadThemes.icon;
 
               return (
                 <div
@@ -233,8 +234,8 @@ export function PlatformIntroSection() {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className={`w-12 h-12 rounded-2xl ${squadThemes.bg} border-2 flex items-center justify-center text-xl shadow-xs group-hover:scale-110 transition-transform`}>
-                        <span>{squadThemes.emoji}</span>
+                      <div className={`w-12 h-12 rounded-2xl ${squadThemes.bg} border-2 flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform`}>
+                        <SquadIcon className="w-6 h-6" />
                       </div>
                       <span className="text-xs font-black px-3 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200">
                         {target.highlight}
@@ -264,7 +265,7 @@ export function PlatformIntroSection() {
         <div className="space-y-4 pt-4 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase flex items-center gap-2">
-              <span className="text-xl">⚡</span>
+              <Zap className="w-5 h-5 text-amber-500" />
               <span>4 Siêu Năng Lực Hiệp Sĩ Nền Tảng</span>
             </h3>
             <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
