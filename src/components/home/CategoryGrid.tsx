@@ -177,11 +177,68 @@ export function CategoryGrid() {
           </p>
         </div>
 
-        {/* Grid Cards - Clean, Readable, Full uncropped illustrations */}
+        {/* Grid Cards: Elderly mode has dignified advisory cards; Child mode has illustrated game cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES_DATA.map((cat, idx) => {
             const iconConfig = CATEGORY_ICONS[idx % CATEGORY_ICONS.length];
             const Icon = iconConfig.icon;
+
+            if (isElderly) {
+              return (
+                <div
+                  key={cat.id}
+                  className="rounded-xl p-5 bg-white border border-slate-200 hover:border-blue-600 hover:shadow-sm transition-all duration-200 flex flex-col justify-between space-y-4 shadow-2xs"
+                >
+                  {/* Top Bar: Code & Severity */}
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 flex items-center justify-center shrink-0">
+                        <Icon className="w-4 h-4 text-blue-800" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-700">
+                        Chuyên mục {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200">
+                      Cảnh báo rủi ro
+                    </span>
+                  </div>
+
+                  {/* Title & Warning Bullet Points */}
+                  <div className="space-y-3 flex-1">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                      {cat.name}
+                    </h3>
+
+                    <div className="space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                      <div className="flex items-start gap-2">
+                        <span className="font-bold text-rose-700 shrink-0">Thủ đoạn:</span>
+                        <span className="text-slate-700 leading-relaxed font-normal">{cat.warningNote}</span>
+                      </div>
+                      <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60 text-xs">
+                        <span className="font-semibold text-slate-500">Đối tượng nhắm tới:</span>
+                        <span className="font-medium text-slate-800">{cat.vulnerableTarget}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom: Count & Action Button */}
+                  <div className="pt-2 flex items-center justify-between gap-3 text-xs">
+                    <span className="text-slate-500 font-medium">
+                      {cat.scenariosCount} tình huống mẫu
+                    </span>
+
+                    <Link
+                      href={`/play/chuong-${idx + 1}`}
+                      className="px-3.5 py-2 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer"
+                    >
+                      <span>Xem hướng dẫn</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            }
 
             return (
               <div
@@ -198,7 +255,7 @@ export function CategoryGrid() {
                   </span>
                 </div>
 
-                {/* Full Uncropped Illustration Image Display */}
+                {/* Full Uncropped Illustration Image Display for Child Mode */}
                 <div className="w-full h-40 rounded-xl bg-slate-50 border border-slate-100 p-2.5 flex items-center justify-center group-hover:bg-blue-50/20 transition-all">
                   <img
                     src={encodeURI(cat.imageUrl)}

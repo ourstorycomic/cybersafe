@@ -81,39 +81,38 @@ export function PlayElderlyView({
             return (
               <div
                 key={chapter.id}
-                className="rounded-2xl bg-white border border-slate-200 hover:border-blue-600 shadow-xs hover:shadow-md transition-all duration-200 p-5 sm:p-6 flex flex-col md:flex-row items-center gap-5 sm:gap-6 group"
+                className="rounded-xl bg-white border border-slate-200 hover:border-blue-600 shadow-2xs hover:shadow-xs transition-all duration-200 p-5 sm:p-6 flex flex-col md:flex-row items-start gap-5 sm:gap-6 group"
               >
-                {/* Ảnh minh họa rõ ràng */}
-                <div className="w-full md:w-48 h-40 sm:h-44 bg-slate-50 rounded-xl overflow-hidden p-2 flex items-center justify-center border border-slate-200 shrink-0">
-                  <img
-                    src={encodeURI(chapter.imageUrl)}
-                    alt={chapter.title}
-                    className="w-full h-full object-contain filter drop-shadow-xs select-none"
-                  />
+                {/* Topic Icon & Number Badge */}
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-900 border border-blue-200 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-6 h-6 text-blue-800" />
                 </div>
 
                 {/* Nội dung bài học */}
-                <div className="flex-1 space-y-2 text-center md:text-left">
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                    <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 border border-slate-200">
+                <div className="flex-1 space-y-2 text-left">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
                       Chuyên đề {idx + 1}
                     </span>
+                    <span className="text-xs text-slate-500 font-medium">
+                      ({chapterScenarios.length} tình huống thực tế)
+                    </span>
                     {isDone && (
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        ✓ Đã hoàn thành chuyên đề này
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        ✓ Đã hoàn thành
                       </span>
                     )}
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-snug">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
                     {chapter.title}
                   </h3>
 
-                  <p className="text-sm sm:text-base font-medium text-slate-700 leading-snug">
+                  <p className="text-sm font-medium text-slate-700 leading-snug">
                     {chapter.subtitle}
                   </p>
 
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
                     {chapter.description}
                   </p>
 
@@ -121,9 +120,9 @@ export function PlayElderlyView({
                   <div className="pt-2">
                     <Link
                       href={`/play/${chapter.id}`}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-base shadow-sm border border-blue-900 transition-colors cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-semibold text-sm transition-colors cursor-pointer"
                     >
-                      <span>Vào học chuyên đề này</span>
+                      <span>Xem tình huống & hướng dẫn xử lý</span>
                       <ArrowRight className="w-4 h-4 text-white" />
                     </Link>
                   </div>

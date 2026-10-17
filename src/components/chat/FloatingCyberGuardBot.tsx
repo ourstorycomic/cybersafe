@@ -169,19 +169,19 @@ export function FloatingCyberGuardBot() {
         <button
           ref={triggerButtonRef}
           onClick={handleToggle}
-          className={`shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer border-2 ${
+          className={`shadow-lg hover:shadow-xl transition-all flex items-center justify-center cursor-pointer ${
             userRole === "elderly"
-              ? "px-5 py-3.5 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-black text-base border-amber-300 gap-2.5 shadow-2xl"
-              : "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white border-white/80"
+              ? "px-4 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm border border-slate-700 gap-2"
+              : "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white border-2 border-white/80"
           }`}
           title="Trợ lý an toàn CyberGuard"
         >
           {isOpen ? (
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           ) : userRole === "elderly" ? (
             <>
-              <Bot className="w-6 h-6" />
-              <span className="whitespace-nowrap">Hỏi Trợ Lý An Toàn</span>
+              <Bot className="w-5 h-5 text-sky-400" />
+              <span className="whitespace-nowrap">Trợ lý An toàn Số</span>
             </>
           ) : (
             <Bot className="w-6 h-6 sm:w-7 sm:h-7" />

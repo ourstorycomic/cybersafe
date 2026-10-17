@@ -23,64 +23,79 @@ import {
  */
 function ElderlyHero({ onStart }: { onStart: () => void }) {
   return (
-    <section className="relative bg-gradient-to-b from-slate-50 via-white to-slate-50 border-b border-slate-200 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 text-slate-900">
-      <div className="max-w-4xl mx-auto space-y-8 sm:space-y-10">
+    <section className="relative bg-slate-50 border-b border-slate-200 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 text-slate-900">
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
         {/* Top badge */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 font-bold text-sm sm:text-base">
-            <ShieldCheck className="w-5 h-5 text-blue-700" />
-            <span>Nền tảng Hỗ trợ An toàn Số Dành cho Người lớn tuổi & Gia đình</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 font-semibold text-xs sm:text-sm">
+            <ShieldCheck className="w-4 h-4 text-blue-700" />
+            <span>Cổng Thông Tin & Thực Hành Phòng Chống Lừa Đảo Trực Tuyến</span>
           </div>
         </div>
 
         {/* Dignified Headline */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-snug">
-            Chủ động Nhận diện & Phòng ngừa{" "}
-            <span className="text-blue-700">Các Chiêu Trò Lừa Đảo</span> Qua Mạng
+        <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-snug">
+            Chủ Động Nhận Diện & Phòng Ngừa{" "}
+            <span className="text-blue-800">Các Chiêu Trò Lừa Đảo</span> Qua Mạng
           </h1>
-          <p className="text-lg sm:text-xl text-slate-700 font-medium leading-relaxed max-w-2xl mx-auto">
-            Kẻ gian thường thao túng tâm lý: gọi điện dọa nạt mạo danh Công an, báo con cấp cứu hoặc dụ dỗ trúng thưởng. Hãy luôn ghi nhớ 3 nguyên tắc an toàn:
+          <p className="text-base sm:text-lg text-slate-700 font-normal leading-relaxed max-w-2xl mx-auto">
+            Kẻ gian thường thao túng tâm lý: gọi điện dọa nạt mạo danh Công an, báo con cấp cứu hoặc dụ dỗ trúng thưởng. Kính mời Quý độc giả ghi nhớ 3 nguyên tắc an toàn:
           </p>
         </div>
 
         {/* 3 Nguyên tắc an toàn - Trình bày dạng thẻ thông tin thanh lịch */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
           {/* Rule 1 */}
-          <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-slate-300 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-black text-lg">
-              1
+          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
+                Nguyên tắc 01
+              </span>
+              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
+                I
+              </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-900">
-              Bình tĩnh Tạm dừng
+            <h3 className="text-base font-bold text-slate-900">
+              Bình tĩnh & Tạm dừng
             </h3>
-            <p className="text-base text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-600 leading-relaxed font-normal">
               Không hoảng sợ trước lời giục giã, dọa nạt bắt giam. Tuyệt đối không bấm vào các đường liên kết lạ gửi qua tin nhắn.
             </p>
           </div>
 
           {/* Rule 2 */}
-          <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-slate-300 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-lg">
-              2
+          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
+                Nguyên tắc 02
+              </span>
+              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
+                II
+              </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-base font-bold text-slate-900">
               Xác minh Độc lập
             </h3>
-            <p className="text-base text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-600 leading-relaxed font-normal">
               Cúp máy ngay lập tức. Gọi điện thoại trực tiếp cho con cháu hoặc liên hệ Công an khu vực theo số điện thoại đã biết từ trước.
             </p>
           </div>
 
           {/* Rule 3 */}
-          <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-slate-300 transition-all space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-lg">
-              3
+          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
+                Nguyên tắc 03
+              </span>
+              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
+                III
+              </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-base font-bold text-slate-900">
               Không Chuyển Tiền & OTP
             </h3>
-            <p className="text-base text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-600 leading-relaxed font-normal">
               Cơ quan điều tra không làm việc hay yêu cầu chuyển tiền qua điện thoại. Không bao giờ cung cấp mã OTP ngân hàng cho bất kỳ ai.
             </p>
           </div>
@@ -90,15 +105,15 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
         <div className="pt-2 flex flex-col items-center gap-3">
           <button
             onClick={onStart}
-            className="w-full sm:w-auto px-8 sm:px-10 py-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-lg sm:text-xl shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all active:translate-y-0.5"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-semibold text-base sm:text-lg shadow-xs flex items-center justify-center gap-2.5 cursor-pointer transition-colors"
           >
             <span>Bắt đầu Luyện tập Nhận diện Tình huống</span>
             <ArrowRight className="w-5 h-5 text-white" />
           </button>
 
-          <p className="text-sm sm:text-base font-medium text-slate-600 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            Nền tảng cộng đồng phi lợi nhuận • Tuyệt đối bảo mật và không yêu cầu mật khẩu
+          <p className="text-xs sm:text-sm font-normal text-slate-600 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            Nền tảng cộng đồng phi lợi nhuận • Tuyệt đối bảo mật và không yêu cầu thông tin cá nhân
           </p>
         </div>
       </div>

@@ -120,24 +120,24 @@ export function DemoQuizSection() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border bg-blue-50 border-blue-200 text-blue-800">
-            <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
-            <span>Trải Nghiệm Thử Ngay (Không Cần Đăng Nhập)</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border bg-blue-50 border-blue-200 text-blue-900">
+            <HelpCircle className="w-3.5 h-3.5 text-blue-700" />
+            <span>{isElderly ? "Tình Huống Trực Quan • Trải Nghiệm Trực Tiếp" : "Trải Nghiệm Thử Ngay (Không Cần Đăng Nhập)"}</span>
           </div>
           <h2 className={
             isElderly 
               ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
               : "text-3xl sm:text-4xl font-black text-slate-900 tracking-tight"
           }>
-            {isElderly ? "Bài Tập Thực Hành Mẫu Nhận Diện Tình Huống" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
+            {isElderly ? "Tình Huống Minh Họa & Hướng Dẫn Phòng Ngừa" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
           </h2>
           <p className={
             isElderly 
-              ? "text-base sm:text-lg text-slate-600 font-medium"
+              ? "text-base sm:text-lg text-slate-600 font-normal leading-relaxed"
               : "text-sm sm:text-base text-slate-600 font-medium"
           }>
             {isElderly 
-              ? "Quý độc giả hãy lựa chọn phương án xử lý an toàn nhất trong tình huống giả định sau:"
+              ? "Kính mời Quý độc giả theo dõi tình huống giả định và lựa chọn phương án xử lý an toàn nhất:"
               : "Thử tài nhận diện bẫy thao túng tâm lý và dấu hiệu lừa đảo phổ biến trước khi vào trọn bộ 39 ải:"}
           </p>
 
@@ -148,13 +148,17 @@ export function DemoQuizSection() {
                 key={demo.id}
                 type="button"
                 onClick={() => handleSwitchQuestion(idx)}
-                className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs sm:text-sm ${
+                className={`px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer text-xs sm:text-sm ${
                   activeDemoIdx === idx
-                    ? "bg-white text-blue-700 shadow-xs border border-slate-200 font-bold"
+                    ? "bg-white text-blue-800 shadow-xs border border-slate-200 font-bold"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {demo.badge}
+                {isElderly
+                  ? idx === 0
+                    ? "Tình huống 1: Mạo danh Công an"
+                    : "Tình huống 2: Mạo danh Ngân hàng"
+                  : demo.badge}
               </button>
             ))}
           </div>
@@ -177,7 +181,7 @@ export function DemoQuizSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start rounded-2xl p-5 sm:p-7 shadow-xs border border-slate-200 bg-white">
           {/* Left: Device Simulator Mockup */}
           <div className="lg:col-span-5 space-y-2.5">
-            <div className="uppercase font-bold text-xs text-slate-500 flex items-center gap-1.5">
+            <div className="uppercase font-semibold text-xs text-slate-500 flex items-center gap-1.5">
               <ShieldAlert className="w-4 h-4 text-rose-600" />
               <span>Tình huống giả định</span>
             </div>
@@ -215,10 +219,10 @@ export function DemoQuizSection() {
             <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 uppercase tracking-wider inline-block px-2.5 py-0.5 rounded-md">
+                  <span className="text-xs font-semibold text-blue-900 bg-blue-50 border border-blue-200 uppercase tracking-wider inline-block px-2.5 py-0.5 rounded-md">
                     {currentScenario.title}
                   </span>
-                  <span className="text-xs font-bold text-slate-500">
+                  <span className="text-xs font-semibold text-slate-500">
                     ({activeDemoIdx + 1}/{demoScenarios.length})
                   </span>
                 </div>
@@ -229,11 +233,11 @@ export function DemoQuizSection() {
 
               {/* [Time] badge as explicitly specified in wireframe top-right */}
               <div
-                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 font-mono text-xs font-bold shadow-2xs"
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs font-semibold shadow-2xs"
                 title="Thời gian làm bài"
               >
-                <Clock className="w-3.5 h-3.5 text-amber-700" />
-                <span>01:30</span>
+                <Clock className="w-3.5 h-3.5 text-slate-600" />
+                <span>{isElderly ? "Thong thả suy xét" : "01:30"}</span>
               </div>
             </div>
 
@@ -271,7 +275,7 @@ export function DemoQuizSection() {
                     >
                       {letter}
                     </span>
-                    <span className="text-sm sm:text-base leading-relaxed text-slate-800 font-medium">
+                    <span className="text-sm sm:text-base leading-relaxed text-slate-800 font-normal">
                       {opt.text}
                     </span>
                   </button>
@@ -281,8 +285,10 @@ export function DemoQuizSection() {
 
             {/* Action Toolbar: [Pre] [Next] [Nộp] exactly as drawn in wireframe */}
             <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-slate-100">
-              <span className="text-xs text-slate-500 italic font-medium">
-                * Nộp xong mới xem được đáp án và giải thích
+              <span className="text-xs text-slate-500 italic font-normal">
+                {isElderly
+                  ? "* Chọn phương án và nhấn 'Nộp bài' để xem phân tích chi tiết & khuyến nghị an toàn."
+                  : "* Nộp xong mới xem được đáp án và giải thích"}
               </span>
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -290,21 +296,21 @@ export function DemoQuizSection() {
                   type="button"
                   disabled={activeDemoIdx === 0}
                   onClick={() => handleSwitchQuestion(activeDemoIdx - 1)}
-                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-1 transition-colors cursor-pointer"
-                  title="Câu trước (Previous)"
+                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Tình huống trước (Pre)"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Pre</span>
+                  <span>{isElderly ? "Trước" : "Pre"}</span>
                 </button>
 
                 <button
                   type="button"
                   disabled={activeDemoIdx === demoScenarios.length - 1}
                   onClick={() => handleSwitchQuestion(activeDemoIdx + 1)}
-                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-1 transition-colors cursor-pointer"
-                  title="Câu tiếp theo (Next)"
+                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Tình huống tiếp theo (Next)"
                 >
-                  <span>Next</span>
+                  <span>{isElderly ? "Tiếp" : "Next"}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
@@ -312,11 +318,11 @@ export function DemoQuizSection() {
                   type="button"
                   disabled={selectedOption === null || submitted}
                   onClick={handleSubmit}
-                  className="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs sm:text-sm shadow-sm cursor-pointer transition-all flex items-center gap-1.5"
-                  title="Nộp bài"
+                  className="px-5 py-2.5 rounded-xl bg-blue-800 hover:bg-blue-900 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-xs sm:text-sm shadow-xs cursor-pointer transition-colors flex items-center gap-1.5"
+                  title="Nộp bài và kiểm tra"
                 >
                   <CheckCircle className="w-4 h-4" />
-                  <span>Nộp</span>
+                  <span>{isElderly ? "Nộp bài & Xem giải thích" : "Nộp"}</span>
                 </button>
               </div>
             </div>

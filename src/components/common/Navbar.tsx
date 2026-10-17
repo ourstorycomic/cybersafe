@@ -44,15 +44,15 @@ function ElderlyNavbar() {
         <div className="flex items-center justify-between h-18 sm:h-20">
           {/* Logo trang trọng cho người lớn tuổi */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-800 text-white flex items-center justify-center shadow-xs">
               <Shield className="w-6 h-6" />
             </div>
             <div>
               <span className="font-bold text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-1.5">
-                CyberSafe <span className="text-blue-700">Quest</span>
+                CyberSafe <span className="text-blue-800">Quest</span>
               </span>
-              <span className="text-xs text-slate-500 font-semibold block -mt-0.5">
-                Giao diện Dễ đọc & Trợ năng
+              <span className="text-xs text-slate-500 font-medium block -mt-0.5">
+                Cổng Thông Tin & Phòng Chống Lừa Đảo Số
               </span>
             </div>
           </Link>
@@ -67,9 +67,9 @@ function ElderlyNavbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+                  className={`px-3.5 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${
                     isActive
-                      ? "bg-blue-50 text-blue-800 border border-blue-200"
+                      ? "bg-blue-50 text-blue-900 border border-blue-200"
                       : "text-slate-700 hover:text-slate-950 hover:bg-slate-100"
                   }`}
                 >
@@ -85,22 +85,22 @@ function ElderlyNavbar() {
             <button
               type="button"
               onClick={() => setUserRole("child")}
-              className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs sm:text-sm font-bold cursor-pointer transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
+              className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
               title="Chuyển sang giao diện Trẻ em / Học sinh"
             >
-              <span>🧒</span>
-              <span>Giao diện Trẻ em</span>
+              <Gamepad2 className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Chế độ: Học Sinh & Trẻ Em</span>
             </button>
 
             {/* Auth Button */}
             {user ? (
               <div className="flex items-center gap-2">
-                <span className="hidden lg:inline text-sm font-bold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                <span className="hidden lg:inline text-sm font-semibold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                   {profile?.display_name || user.email?.split("@")[0] || "Học Viên"}
                 </span>
                 <button
                   onClick={() => signOut()}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm shadow-xs cursor-pointer transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                  className="px-3.5 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs sm:text-sm shadow-xs cursor-pointer transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
                 >
                   <LogOut className="w-4 h-4 text-white" />
                   <span>Đăng Xuất</span>

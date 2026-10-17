@@ -40,27 +40,27 @@ const DemographicContext = createContext<DemographicContextType | undefined>(und
 export const THEME_CONFIGS: Record<UserRole, DemographicThemeConfig> = {
   elderly: {
     role: "elderly",
-    // Typography: Phóng to toàn bộ font chữ, tối thiểu text-lg cho body, text-3xl/4xl cho heading
-    bodyText: "text-lg sm:text-xl font-bold text-slate-950 leading-relaxed",
-    subText: "text-base sm:text-lg font-semibold text-slate-800 leading-normal",
-    headingText: "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight",
-    cardTitleText: "text-xl sm:text-2xl font-black text-slate-950 leading-snug",
-    // Nút bấm khổng lồ, cao, dễ bấm, tương phản siêu cao
+    // Typography: Cỡ chữ tiêu chuẩn, rõ ràng, thoáng đãng, chỉn chu (không phóng to quá lố kiểu trẻ con)
+    bodyText: "text-base sm:text-lg font-normal text-slate-800 leading-relaxed",
+    subText: "text-sm sm:text-base font-normal text-slate-600 leading-normal",
+    headingText: "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-snug",
+    cardTitleText: "text-lg sm:text-xl font-bold text-slate-900 leading-snug",
+    // Nút bấm trang nhã, kích thước chuẩn công sở/chính thống, không bo tròn bong bóng
     btnPrimary:
-      "py-5 px-8 text-xl sm:text-2xl font-black bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white rounded-3xl shadow-lg border-2 border-blue-900 hover:scale-[1.01] transition-transform cursor-pointer",
+      "px-6 py-3.5 text-base sm:text-lg font-semibold bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white rounded-xl shadow-xs transition-colors cursor-pointer text-center",
     btnSecondary:
-      "py-4 px-6 text-lg sm:text-xl font-extrabold bg-amber-100 hover:bg-amber-200 text-slate-950 rounded-2xl border-2 border-amber-400 cursor-pointer transition-colors",
+      "px-5 py-3 text-base font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl border border-slate-300 transition-colors cursor-pointer text-center",
     optionCard:
-      "p-5 sm:p-6 rounded-3xl border-3 border-slate-400 bg-white hover:bg-amber-50 hover:border-blue-600 transition-all cursor-pointer shadow-sm",
+      "p-4 sm:p-5 rounded-xl border border-slate-300 bg-white hover:bg-blue-50/40 hover:border-blue-600 transition-all cursor-pointer shadow-xs",
     badgeStyle:
-      "px-4 py-1.5 rounded-full bg-amber-100 text-amber-950 border-2 border-amber-300 font-black text-sm uppercase tracking-wide",
-    // Tương phản cao: Nền dịu mắt, chữ đen đậm
-    pageBg: "bg-amber-50/20",
+      "px-3 py-1 rounded-md bg-blue-50 text-blue-900 border border-blue-200 font-semibold text-xs uppercase tracking-wide",
+    // Giao diện trung tính, tương phản cao, trang nhã
+    pageBg: "bg-slate-50",
     cardBg: "bg-white",
-    cardBorder: "border-2 border-slate-300 shadow-md",
-    roleName: "Người Cao Tuổi",
-    roleIcon: "👴",
-    mascotGreeting: "Kính chào Bác! Cháu là CyberSafe. Bác hãy chọn nút bấm to bên dưới để cháu hướng dẫn từng bước an toàn nhé.",
+    cardBorder: "border border-slate-200 shadow-xs",
+    roleName: "Người Cao Tuổi & Gia Đình",
+    roleIcon: "🛡️",
+    mascotGreeting: "Kính chào Quý độc giả! Hệ thống hỗ trợ tra cứu và hướng dẫn nhận diện các thủ đoạn lừa đảo qua mạng.",
   },
   child: {
     role: "child",
@@ -90,7 +90,7 @@ export const THEME_CONFIGS: Record<UserRole, DemographicThemeConfig> = {
 
 export function DemographicProvider({ children }: { children: React.ReactNode }) {
   const { profile } = useAuth();
-  const [userRole, setUserRoleState] = useState<UserRole>("child");
+  const [userRole, setUserRoleState] = useState<UserRole>("elderly");
   const [hasInitialized, setHasInitialized] = useState(false);
 
   // 1. Tải trạng thái từ localStorage
@@ -100,7 +100,7 @@ export function DemographicProvider({ children }: { children: React.ReactNode })
       if (savedRole === "child" || savedRole === "elderly") {
         setUserRoleState(savedRole);
       } else {
-        // Mặc định ban đầu
+        // Mặc định ban đầu: Người cao tuổi
         setUserRoleState("elderly");
       }
       setHasInitialized(true);
