@@ -300,7 +300,7 @@ function ChildNavbar() {
                 className="px-3.5 xl:px-4 py-1.5 xl:py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs shadow-xs border-b-2 border-emerald-700 active:border-b-0 active:translate-y-0.5 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0"
               >
                 <LogIn className="w-3.5 h-3.5 shrink-0" />
-                <span>Vào Game</span>
+                <span>Bắt Đầu Ngay</span>
               </button>
             )}
           </div>

@@ -197,14 +197,14 @@ function ChildFooter() {
               <Shield className="w-7 h-7 text-white" />
             </div>
             <div>
-              <div className="text-xs font-black uppercase text-blue-700 tracking-wider">
-                BẢN QUYỀN HIỆP SĨ SỐ NHÍ
+              <div className="text-xs font-bold uppercase text-blue-700 tracking-wider">
+                NỀN TẢNG AN TOÀN SỐ DÀNH CHO HỌC SINH
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">
-                Cùng Phá Án & Giữ Không Gian Mạng Xanh Sạch!
+                Chung Tay Xây Dựng Không Gian Mạng An Toàn & Lành Mạnh
               </h3>
               <p className="text-xs text-slate-600 font-medium mt-0.5">
-                Hoàn thành 39 ải thử thách để tích lũy XP và leo Top 1 Thám Tử Toàn Quốc.
+                Rèn luyện 39 tình huống thực tế để nhận diện nguy cơ và bảo vệ tài khoản cá nhân an toàn.
               </p>
             </div>
           </div>
@@ -215,7 +215,7 @@ function ChildFooter() {
               className="px-5 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm shadow-xs flex items-center gap-2 cursor-pointer transition-colors"
             >
               <Gamepad2 className="w-4 h-4 text-white" />
-              <span>Vào Vượt Ải Ngay</span>
+              <span>Vào Luyện Tập Ngay</span>
             </Link>
           </div>
         </div>
@@ -223,20 +223,20 @@ function ChildFooter() {
         {/* Navigation */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-slate-600 pt-2 border-t border-slate-100">
           <div>
-            <h4 className="text-sm font-bold text-slate-900 uppercase mb-3">Vùng Đất Ải</h4>
+            <h4 className="text-sm font-bold text-slate-900 uppercase mb-3">Chủ Đề Rèn Luyện</h4>
             <ul className="space-y-2">
-              <li><Link href="/play" className="hover:text-blue-700">Ải Giả Mạo Công Quyền</Link></li>
-              <li><Link href="/play" className="hover:text-blue-700">Ải Giả Mạo Ngân Hàng</Link></li>
-              <li><Link href="/play" className="hover:text-blue-700">Ải Bẫy Game & Nạp VIP</Link></li>
-              <li><Link href="/play" className="hover:text-blue-700">Ải Deepfake Video Call</Link></li>
+              <li><Link href="/play" className="hover:text-blue-700">Tình Huống Giả Mạo Cơ Quan</Link></li>
+              <li><Link href="/play" className="hover:text-blue-700">Tình Huống Giả Mạo Ngân Hàng</Link></li>
+              <li><Link href="/play" className="hover:text-blue-700">Tình Huống Mạng Xã Hội & Game</Link></li>
+              <li><Link href="/play" className="hover:text-blue-700">Cảnh Giác Deepfake Video</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-900 uppercase mb-3">Vũ Khí Hiệp Sĩ</h4>
+            <h4 className="text-sm font-bold text-slate-900 uppercase mb-3">Công Cụ Hỗ Trợ</h4>
             <ul className="space-y-2">
               <li><Link href="/chatbot" className="hover:text-blue-700">Trợ Lý AI CyberGuard</Link></li>
               <li><Link href="/guide" className="hover:text-blue-700">Cẩm Nang 4 Bước An Toàn</Link></li>
-              <li><Link href="/play" className="hover:text-blue-700">Bảng Xếp Hạng Top 10</Link></li>
+              <li><Link href="/play" className="hover:text-blue-700">Bảng Vàng Chiến Tích</Link></li>
             </ul>
           </div>
           <div>

@@ -192,17 +192,17 @@ export function PlatformIntroSection() {
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white text-slate-900 border-b border-slate-200 relative overflow-hidden">
       <div className="max-w-6xl mx-auto space-y-10 sm:space-y-14">
-        {/* Header Gaming */}
+        {/* Header Gaming / Child */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border-2 border-amber-300 text-amber-900 font-black text-xs uppercase tracking-wider">
-            <Sparkles className="w-4 h-4 text-amber-600 animate-spin" />
-            <span>Trạm Chỉ Huy Hiệp Sĩ Số • Sứ Mệnh Bảo Vệ Mạng</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-300 text-sky-900 font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-sky-600" />
+            <span>Khung Năng Lực Số • Dành Cho Học Sinh</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight uppercase">
-            Học Thật Vui — <span className="text-sky-600">Bắt Bẫy Thật Chuẩn!</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+            Học Trực Quan — <span className="text-sky-600">Phản Xạ An Toàn Trên Không Gian Mạng</span>
           </h2>
           <p className="text-sm sm:text-base text-slate-600 font-semibold leading-relaxed">
-            Nền tảng trang bị siêu năng lực nhận diện lừa đảo, rèn phản xạ tự bảo vệ bản thân và gia đình trước kẻ gian công nghệ cao.
+            Mô phỏng các tình huống thực tế giúp học sinh tự trang bị kỹ năng nhận diện nguy cơ, bảo vệ tài khoản cá nhân và dữ liệu riêng tư.
           </p>
         </div>
 
@@ -211,7 +211,7 @@ export function PlatformIntroSection() {
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-sky-600" />
-              <span>3 Biệt Đội Bảo Vệ Trọng Tâm</span>
+              <span>3 Nhóm Người Dùng Trọng Tâm Của Đề Tài</span>
             </h3>
             <span className="text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200">
               Phục vụ cộng đồng số
@@ -221,9 +221,9 @@ export function PlatformIntroSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {targetAudiences.map((target, idx) => {
               const squadThemes = [
-                { bg: "bg-sky-50 border-sky-300 text-sky-700", chip: "Gamer & Học sinh", icon: Gamepad2 },
+                { bg: "bg-sky-50 border-sky-300 text-sky-700", chip: "Học sinh & Thanh thiếu niên", icon: Gamepad2 },
                 { bg: "bg-emerald-50 border-emerald-300 text-emerald-700", chip: "Gia đình an toàn", icon: Users },
-                { bg: "bg-amber-50 border-amber-300 text-amber-700", chip: "Trợ thủ ông bà", icon: HeartHandshake },
+                { bg: "bg-amber-50 border-amber-300 text-amber-700", chip: "Người cao tuổi", icon: HeartHandshake },
               ][idx] || { bg: "bg-blue-50 border-blue-300 text-blue-700", chip: target.highlight, icon: ShieldCheck };
               const SquadIcon = squadThemes.icon;
 
@@ -253,7 +253,7 @@ export function PlatformIntroSection() {
 
                   <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-bold text-sky-700">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Nhiệm vụ: {squadThemes.chip}</span>
+                    <span>Đối tượng: {squadThemes.chip}</span>
                   </div>
                 </div>
               );
@@ -261,15 +261,15 @@ export function PlatformIntroSection() {
           </div>
         </div>
 
-        {/* 4 Siêu Năng Lực Nền Tảng (Core Features) */}
+        {/* 4 Tính Năng Hỗ Trợ Học Tập Cốt Lõi (Core Features) */}
         <div className="space-y-4 pt-4 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase flex items-center gap-2">
               <Zap className="w-5 h-5 text-amber-500" />
-              <span>4 Siêu Năng Lực Hiệp Sĩ Nền Tảng</span>
+              <span>4 Tính Năng Hỗ Trợ Học Tập Cốt Lõi</span>
             </h3>
             <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-              Full tính năng mở khóa
+              Hệ thống tích hợp đầy đủ
             </span>
           </div>
 
@@ -277,10 +277,10 @@ export function PlatformIntroSection() {
             {coreFeatures.map((feat, idx) => {
               const Icon = feat.icon;
               const cardIcons = [
-                { color: "text-sky-600 bg-sky-50 border-sky-300", badge: "39 Ải Thử Thách", perk: "+500 XP Leo Rank" },
-                { color: "text-purple-600 bg-purple-50 border-purple-300", badge: "Trợ Lý AI Siêu Tốc", perk: "Soi bẫy 3s" },
-                { color: "text-emerald-600 bg-emerald-50 border-emerald-300", badge: "11 Bí Kíp Phòng Vệ", perk: "Dữ liệu thực tế" },
-                { color: "text-amber-600 bg-amber-50 border-amber-300", badge: "Bảng Vàng Chiến Tích", perk: "Chứng chỉ KHKT" },
+                { color: "text-sky-600 bg-sky-50 border-sky-300", badge: "39 Ải Tình Huống", perk: "Học qua tương tác" },
+                { color: "text-purple-600 bg-purple-50 border-purple-300", badge: "Trợ Lý Phân Tích AI", perk: "Phát hiện rủi ro" },
+                { color: "text-emerald-600 bg-emerald-50 border-emerald-300", badge: "11 Cẩm Nang Phòng Vệ", perk: "Dữ liệu thực tế" },
+                { color: "text-amber-600 bg-amber-50 border-amber-300", badge: "Đánh Giá Năng Lực", perk: "Chứng chỉ KHKT" },
               ][idx] || { color: "text-blue-600 bg-blue-50 border-blue-300", badge: feat.badge, perk: "Tính năng" };
 
               return (

@@ -165,9 +165,9 @@ export function CategoryGrid() {
           <h2 className={
             isElderly
               ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
-              : "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight uppercase"
+              : "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight"
           }>
-            {isElderly ? "11 Nhóm Chiêu Thức Lừa Đảo Thường Gặp & Cách Nhận Diện" : "11 Chiêu Trò Cần Tiêu Diệt & Vượt Qua"}
+            {isElderly ? "11 Nhóm Chiêu Thức Lừa Đảo Thường Gặp & Cách Nhận Diện" : "11 Tình Huống Cảnh Giác Cần Nhận Biết"}
           </h2>
           <p className={
             isElderly
@@ -176,7 +176,7 @@ export function CategoryGrid() {
           }>
             {isElderly
               ? "Được tổng hợp từ các vụ việc thực tế để Quý độc giả và gia đình dễ dàng đối chiếu, nhận diện và chủ động phòng ngừa:"
-              : "Khám phá vũ khí và điểm yếu của từng trùm lừa đảo: từ mạo danh công an, hack acc game đến link bẫy Robux!"}
+              : "Tổng hợp các chiêu trò lừa đảo mạo danh, bẫy liên kết độc hại và đánh cắp tài khoản để học sinh chủ động phòng ngừa:"}
           </p>
         </div>
 
@@ -300,7 +300,7 @@ export function CategoryGrid() {
                     className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-black text-xs sm:text-sm border-b-4 border-sky-700 active:border-b-0 active:translate-y-1 shadow-sm transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
                   >
                     <Sword className="w-4 h-4" />
-                    <span>Đột Kích Ải!</span>
+                    <span>Vào Thử Thách</span>
                   </Link>
                 </div>
               </div>

@@ -296,37 +296,37 @@ function ChildHero({ onStart }: { onStart: () => void }) {
   const demoTraps = [
     {
       id: "trap-robux",
-      label: "Tặng 10.000 Robux 0đ",
+      label: "Bẫy nhận quà & Nạp vật phẩm 0 đồng",
       icon: Gift,
       iconColor: "text-purple-600",
-      sender: "Bot Nạp Quà Roblox",
-      message: "Chúc mừng! Bạn trúng 10.000 Robux miễn phí. Bấm vào link nhanqua-roblox2026.vip và nhập nick + mật khẩu ngay!",
-      redFlag: "Link giả mạo (.vip), đòi nhập MẬT KHẨU tài khoản game!",
-      solution: "Bẫy lừa đảo câu pass (Phishing)! Tuyệt đối KHÔNG nhập mật khẩu.",
+      sender: "Tin nhắn tự động lạ",
+      message: "Chúc mừng! Bạn đã nhận được gói quà tặng 10.000 vật phẩm game miễn phí. Bấm vào liên kết nhanqua-game.vip và nhập tài khoản + mật khẩu để nhận ngay!",
+      redFlag: "Liên kết giả mạo (.vip), đòi hỏi nhập MẬT KHẨU tài khoản cá nhân!",
+      solution: "Bẫy lừa đảo chiếm đoạt tài khoản (Phishing)! Tuyệt đối KHÔNG nhập mật khẩu vào trang web lạ.",
       xpReward: 50,
       badgeColor: "bg-rose-500",
     },
     {
       id: "trap-ban",
-      label: "Dọa khóa nick trong 15p",
+      label: "Tin nhắn đe dọa khóa tài khoản khẩn cấp",
       icon: AlertTriangle,
       iconColor: "text-amber-600",
-      sender: "Admin Game Giả Mạo",
-      message: "Cảnh báo: Nick của bạn bị tố cáo gian lận. Truy cập hotro-khoa-acc.top để xác minh, nếu không nick sẽ bị xóa vĩnh viễn!",
-      redFlag: "Tạo áp lực sợ hãi gấp rút 15 phút để bạn hoảng loạn click link!",
-      solution: "Admin game thật KHÔNG BAO GIỜ nhắn tin dọa xóa nick qua link lạ.",
+      sender: "Kẻ mạo danh Quản trị viên",
+      message: "Cảnh báo khẩn: Tài khoản của bạn bị tố cáo vi phạm. Hãy truy cập hotro-xacminh.top trong 15 phút để xác nhận, nếu không tài khoản sẽ bị xóa vĩnh viễn!",
+      redFlag: "Tạo áp lực tâm lý hoang mang, hối thúc thời gian gấp để nạn nhân mất bình tĩnh!",
+      solution: "Ban quản trị chính thống KHÔNG BAO GIỜ yêu cầu gửi mật khẩu hay xác minh qua tin nhắn riêng.",
       xpReward: 50,
       badgeColor: "bg-amber-500",
     },
     {
       id: "trap-money",
-      label: "Bạn quen mượn tiền nạp thẻ",
+      label: "Tin nhắn mượn tiền từ tài khoản bạn bè bị hack",
       icon: CreditCard,
       iconColor: "text-emerald-600",
-      sender: "Zalo Bạn Thân (Bị Hack)",
-      message: "Ê bạn ơi, nick tớ đang kẹt tiền nạp game, chuyển khoản giúp tớ 200k vào số này tí tớ trả lại gấp đôi nhé!",
-      redFlag: "Tài khoản bạn bè bị hack chiếm quyền điều khiển để đi vay mượn tiền!",
-      solution: "Gọi điện thoại di động trực tiếp để kiểm tra xem có đúng bạn mình không.",
+      sender: "Tài khoản mạng xã hội của bạn bè (bị chiếm quyền)",
+      message: "Cậu ơi, tài khoản của tớ đang bị kẹt tiền, cậu chuyển khoản giúp tớ 100k vào số này nhé, lát tớ gửi lại ngay!",
+      redFlag: "Tài khoản bạn bè bị kẻ gian chiếm quyền điều khiển để nhắn tin vay mượn tiền hàng loạt!",
+      solution: "Luôn gọi điện thoại trực tiếp hoặc gặp mặt trực tiếp để xác minh trước khi gửi tiền hay chuyển khoản.",
       xpReward: 50,
       badgeColor: "bg-purple-500",
     },
@@ -354,16 +354,16 @@ function ChildHero({ onStart }: { onStart: () => void }) {
           {/* Mission Tag Header */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-300 text-sky-900 font-bold text-xs sm:text-sm shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-            <span>Đấu trường Hiệp Sĩ Số • Rèn phản xạ phá bẫy</span>
+            <span>Nền tảng rèn luyện an toàn số • Dành cho học sinh</span>
           </div>
 
           {/* Game Title: Punchy & Bold */}
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight uppercase text-slate-900">
-              Săn Lùng Kẻ Gian, <span className="text-sky-600 underline decoration-amber-400 decoration-wavy">Giữ Nick Game</span> & Phá 39 Bẫy!
+              Rèn Luyện Bản Lĩnh Số, <span className="text-sky-600 underline decoration-amber-400 decoration-wavy">Bảo Vệ Tài Khoản</span> & Vượt 39 Thử Thách!
             </h1>
             <p className="text-base sm:text-lg text-slate-600 font-semibold leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Nhập vai Thám Tử Số, bóc trần chiêu trò câu trộm mật khẩu, link lừa Robux 0 đồng và tin nhắn mượn tiền giả mạo!
+              Học cách nhận diện liên kết độc hại, chiêu trò đánh cắp mật khẩu và tin nhắn lừa đảo mượn tiền qua các tình huống tương tác thực tế.
             </p>
           </div>
 
@@ -405,7 +405,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
               className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-base sm:text-lg shadow-lg border-b-6 border-emerald-700 active:border-b-0 active:translate-y-1.5 transition-all cursor-pointer flex items-center justify-center gap-3"
             >
               <Play className="w-5 h-5 fill-current" />
-              <span>VÀO PHÁ ÁN NGAY (+100 XP)</span>
+              <span>BẮT ĐẦU VƯỢT ẢI (+100 XP)</span>
               <ArrowRight className="w-5 h-5 text-white" />
             </button>
 
@@ -415,7 +415,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
               className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border-2 border-slate-300 border-b-4 border-slate-400 active:border-b-2 active:translate-y-0.5 shadow-xs transition-all flex items-center justify-center gap-2"
             >
               <Timer className="w-4 h-4 text-amber-600" />
-              <span>Thử Thách Nhanh 30s</span>
+              <span>Thử Thách Phản Xạ 30s</span>
             </a>
           </div>
         </div>
@@ -431,10 +431,10 @@ function ChildHero({ onStart }: { onStart: () => void }) {
                 </div>
                 <div>
                   <h3 className="font-black text-sm sm:text-base text-slate-900">
-                    Máy Soi Bẫy Lừa Đảo Mini
+                    Mô Phỏng Nhận Diện Tình Huống
                   </h3>
                   <span className="text-[11px] text-sky-700 font-bold">
-                    Click thử 3 bẫy bên dưới để soi ngay!
+                    Bấm chọn 3 tình huống mẫu bên dưới để xem phân tích:
                   </span>
                 </div>
               </div>
