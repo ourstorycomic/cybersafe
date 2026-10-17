@@ -132,7 +132,7 @@ export default function PlayPage() {
   // 1. Kiểm tra trạng thái đăng nhập bắt buộc theo yêu cầu đề tài
   if (!user) {
     return (
-      <div className="min-h-[80vh] bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-[80vh] bg-white flex items-center justify-center p-4">
         <div className="max-w-md w-full p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-xl text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-700 mx-auto flex items-center justify-center shadow-inner">
             <Lock className="w-8 h-8" />
@@ -184,7 +184,7 @@ export default function PlayPage() {
   // 2. PHÂN TÁCH GIAO DIỆN HOÀN TOÀN: PlayElderlyView (Người Cao Tuổi)
   if (userRole === "elderly") {
     return (
-      <div className="min-h-screen bg-amber-50/20 text-slate-950 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-white text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
         <PreTestModal
           isOpen={showPreTestModal}
           onComplete={handlePreTestComplete}
@@ -216,7 +216,7 @@ export default function PlayPage() {
 
   // 3. PHÂN TÁCH GIAO DIỆN HOÀN TOÀN: PlayChildView (Trẻ Em & Học Sinh - Gaming Dashboard)
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       {/* Pre-Test Modal xuất hiện ở lần đăng nhập đầu tiên */}
       <PreTestModal
         isOpen={showPreTestModal}

@@ -23,7 +23,7 @@ export function QuickMiniChallenge() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-blue-50/50 border-b border-slate-200">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
       <div className="max-w-5xl mx-auto p-6 sm:p-10 rounded-3xl bg-white border border-slate-200 shadow-sm relative overflow-hidden space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-5 border-b border-slate-200">

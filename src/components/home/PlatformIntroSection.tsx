@@ -187,20 +187,20 @@ export function PlatformIntroSection() {
     );
   }
 
-  // Child / Standard View
+  // Child / Standard View (Pure White Theme)
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white border-b border-slate-800">
-      <div className="max-w-6xl mx-auto space-y-16">
+    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white text-slate-900 border-b border-slate-200">
+      <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/15 border border-sky-400/30 text-sky-300 font-black text-xs uppercase tracking-wider">
-            <Target className="w-4 h-4 text-sky-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-900 font-bold text-xs uppercase tracking-wider">
+            <Target className="w-4 h-4 text-blue-700" />
             <span>Mục Tiêu & Sứ Mệnh Nền Tảng</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
             Nền Tảng Trò Chơi Hỗ Trợ Cộng Đồng
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-medium leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed">
             Phát hiện và phòng ngừa các hình thức lừa đảo trực tuyến tại Việt Nam — Xây dựng năng lực số thông qua trải nghiệm tình huống thực tế và trợ lý AI Scaffolding.
           </p>
         </div>
@@ -212,34 +212,34 @@ export function PlatformIntroSection() {
             return (
               <div
                 key={idx}
-                className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 hover:border-sky-400/60 shadow-xl space-y-4 transition-all group"
+                className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-blue-400 shadow-xs hover:shadow-md space-y-4 transition-all group"
               >
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-2xl bg-slate-900 border border-slate-700 group-hover:scale-110 transition-transform text-sky-400">
+                  <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 group-hover:scale-105 transition-transform text-blue-700">
                     <TargetIcon className="w-6 h-6" />
                   </div>
-                  <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
                     {target.highlight}
                   </span>
                 </div>
-              <div>
-                <h3 className="text-xl font-black text-white group-hover:text-amber-400 transition-colors">
-                  {target.role}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium mt-2">
-                  {target.desc}
-                </p>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                    {target.role}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mt-2">
+                    {target.desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
         {/* 4 Chức năng cốt lõi */}
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="text-2xl sm:text-3xl font-black text-white flex items-center justify-center gap-2">
-              <Sparkles className="w-6 h-6 text-amber-400" />
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center justify-center gap-2">
+              <Sparkles className="w-6 h-6 text-amber-500" />
               <span>4 Chức Năng Nền Tảng Toàn Diện</span>
             </h3>
           </div>
@@ -250,21 +250,21 @@ export function PlatformIntroSection() {
               return (
                 <div
                   key={feat.id}
-                  className="p-6 rounded-3xl bg-slate-800/80 border border-slate-700 hover:border-slate-600 shadow-xl space-y-3 flex flex-col justify-between"
+                  className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-slate-300 shadow-xs space-y-3 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-400/30 flex items-center justify-center font-bold">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-bold">
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-white/10 text-slate-300 border border-white/10">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
                         {feat.badge}
                       </span>
                     </div>
-                    <h4 className="text-lg font-black text-white">
+                    <h4 className="text-lg font-bold text-slate-900">
                       {feat.title}
                     </h4>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
                       {feat.desc}
                     </p>
                   </div>

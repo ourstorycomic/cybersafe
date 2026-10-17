@@ -20,7 +20,7 @@ import { PlatformIntroSection } from "@/components/home/PlatformIntroSection";
  */
 function ElderlyHomeView() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+    <div className="flex flex-col min-h-screen bg-white text-slate-900">
       {/* 1. Header Hero: Slogan, CTAs, Mô phỏng tương tác & Quy trình 4 bước */}
       <HeroSection />
 
@@ -45,11 +45,11 @@ function ElderlyHomeView() {
 }
 
 /**
- * 2. ChildHomeView: Dành riêng cho Học sinh & Trẻ em
+ * 2. ChildHomeView: Dành riêng cho Học sinh & Trẻ em (Thuần Theme Trắng)
  */
 function ChildHomeView() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 selection:bg-sky-500 selection:text-white">
+    <div className="flex flex-col min-h-screen bg-white text-slate-900 selection:bg-sky-200 selection:text-blue-900">
       {/* 1. Hero Section Gamified */}
       <HeroSection />
 
@@ -72,7 +72,7 @@ function ChildHomeView() {
       </div>
 
       {/* 6. Skill Matrix & Competency Progress Dashboard */}
-      <div className="bg-slate-50 text-slate-900">
+      <div className="bg-white text-slate-900">
         <SkillProgressDashboard />
       </div>
     </div>

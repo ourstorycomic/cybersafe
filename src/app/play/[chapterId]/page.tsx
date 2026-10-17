@@ -144,7 +144,7 @@ export default function ChapterPage({ params }: ChapterPageProps) {
 
   if (!user) {
     return (
-      <div className="min-h-[80vh] bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-[80vh] bg-white flex items-center justify-center p-4">
         <div className="max-w-md w-full p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-xl text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-700 mx-auto flex items-center justify-center shadow-inner">
             <Lock className="w-8 h-8" />
@@ -181,7 +181,7 @@ export default function ChapterPage({ params }: ChapterPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* SLEEK COMPACT CHAPTER HEADER */}
         <div className="bg-white border border-slate-200 rounded-2xl p-3 sm:px-5 sm:py-3.5 shadow-xs flex items-center justify-between gap-3">

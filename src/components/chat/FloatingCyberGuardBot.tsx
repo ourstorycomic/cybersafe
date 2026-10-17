@@ -171,8 +171,8 @@ export function FloatingCyberGuardBot() {
           onClick={handleToggle}
           className={`shadow-lg hover:shadow-xl transition-all flex items-center justify-center cursor-pointer ${
             userRole === "elderly"
-              ? "px-4 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm border border-slate-700 gap-2"
-              : "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white border-2 border-white/80"
+              ? "px-4 py-2.5 rounded-full bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm border border-blue-800 gap-2"
+              : "w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white border-2 border-white/80"
           }`}
           title="Trợ lý an toàn CyberGuard"
         >

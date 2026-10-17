@@ -149,9 +149,7 @@ export function CategoryGrid() {
   const { isElderly } = useDemographic();
 
   return (
-    <section className={`py-12 sm:py-16 px-4 sm:px-6 lg:px-8 border-b ${
-      isElderly ? "bg-slate-50 border-slate-200" : "bg-white border-slate-200"
-    }`}>
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
       <div className="max-w-6xl mx-auto space-y-10">
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <span className={`text-xs font-bold uppercase tracking-wider px-3.5 py-1 rounded-full border ${

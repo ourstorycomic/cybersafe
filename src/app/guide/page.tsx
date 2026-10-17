@@ -25,7 +25,7 @@ export default function GuidePage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
         <div className="p-6 sm:p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

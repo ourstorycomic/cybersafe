@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${beVietnamPro.variable}`} suppressHydrationWarning>
       <body
-        className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-sky-200 selection:text-sky-900"
+        className="min-h-screen bg-white text-slate-900 flex flex-col antialiased selection:bg-sky-200 selection:text-sky-900"
         suppressHydrationWarning
       >
         <AuthProvider>

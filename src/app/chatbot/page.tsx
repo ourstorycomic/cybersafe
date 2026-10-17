@@ -81,7 +81,7 @@ function ElderlyChatbotView() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header khung trang nhã, tương phản cao */}
         <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-xs text-center space-y-3">
@@ -290,39 +290,39 @@ function ChildChatbotView() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white text-slate-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Gaming Clean */}
-        <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 text-center sm:text-left">
-            <div className="w-13 h-13 rounded-2xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-2xl shadow-inner shrink-0">
+            <div className="w-13 h-13 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-2xl shadow-inner shrink-0">
               🛡️
             </div>
             <div>
               <div className="flex items-center gap-2 justify-center sm:justify-start">
-                <span className="text-[11px] font-black uppercase text-amber-300 bg-amber-400/15 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                <span className="text-[11px] font-bold uppercase text-blue-800 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                   TRỢ LÝ AN TOÀN SỐ
                 </span>
-                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" /> Trực Tuyến
+                <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> Trực Tuyến
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white mt-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
                 Trợ Lý Soi Bẫy Lừa Đảo CyberGuard
               </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-slate-800/80 px-3.5 py-2 rounded-xl border border-slate-700">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-xs font-black text-amber-300">+20 XP mỗi lần phát hiện</span>
+          <div className="flex items-center gap-2 bg-amber-50 px-3.5 py-2 rounded-xl border border-amber-200">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-bold text-amber-800">+20 XP mỗi lần phát hiện</span>
           </div>
         </div>
 
         {/* Quick Prompt Chips (Bấm luôn không cần gõ) */}
         <div className="space-y-2">
-          <span className="text-xs font-black uppercase text-sky-300 tracking-wider flex items-center gap-1.5">
-            <Zap className="w-4 h-4 text-amber-400" />
+          <span className="text-xs font-bold uppercase text-slate-700 tracking-wider flex items-center gap-1.5">
+            <Zap className="w-4 h-4 text-amber-600" />
             <span>Gợi ý tình huống nhanh (Click để thử ngay):</span>
           </span>
           <div className="flex flex-wrap gap-2">
@@ -330,7 +330,7 @@ function ChildChatbotView() {
               <button
                 key={idx}
                 onClick={() => handleSend(chip.text)}
-                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-sky-400 text-xs font-bold text-sky-200 hover:text-white transition-all cursor-pointer shadow-xs hover:scale-102"
+                className="px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-blue-400 text-xs font-medium text-slate-700 hover:text-slate-900 transition-all cursor-pointer shadow-2xs"
               >
                 {chip.label}
               </button>
@@ -338,17 +338,17 @@ function ChildChatbotView() {
           </div>
         </div>
 
-        {/* Chat Conversation Box (Discord / Game Style) */}
-        <div className="rounded-3xl bg-slate-900/90 border-2 border-white/20 shadow-2xl overflow-hidden flex flex-col h-[520px]">
+        {/* Chat Conversation Box */}
+        <div className="rounded-3xl bg-white border border-slate-200 shadow-md overflow-hidden flex flex-col h-[520px]">
           {/* Messages Feed */}
-          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/50">
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={`flex gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.sender === "bot" && (
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-lg shrink-0 shadow-md">
+                  <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-lg shrink-0 shadow-xs text-white">
                     🛡️
                   </div>
                 )}
@@ -356,11 +356,13 @@ function ChildChatbotView() {
                 <div
                   className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 space-y-3 ${
                     msg.sender === "user"
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md"
-                      : "bg-white/10 backdrop-blur-md border border-white/20 text-slate-100"
+                      ? "bg-blue-600 text-white font-medium shadow-xs"
+                      : "bg-white border border-slate-200 text-slate-800 shadow-xs"
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-300 pb-1 border-b border-white/10">
+                  <div className={`flex items-center justify-between text-[11px] font-bold pb-1 border-b ${
+                    msg.sender === "user" ? "text-blue-100 border-white/20" : "text-slate-500 border-slate-100"
+                  }`}>
                     <span>{msg.timestamp}</span>
                   </div>
 
@@ -375,7 +377,7 @@ function ChildChatbotView() {
                 </div>
 
                 {msg.sender === "user" && (
-                  <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black text-xs shrink-0 shadow-md">
+                  <div className="w-9 h-9 rounded-xl bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                     BẠN
                   </div>
                 )}
@@ -383,21 +385,21 @@ function ChildChatbotView() {
             ))}
           </div>
 
-          {/* Input & 3D Send Button Bar */}
-          <div className="p-3 sm:p-4 bg-slate-950/80 border-t border-white/15 flex items-center gap-2">
+          {/* Input & Send Button Bar */}
+          <div className="p-3 sm:p-4 bg-white border-t border-slate-200 flex items-center gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Dán link lạ hoặc tin nhắn đáng ngờ vào đây để CyberGuard soi..."
-              className="flex-1 bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-400"
+              className="flex-1 bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-colors"
             />
 
             <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isAnalyzing}
-              className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-white font-black text-xs sm:text-sm shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-5 py-3 rounded-2xl bg-blue-700 hover:bg-blue-800 disabled:opacity-40 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Send className="w-4 h-4 text-white" />
               <span className="hidden sm:inline">Quét Ngay</span>
