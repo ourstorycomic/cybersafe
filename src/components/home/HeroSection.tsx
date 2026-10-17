@@ -1,120 +1,270 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useDemographic } from "@/context/DemographicContext";
 import {
   ArrowRight,
   ShieldCheck,
+  AlertTriangle,
+  Lock,
+  Search,
+  PhoneCall,
+  Info,
+  Octagon,
+  PhoneForwarded,
+  Sparkles,
   Flame,
   Star,
   Sword,
-  Sparkles,
   Target,
   Trophy,
 } from "lucide-react";
 
 /**
- * 1. Chế độ Người Cao Tuổi (ElderlyHero)
- * Triết lý: Tối giản tuyệt đối, to, rõ, loại bỏ mọi sự phân tâm.
- * Bố cục: 1 cột (One-column) căn giữa màn hình.
- * Bỏ hẳn cụm mô phỏng điện thoại rắc rối bên phải.
- * 3 quy tắc an toàn font cực to, nút bấm duy nhất siêu to khổng lồ.
+ * 1. Chế độ Người Cao Tuổi & Gia Đình (ElderlyHero)
+ * Đầy đủ 100% cấu trúc, chức năng mô phỏng tương tác và quy trình 4 bước chuẩn quốc gia.
+ * Thiết kế trang trọng, độ tương phản cao, dễ đọc, không dùng font chữ hay hình vẽ trẻ con.
  */
 function ElderlyHero({ onStart }: { onStart: () => void }) {
+  const router = useRouter();
+  const [activeHotspot, setActiveHotspot] = useState<number>(1);
+
+  const hotspots = [
+    {
+      id: 1,
+      title: "Mạo danh số gọi",
+      badge: "Điểm 1",
+      detail:
+        "Số điện thoại lạ mạo danh Viện kiểm sát / Công an. Cơ quan điều tra tại Việt Nam không bao giờ làm việc hay yêu cầu chuyển tiền qua điện thoại.",
+    },
+    {
+      id: 2,
+      title: "Áp lực thời gian",
+      badge: "Điểm 2",
+      detail:
+        "Ép buộc xử lý gấp trong 30 phút — đây là chiêu trò thao túng tâm lý sợ hãi để nạn nhân hoảng loạn, không kịp hỏi ý kiến con cháu.",
+    },
+    {
+      id: 3,
+      title: "Đòi chuyển tiền & OTP",
+      badge: "Điểm 3",
+      detail:
+        "Yêu cầu chuyển 50 triệu vào 'Tài khoản tạm giữ'. Pháp luật Việt Nam KHÔNG CÓ tài khoản tạm giữ qua chuyển khoản cá nhân.",
+    },
+  ];
+
   return (
-    <section className="relative bg-slate-50 border-b border-slate-200 py-10 sm:py-14 px-4 sm:px-6 lg:px-8 text-slate-900">
-      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-        {/* Top badge */}
-        <div className="flex justify-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 font-semibold text-xs sm:text-sm">
-            <ShieldCheck className="w-4 h-4 text-blue-700" />
-            <span>Cổng Thông Tin & Thực Hành Phòng Chống Lừa Đảo Trực Tuyến</span>
+    <section className="relative overflow-hidden bg-slate-50 border-b border-slate-200 py-12 sm:py-16 px-4 sm:px-6 lg:px-8 text-slate-900">
+      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16 relative z-10">
+        {/* Main Grid: Value Proposition + Realistic Simulation Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Heading & 2 Action Buttons */}
+          <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-900 font-semibold text-xs sm:text-sm">
+              <ShieldCheck className="w-4 h-4 text-blue-700" />
+              <span>Cổng Thông Tin & Thực Hành Phòng Chống Lừa Đảo Trực Tuyến</span>
+            </div>
+
+            <div className="space-y-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-snug">
+                Xây dựng phản xạ số,{" "}
+                <span className="text-blue-800">
+                  nâng cao nhận thức & năng lực phòng ngừa
+                </span>{" "}
+                trên không gian mạng.
+              </h1>
+              <p className="text-base sm:text-lg text-slate-700 font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                Nền tảng thực hành tình huống tương tác thực tế, hỗ trợ người cao tuổi và các gia đình chủ động nhận diện bẫy thao túng tâm lý, bảo vệ an toàn tài sản số.
+              </p>
+            </div>
+
+            {/* 2 Big CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+              <button
+                onClick={onStart}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-blue-800 hover:bg-blue-900 text-white font-semibold text-base shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <span>Vào Phòng Luyện Tập</span>
+                <ArrowRight className="w-4 h-4 text-white" />
+              </button>
+
+              <button
+                onClick={() => router.push("/chatbot")}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-semibold text-base shadow-2xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
+              >
+                <Search className="w-4 h-4 text-slate-600" />
+                <span>Kiểm Tra Tin Nhắn Nghi Ngờ</span>
+              </button>
+            </div>
+
+            {/* Trust Assurance */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs sm:text-sm text-slate-600 pt-2 font-normal">
+              <span className="flex items-center gap-1.5 font-medium">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                100% Miễn phí & Không yêu cầu thông tin ngân hàng
+              </span>
+              <span className="hidden sm:inline text-slate-300">•</span>
+              <span className="flex items-center gap-1.5 font-medium">
+                <Lock className="w-4 h-4 text-blue-600" />
+                Tuyệt đối bảo mật dữ liệu công dân
+              </span>
+            </div>
+          </div>
+
+          {/* Right Column: Realistic Phone Mockup with Hotspot Analysis */}
+          <div className="lg:col-span-5">
+            <div className="relative mx-auto max-w-md rounded-2xl bg-white border border-slate-300 shadow-md overflow-hidden">
+              {/* Phone Status Bar */}
+              <div className="bg-slate-100 text-slate-700 px-4 py-2 flex items-center justify-between text-xs font-mono border-b border-slate-200 font-semibold">
+                <span>09:41</span>
+                <span>Cuộc gọi đến</span>
+              </div>
+
+              {/* Call Content */}
+              <div className="p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                    <PhoneCall className="w-4 h-4 text-rose-600" />
+                    <span>089.882.19xx (Mạo danh Công an)</span>
+                  </div>
+                  <span className="text-[11px] font-semibold text-rose-800 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">
+                    Rủi ro cao
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+                  &quot;Chào anh/chị, tôi là cán bộ Cơ quan Điều tra. Số CCCD của anh/chị đang dính líu vào đường dây rửa tiền 12 tỷ. Yêu cầu chuyển ngay 50 triệu vào tài khoản tạm giữ trong 30 phút để thanh tra chứng minh vô tội, nếu không sẽ bị bắt tạm giam!&quot;
+                </div>
+
+                {/* Hotspot Selector Tabs */}
+                <div className="w-full flex items-center justify-around gap-1.5 pt-1 border-t border-slate-100 text-xs font-semibold">
+                  {hotspots.map((h) => (
+                    <button
+                      key={h.id}
+                      onClick={() => setActiveHotspot(h.id)}
+                      className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs ${
+                        activeHotspot === h.id
+                          ? "bg-blue-800 text-white font-bold"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      <span className="w-4 h-4 rounded-full bg-black/10 flex items-center justify-center text-[10px]">
+                        {h.id}
+                      </span>
+                      <span>{h.title}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Dynamic Explanation Card Based on Active Hotspot */}
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-slate-800 space-y-1">
+                  <div className="flex items-center gap-1.5 text-blue-900 font-bold uppercase text-[11px]">
+                    <Info className="w-3.5 h-3.5 text-blue-700" />
+                    <span>Phân tích bẫy lừa đảo (#{activeHotspot}):</span>
+                  </div>
+                  <p className="leading-relaxed text-slate-700 font-normal">
+                    {hotspots.find((h) => h.id === activeHotspot)?.detail}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Dignified Headline */}
-        <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight leading-snug">
-            Chủ Động Nhận Diện & Phòng Ngừa{" "}
-            <span className="text-blue-800">Các Chiêu Trò Lừa Đảo</span> Qua Mạng
-          </h1>
-          <p className="text-base sm:text-lg text-slate-700 font-normal leading-relaxed max-w-2xl mx-auto">
-            Kẻ gian thường thao túng tâm lý: gọi điện dọa nạt mạo danh Công an, báo con cấp cứu hoặc dụ dỗ trúng thưởng. Kính mời Quý độc giả ghi nhớ 3 nguyên tắc an toàn:
-          </p>
-        </div>
-
-        {/* 3 Nguyên tắc an toàn - Trình bày dạng thẻ thông tin thanh lịch */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-          {/* Rule 1 */}
-          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between pb-1">
-              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
-                Nguyên tắc 01
-              </span>
-              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
-                I
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-slate-900">
-              Bình tĩnh & Tạm dừng
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed font-normal">
-              Không hoảng sợ trước lời giục giã, dọa nạt bắt giam. Tuyệt đối không bấm vào các đường liên kết lạ gửi qua tin nhắn.
+        {/* 4-Step Core Response Framework - Sơ Đồ Khối Chuẩn Quốc Gia */}
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-6">
+          <div className="text-center max-w-2xl mx-auto space-y-1.5">
+            <span className="text-xs uppercase font-bold text-blue-800 tracking-wider px-3 py-0.5 bg-blue-50 rounded-full border border-blue-200">
+              QUY TRÌNH ỨNG PHÓ CHUẨN QUỐC GIA
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              4 Bước Phản Xạ An Toàn Số Cho Mọi Tình Huống
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 font-normal">
+              Ghi nhớ quy tắc 4 bước theo trình tự trước khi thực hiện bất kỳ thao tác hay giao dịch nào
             </p>
           </div>
 
-          {/* Rule 2 */}
-          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between pb-1">
-              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
-                Nguyên tắc 02
-              </span>
-              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
-                II
-              </span>
+          {/* 4 Steps Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Step 1 */}
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-rose-700 text-white">
+                    Bước 01
+                  </span>
+                  <Octagon className="w-5 h-5 text-rose-600" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">DỪNG LẠI</h3>
+                <p className="text-xs text-slate-600 font-normal leading-relaxed">
+                  Không hoảng sợ, không bấm link, không chuyển tiền, không đọc mã OTP khi đang bị hối thúc.
+                </p>
+              </div>
+              <div className="text-xs font-semibold text-rose-800 bg-rose-50 border border-rose-200 p-2 rounded-lg text-center">
+                🛑 Bình tĩnh 30 giây
+              </div>
             </div>
-            <h3 className="text-base font-bold text-slate-900">
-              Xác minh Độc lập
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed font-normal">
-              Cúp máy ngay lập tức. Gọi điện thoại trực tiếp cho con cháu hoặc liên hệ Công an khu vực theo số điện thoại đã biết từ trước.
-            </p>
-          </div>
 
-          {/* Rule 3 */}
-          <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
-            <div className="flex items-center justify-between pb-1">
-              <span className="text-xs font-semibold uppercase text-blue-800 tracking-wider">
-                Nguyên tắc 03
-              </span>
-              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">
-                III
-              </span>
+            {/* Step 2 */}
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-600 text-white">
+                    Bước 02
+                  </span>
+                  <Search className="w-5 h-5 text-amber-600" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">KIỂM TRA</h3>
+                <p className="text-xs text-slate-600 font-normal leading-relaxed">
+                  Soi kỹ tên miền (.gov.vn, .com.vn), tệp đính kèm (.apk) và số điện thoại người gọi.
+                </p>
+              </div>
+              <div className="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 p-2 rounded-lg text-center">
+                🔍 Soi kỹ chi tiết lạ
+              </div>
             </div>
-            <h3 className="text-base font-bold text-slate-900">
-              Không Chuyển Tiền & OTP
-            </h3>
-            <p className="text-sm text-slate-600 leading-relaxed font-normal">
-              Cơ quan điều tra không làm việc hay yêu cầu chuyển tiền qua điện thoại. Không bao giờ cung cấp mã OTP ngân hàng cho bất kỳ ai.
-            </p>
+
+            {/* Step 3 */}
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-700 text-white">
+                    Bước 03
+                  </span>
+                  <PhoneForwarded className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">XÁC MINH</h3>
+                <p className="text-xs text-slate-600 font-normal leading-relaxed">
+                  Cúp máy ngay. Gọi điện thoại trực tiếp cho con cháu hoặc gọi hotline chính thức của cơ quan.
+                </p>
+              </div>
+              <div className="text-xs font-semibold text-blue-800 bg-blue-50 border border-blue-200 p-2 rounded-lg text-center">
+                📞 Kênh độc lập
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-emerald-700 text-white">
+                    Bước 04
+                  </span>
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mb-1">HÀNH ĐỘNG</h3>
+                <p className="text-xs text-slate-600 font-normal leading-relaxed">
+                  Chỉ thực hiện thao tác khi đã xác thực 100% người liên hệ là đúng sự thật.
+                </p>
+              </div>
+              <div className="text-xs font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2 rounded-lg text-center">
+                🛡️ An toàn tài sản số
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Nút hành động chuẩn mực, dễ bấm, lịch sự */}
-        <div className="pt-2 flex flex-col items-center gap-3">
-          <button
-            onClick={onStart}
-            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-semibold text-base sm:text-lg shadow-xs flex items-center justify-center gap-2.5 cursor-pointer transition-colors"
-          >
-            <span>Bắt đầu Luyện tập Nhận diện Tình huống</span>
-            <ArrowRight className="w-5 h-5 text-white" />
-          </button>
-
-          <p className="text-xs sm:text-sm font-normal text-slate-600 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            Nền tảng cộng đồng phi lợi nhuận • Tuyệt đối bảo mật và không yêu cầu thông tin cá nhân
-          </p>
         </div>
       </div>
     </section>
@@ -123,9 +273,6 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
 
 /**
  * 2. Chế độ Trẻ Em (ChildHero)
- * Triết lý: Gamification, sinh động, giống màn hình vào game (Play screen).
- * Bố cục: Bất đối xứng, nhiều hình khối nổi 3D, có nhân vật Mascot.
- * Hội thoại bong bóng, thanh XP/Badge, nút bấm Duolingo 3D chunky với hiệu ứng pulse.
  */
 function ChildHero({ onStart }: { onStart: () => void }) {
   return (
@@ -183,7 +330,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
             </div>
           </div>
 
-          {/* Chunky 3D Duolingo-style Action Button */}
+          {/* Action Button */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
             <button
               onClick={onStart}
@@ -199,7 +346,6 @@ function ChildHero({ onStart }: { onStart: () => void }) {
         {/* Right Column: Sleek 3D Game Stage Card */}
         <div className="lg:col-span-5 relative flex items-center justify-center">
           <div className="relative w-full max-w-sm rounded-3xl bg-slate-800/90 p-5 sm:p-6 border border-slate-700 shadow-2xl space-y-4">
-            {/* Top Game Stage Header */}
             <div className="flex items-center justify-between">
               <span className="px-3 py-1 rounded-lg bg-slate-900 text-xs font-black uppercase text-amber-300 border border-slate-700">
                 Ải 1: Cuộc Gọi Bí Mật
@@ -210,7 +356,6 @@ function ChildHero({ onStart }: { onStart: () => void }) {
               </span>
             </div>
 
-            {/* Mascot Center Illustration */}
             <div className="relative w-full h-40 rounded-2xl bg-slate-900/90 border border-slate-700/80 flex items-center justify-center p-3 overflow-hidden">
               <img
                 src="/images/cybersecurity.png"
@@ -218,14 +363,12 @@ function ChildHero({ onStart }: { onStart: () => void }) {
                 className="w-28 h-28 object-contain drop-shadow-md"
               />
 
-              {/* Hot Badge */}
               <div className="absolute top-2.5 right-2.5 bg-amber-400 text-slate-950 font-black text-[11px] px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
                 <span>HOT</span>
               </div>
             </div>
 
-            {/* Quest Briefing Card */}
             <div className="bg-slate-900/90 text-white rounded-2xl p-4 space-y-1.5 border border-slate-700/80">
               <div className="flex items-center gap-1.5 text-xs font-black uppercase text-sky-400">
                 <Target className="w-4 h-4" />
@@ -244,7 +387,6 @@ function ChildHero({ onStart }: { onStart: () => void }) {
 
 /**
  * Main HeroSection
- * Quyết định render ElderlyHero hay ChildHero dựa trên userRole từ DemographicContext
  */
 export function HeroSection() {
   const { user, openAuthModal } = useAuth();
