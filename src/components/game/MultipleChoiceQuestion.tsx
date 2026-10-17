@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   XCircle,
   ArrowRight,
+  ArrowLeft,
   RotateCcw,
   HelpCircle,
   Check,
@@ -24,14 +25,18 @@ interface MultipleChoiceQuestionProps {
   scenario: Scenario;
   onFinish: (passed: boolean, earnedScore: number) => void;
   onNextQuestion?: () => void;
+  onPrevQuestion?: () => void;
   hasNext?: boolean;
+  hasPrev?: boolean;
 }
 
 export function MultipleChoiceQuestion({
   scenario,
   onFinish,
   onNextQuestion,
+  onPrevQuestion,
   hasNext = true,
+  hasPrev = false,
 }: MultipleChoiceQuestionProps) {
   const { userRole, isElderly, isChild } = useDemographic();
   const options: MultipleChoiceOption[] = scenario.options.multiple_choice || [];
@@ -200,57 +205,76 @@ export function MultipleChoiceQuestion({
         })}
       </div>
 
-      {/* Action Toolbar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-        <button
-          onClick={handleReset}
-          className={`rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-300 ${
-            isElderly ? "py-3 px-5 text-sm" : "py-2.5 px-4 text-xs"
-          }`}
-        >
-          <RotateCcw className="w-4 h-4" />
-          <span>{isElderly ? "Chọn lại phương án khác" : "Làm lại câu này"}</span>
-        </button>
-
-        {!isSubmitted ? (
+      {/* Action Toolbar: [Pre] [Next] [Nộp] & Note "Nộp xong mới xem được đáp án và giải thích" */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-slate-200">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <button
-            onClick={handleSubmit}
-            disabled={!selectedOptionId}
-            className={
-              isElderly
-                ? `py-3.5 px-7 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all ${
-                    selectedOptionId
-                      ? "bg-blue-700 hover:bg-blue-800 text-white shadow-sm border border-blue-900 cursor-pointer active:scale-98"
-                      : "bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed"
-                  }`
-                : `py-4 px-8 rounded-2xl font-black text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all ${
-                    selectedOptionId
-                      ? "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white border-b-6 border-blue-800 active:border-b-0 active:translate-y-1 shadow-lg cursor-pointer"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                  }`
-            }
+            onClick={handleReset}
+            className={`rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-300 ${
+              isElderly ? "py-2.5 px-4 text-xs sm:text-sm" : "py-2 px-3.5 text-xs"
+            }`}
           >
-            <Check className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
-            <span>{isElderly ? "Xác nhận câu trả lời" : "Xác Nhận Lựa Chọn"}</span>
-            <ArrowRight className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>{isElderly ? "Chọn lại" : "Làm lại"}</span>
           </button>
-        ) : (
-          <div className="flex items-center gap-3">
-            {onNextQuestion && hasNext && (
+
+          <span className="text-xs text-slate-500 italic font-medium">
+            * Nộp xong mới xem được đáp án và giải thích
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 justify-end">
+          {onPrevQuestion && hasPrev && (
+            <button
+              type="button"
+              onClick={onPrevQuestion}
+              className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-1 transition-colors cursor-pointer"
+              title="Câu trước (Previous)"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Pre</span>
+            </button>
+          )}
+
+          {!isSubmitted ? (
+            <button
+              onClick={handleSubmit}
+              disabled={!selectedOptionId}
+              className={
+                isElderly
+                  ? `py-3 px-6 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all ${
+                      selectedOptionId
+                        ? "bg-blue-700 hover:bg-blue-800 text-white shadow-sm border border-blue-900 cursor-pointer active:scale-98"
+                        : "bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed"
+                    }`
+                  : `py-2.5 px-5 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
+                      selectedOptionId
+                        ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    }`
+              }
+              title="Nộp bài"
+            >
+              <Check className="w-4 h-4" />
+              <span>Nộp</span>
+            </button>
+          ) : (
+            onNextQuestion && hasNext && (
               <button
                 onClick={onNextQuestion}
                 className={
                   isElderly
-                    ? "w-full sm:w-auto py-3.5 px-7 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-base sm:text-lg border border-emerald-900 shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
-                    : "w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base sm:text-lg border-b-6 border-emerald-700 active:border-b-0 active:translate-y-1 shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all animate-pulse"
+                    ? "py-3 px-6 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm sm:text-base border border-emerald-900 shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                    : "py-2.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 }
+                title="Câu tiếp theo (Next)"
               >
-                <span>{isElderly ? "Tiếp tục sang tình huống tiếp theo" : "Qua Câu Tiếp Theo"}</span>
-                <ArrowRight className={isElderly ? "w-5 h-5" : "w-5 h-5"} />
+                <span>Next</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
-            )}
-          </div>
-        )}
+            )
+          )}
+        </div>
       </div>
     </div>
   );

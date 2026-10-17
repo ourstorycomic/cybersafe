@@ -18,7 +18,9 @@ interface PuzzleLevelModalProps {
   onClose: () => void;
   onCompleteLevel: (levelIndex: number, scenarioId: string, passed: boolean, score: number) => void;
   onNextLevel: () => void;
+  onPrevLevel?: () => void;
   hasNext: boolean;
+  hasPrev?: boolean;
 }
 
 export function PuzzleLevelModal({
@@ -29,7 +31,9 @@ export function PuzzleLevelModal({
   onClose,
   onCompleteLevel,
   onNextLevel,
+  onPrevLevel,
   hasNext,
+  hasPrev = false,
 }: PuzzleLevelModalProps) {
   const { userRole, isElderly, isChild } = useDemographic();
   const [modalFeedbackState, setModalFeedbackState] = useState<{
@@ -227,7 +231,9 @@ export function PuzzleLevelModal({
                 scenario={scenario}
                 onFinish={handleFinishQuestion}
                 onNextQuestion={handleModalNextQuestion}
+                onPrevQuestion={onPrevLevel}
                 hasNext={hasNext}
+                hasPrev={hasPrev}
               />
             )}
           </div>

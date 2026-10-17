@@ -19,17 +19,17 @@ import { PhoneCall, ShieldAlert, ArrowRight, Search, HeartHandshake } from "luci
 function ElderlyHomeView() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
-      {/* 1. Hero: Slogan & 3 Quy tắc an toàn cốt lõi */}
+      {/* 1. Header Hero: Slogan & 3 Quy tắc an toàn cốt lõi */}
       <HeroSection />
 
-      {/* 2. Giới thiệu Mục tiêu, Đối tượng & 4 Chức năng nền tảng */}
+      {/* 2. Demo Quiz: Bài tập thực hành mẫu theo đúng bản vẽ chuẩn (Demo quiz, Intro) */}
+      <DemoQuizSection />
+
+      {/* 3. Giới thiệu Mục tiêu, Đối tượng & 4 Chức năng nền tảng */}
       <PlatformIntroSection />
 
-      {/* 3. 11 Nhóm chiêu thức lừa đảo phổ biến tại Việt Nam */}
+      {/* 4. 11 Nhóm chiêu thức lừa đảo phổ biến tại Việt Nam */}
       <CategoryGrid />
-
-      {/* 4. Câu hỏi Demo nhận diện nhanh (Trải nghiệm thử không cần đăng nhập) */}
-      <DemoQuizSection />
 
       {/* 5. Theo dõi năng lực, điểm số & các kỹ năng cần lưu ý */}
       <SkillProgressDashboard />
@@ -123,7 +123,7 @@ function ElderlyHomeView() {
 
 /**
  * 2. ChildHomeView: Dành riêng cho Học sinh & Trẻ em
- * ĐẦY ĐỦ 100% THÔNG TIN ĐỀ BÀI: Hero Gaming, Mục tiêu, 11 Nhóm lừa đảo, Demo questions,
+ * ĐẦY ĐỦ 100% THÔNG TIN ĐỀ BÀI: Hero Gaming, Demo questions, Mục tiêu, 11 Nhóm lừa đảo,
  * Quick challenge 30s và Dashboard năng lực số.
  */
 function ChildHomeView() {
@@ -132,17 +132,17 @@ function ChildHomeView() {
       {/* 1. Hero Section Gamified */}
       <HeroSection />
 
-      {/* 2. Platform Intro: Goals, Target Audience, 4 Core Features */}
-      <PlatformIntroSection />
-
-      {/* 3. 11 Scam Categories Grid */}
+      {/* 2. Interactive Demo Questions - Đặt ngay phía trên theo chuẩn wireframe (Demo quiz, Intro) */}
       <div className="bg-white text-slate-900">
-        <CategoryGrid />
+        <DemoQuizSection />
       </div>
 
-      {/* 4. Interactive Demo Questions */}
-      <div className="bg-slate-50 text-slate-900">
-        <DemoQuizSection />
+      {/* 3. Platform Intro: Goals, Target Audience, 4 Core Features */}
+      <PlatformIntroSection />
+
+      {/* 4. 11 Scam Categories Grid */}
+      <div className="bg-white text-slate-900">
+        <CategoryGrid />
       </div>
 
       {/* 5. Interactive Mini-challenge */}

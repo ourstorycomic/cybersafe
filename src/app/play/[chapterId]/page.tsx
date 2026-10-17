@@ -117,6 +117,18 @@ export default function ChapterPage({ params }: ChapterPageProps) {
     setActiveModalLevelIndex(null);
   };
 
+  const handlePrevLevel = () => {
+    if (activeModalLevelIndex !== null) {
+      const currentScenario = allScenarios[activeModalLevelIndex];
+      const relIdx = chapterScenarios.findIndex((s) => s.scenario_id === currentScenario.scenario_id);
+      if (relIdx > 0) {
+        const prevScenario = chapterScenarios[relIdx - 1];
+        const prevGlobalIdx = allScenarios.findIndex((s) => s.scenario_id === prevScenario.scenario_id);
+        setActiveModalLevelIndex(prevGlobalIdx);
+      }
+    }
+  };
+
   // Check progress within this chapter
   const chapterCompletedCount = useMemo(() => {
     return chapterScenarios.filter((s) => {
@@ -304,9 +316,13 @@ export default function ChapterPage({ params }: ChapterPageProps) {
             onClose={handleCloseModal}
             onCompleteLevel={handleCompleteLevel}
             onNextLevel={handleNextLevel}
+            onPrevLevel={handlePrevLevel}
             hasNext={Boolean(
               chapterScenarios.findIndex((s) => s.scenario_id === activeScenario.scenario_id) <
                 chapterScenarios.length - 1
+            )}
+            hasPrev={Boolean(
+              chapterScenarios.findIndex((s) => s.scenario_id === activeScenario.scenario_id) > 0
             )}
           />
         )}
