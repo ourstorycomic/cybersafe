@@ -15,7 +15,12 @@ import {
   UserCheck,
   GraduationCap,
   AlertTriangle,
+  Star,
+  Sword,
+  Sparkles,
+  Zap,
 } from "lucide-react";
+import { playClickBeep } from "@/utils/gameAudio";
 
 export interface CategoryMeta {
   id: string;
@@ -152,26 +157,26 @@ export function CategoryGrid() {
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
       <div className="max-w-6xl mx-auto space-y-10">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className={`text-xs font-bold uppercase tracking-wider px-3.5 py-1 rounded-full border ${
-            isElderly ? "bg-blue-50 text-blue-900 border-blue-200" : "text-blue-700 bg-blue-50 border-blue-200"
+          <span className={`text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full border ${
+            isElderly ? "bg-blue-50 text-blue-900 border-blue-200" : "text-amber-900 bg-amber-100 border-amber-300"
           }`}>
-            Kho Dữ Liệu Đời Thực Tại Việt Nam
+            {isElderly ? "Kho Dữ Liệu Đời Thực Tại Việt Nam" : "👾 ĐẤU TRƯỜNG 11 TRÙM BẪY LỪA ĐẢO • BẢN ĐỒ THÁM TỬ"}
           </span>
           <h2 className={
             isElderly
               ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
-              : "text-3xl sm:text-4xl font-black text-slate-900 tracking-tight"
+              : "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight uppercase"
           }>
-            {isElderly ? "11 Nhóm Chiêu Thức Lừa Đảo Thường Gặp & Cách Nhận Diện" : "11 Nhóm Chiêu Thức Thường Gặp"}
+            {isElderly ? "11 Nhóm Chiêu Thức Lừa Đảo Thường Gặp & Cách Nhận Diện" : "11 Chiêu Trò Cần Tiêu Diệt & Vượt Qua"}
           </h2>
           <p className={
             isElderly
               ? "text-base sm:text-lg text-slate-600 font-medium leading-relaxed"
-              : "text-base sm:text-lg text-slate-600 font-medium leading-relaxed"
+              : "text-sm sm:text-base text-slate-600 font-semibold leading-relaxed"
           }>
             {isElderly
               ? "Được tổng hợp từ các vụ việc thực tế để Quý độc giả và gia đình dễ dàng đối chiếu, nhận diện và chủ động phòng ngừa:"
-              : "Được tổng hợp từ các vụ việc thực tế tại Việt Nam, phân loại chi tiết giúp người học dễ dàng nhận diện và phòng ngừa."}
+              : "Khám phá vũ khí và điểm yếu của từng trùm lừa đảo: từ mạo danh công an, hack acc game đến link bẫy Robux!"}
           </p>
         </div>
 
@@ -241,20 +246,27 @@ export function CategoryGrid() {
             return (
               <div
                 key={cat.id}
-                className="rounded-2xl p-5 bg-white border border-slate-200 hover:border-blue-400 hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 shadow-xs"
+                className="rounded-3xl p-5 sm:p-6 bg-white border-2 border-slate-200 hover:border-sky-400 hover:shadow-xl transition-all duration-200 flex flex-col justify-between space-y-4 group"
               >
-                {/* Card Top: Icon & Count */}
+                {/* Card Top: Boss Badge & XP reward */}
                 <div className="flex items-center justify-between pb-1">
-                  <div className={`w-9 h-9 rounded-xl ${iconConfig.bg} border flex items-center justify-center shrink-0`}>
-                    <Icon className={`w-5 h-5 ${iconConfig.color}`} />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-300">
+                      Ải #{cat.code}
+                    </span>
+                    <span className="flex items-center text-amber-500 text-xs">
+                      {"⭐".repeat(Math.min(3, Math.max(1, (idx % 3) + 1)))}
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                    {cat.scenariosCount} tình huống
+
+                  <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    <span>+100 XP</span>
                   </span>
                 </div>
 
                 {/* Full Uncropped Illustration Image Display for Child Mode */}
-                <div className="w-full h-40 rounded-xl bg-slate-50 border border-slate-100 p-2.5 flex items-center justify-center group-hover:bg-blue-50/20 transition-all">
+                <div className="w-full h-40 rounded-2xl bg-slate-50 border border-slate-200 p-2.5 flex items-center justify-center group-hover:scale-102 transition-transform">
                   <img
                     src={encodeURI(cat.imageUrl)}
                     alt={cat.name}
@@ -264,28 +276,29 @@ export function CategoryGrid() {
 
                 {/* Title & Warning */}
                 <div className="space-y-2.5 flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-sky-600 transition-colors leading-snug">
                     {cat.name}
                   </h3>
 
-                  <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <span>{cat.warningNote}</span>
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-bold flex items-start gap-2">
+                    <Zap className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <span>Dấu hiệu: {cat.warningNote}</span>
                   </div>
                 </div>
 
-                {/* Bottom Target & Action */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3 text-xs">
-                  <span className="text-slate-500 font-medium truncate max-w-[190px]">
-                    Nhóm nguy cơ: <strong className="text-slate-800">{cat.vulnerableTarget}</strong>
+                {/* Bottom Target & 3D Action Button */}
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3">
+                  <span className="text-[11px] text-slate-500 font-semibold truncate max-w-[140px]">
+                    Bẫy nhắm vào: <strong className="text-slate-700">{cat.vulnerableTarget}</strong>
                   </span>
 
                   <Link
                     href={`/play/chuong-${idx + 1}`}
-                    className="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-xs transition-all shrink-0 cursor-pointer"
+                    onClick={() => playClickBeep()}
+                    className="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-black text-xs sm:text-sm border-b-4 border-sky-700 active:border-b-0 active:translate-y-1 shadow-sm transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
                   >
-                    <span>Xem bài tập</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <Sword className="w-4 h-4" />
+                    <span>Đột Kích Ải!</span>
                   </Link>
                 </div>
               </div>

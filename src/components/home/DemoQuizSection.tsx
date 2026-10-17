@@ -15,7 +15,10 @@ import {
   PhoneCall,
   MessageSquare,
   Lock,
+  Sparkles,
+  Trophy,
 } from "lucide-react";
+import { playClickBeep, playSuccessChime, playWarningBlip } from "@/utils/gameAudio";
 
 export function DemoQuizSection() {
   const { openAuthModal } = useAuth();
@@ -23,6 +26,7 @@ export function DemoQuizSection() {
   const [activeDemoIdx, setActiveDemoIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [earnedXp, setEarnedXp] = useState<number | null>(null);
 
   const demoScenarios = [
     {
@@ -98,19 +102,30 @@ export function DemoQuizSection() {
 
   const handleSelect = (idx: number) => {
     if (submitted) return;
+    playClickBeep();
     setSelectedOption(idx);
   };
 
   const handleSubmit = () => {
     if (selectedOption !== null) {
       setSubmitted(true);
+      const isRight = currentScenario.options[selectedOption].isCorrect;
+      if (isRight) {
+        setEarnedXp(50);
+        playSuccessChime();
+      } else {
+        setEarnedXp(null);
+        playWarningBlip();
+      }
     }
   };
 
   const handleSwitchQuestion = (idx: number) => {
+    playClickBeep();
     setActiveDemoIdx(idx);
     setSelectedOption(null);
     setSubmitted(false);
+    setEarnedXp(null);
   };
 
   return (
@@ -329,21 +344,31 @@ export function DemoQuizSection() {
 
             {/* Result & Explanation (Revealed only after clicking [Nộp]) */}
             {submitted && selectedOption !== null && (
-              <div className="p-4 sm:p-5 rounded-xl border bg-slate-50 border-slate-200 space-y-2 animate-in fade-in duration-200">
-                <div className="flex items-center gap-2 font-bold text-sm sm:text-base">
-                  {currentScenario.options[selectedOption].isCorrect ? (
-                    <span className="text-emerald-700 flex items-center gap-1.5">
-                      <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                      Lựa chọn chính xác và an toàn!
-                    </span>
-                  ) : (
-                    <span className="text-rose-700 flex items-center gap-1.5">
-                      <AlertTriangle className="w-5 h-5 text-rose-600" />
-                      Lưu ý rủi ro trong phương án này:
+              <div className="p-4 sm:p-5 rounded-2xl border-2 bg-slate-50 border-slate-200 space-y-3 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2 font-black text-sm sm:text-base">
+                    {currentScenario.options[selectedOption].isCorrect ? (
+                      <span className="text-emerald-700 flex items-center gap-1.5">
+                        <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                        Lựa chọn chính xác và an toàn!
+                      </span>
+                    ) : (
+                      <span className="text-rose-700 flex items-center gap-1.5">
+                        <AlertTriangle className="w-5 h-5 text-rose-600" />
+                        Lưu ý rủi ro trong phương án này:
+                      </span>
+                    )}
+                  </div>
+
+                  {earnedXp && isChild && (
+                    <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-black text-xs flex items-center gap-1.5 animate-bounce">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      <span>+{earnedXp} XP Hiệp Sĩ!</span>
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-700 leading-relaxed font-medium">
+
+                <p className="text-sm text-slate-700 leading-relaxed font-semibold">
                   {currentScenario.options[selectedOption].explanation}
                 </p>
               </div>

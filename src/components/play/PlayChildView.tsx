@@ -19,6 +19,7 @@ import {
   Lock,
   CheckCircle,
 } from "lucide-react";
+import { playClickBeep } from "@/utils/gameAudio";
 
 interface PlayChildViewProps {
   allScenarios: Scenario[];
@@ -242,6 +243,7 @@ export function PlayChildView({
                     {/* 3D Chunky Game Button */}
                     <Link
                       href={`/play/${chapter.id}`}
+                      onClick={() => playClickBeep()}
                       className={`w-full py-3 rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer ${
                         isCompleted
                           ? "bg-emerald-500 hover:bg-emerald-400 text-white border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1"

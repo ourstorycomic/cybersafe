@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useDemographic } from "@/context/DemographicContext";
-import { Users, Award, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight } from "lucide-react";
+import { Users, Award, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, Sword, Sparkles } from "lucide-react";
+import { playClickBeep } from "@/utils/gameAudio";
 
 export function SkillProgressDashboard() {
   const { isElderly } = useDemographic();
@@ -49,24 +51,33 @@ export function SkillProgressDashboard() {
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
-      <div className="max-w-6xl mx-auto p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-xs space-y-8">
+      <div className="max-w-6xl mx-auto p-6 sm:p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-sm space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <div>
-            <span className="text-xs uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border bg-blue-50 text-blue-800 border-blue-200">
-              Theo Dõi Năng Lực & Tiến Độ
+            <span className={`text-xs uppercase font-black tracking-wider px-3.5 py-1 rounded-full border ${
+              isElderly ? "bg-blue-50 text-blue-800 border-blue-200" : "bg-amber-100 text-amber-900 border-amber-300"
+            }`}>
+              {isElderly ? "Theo Dõi Năng Lực & Tiến Độ" : "🏅 BẢNG CHIẾN TÍCH HIỆP SĨ SỐ • 4 SIÊU NĂNG LỰC"}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-2">
-              {isElderly ? "Tiến Trình Rèn Luyện & Đánh Giá Năng Lực Số" : "Bảng Đánh Giá Kỹ Năng An Toàn Số"}
+            <h2 className={
+              isElderly
+                ? "text-2xl sm:text-3xl font-bold text-slate-900 mt-2"
+                : "text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mt-2 uppercase tracking-tight"
+            }>
+              {isElderly ? "Tiến Trình Rèn Luyện & Đánh Giá Năng Lực Số" : "Bảng Vàng Năng Lực & Thăng Cấp Hiệp Sĩ"}
             </h2>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-left md:text-right">
-            <div className="font-medium text-xs text-slate-600">
-              {isElderly ? "Chỉ số an toàn tổng hợp" : "Chỉ số năng lực tổng hợp"}
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-sky-50 border-2 border-sky-200 text-left md:text-right shadow-2xs">
+            <div className="font-bold text-xs text-slate-600">
+              {isElderly ? "Chỉ số an toàn tổng hợp" : "Chỉ Số Năng Lực Tổng Hợp"}
             </div>
-            <div className="font-bold text-lg sm:text-xl text-blue-700">
-              84% • Mức An Toàn Tốt
+            <div className="font-black text-lg sm:text-2xl text-sky-700 flex items-center gap-1.5 justify-start md:justify-end">
+              <span>84%</span>
+              <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold">
+                Cấp Tốt
+              </span>
             </div>
           </div>
         </div>
@@ -217,13 +228,28 @@ export function SkillProgressDashboard() {
           </div>
         </div>
 
-        {/* Note */}
-        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-3 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-          <Users className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-          <div>
-            <strong>Ý nghĩa giáo dục: </strong>
-            Bảng theo dõi giúp người học và gia đình xác định nhóm kỹ năng cần cải thiện để tập trung luyện tập, từ đó hình thành phản xạ tự vệ số bền vững.
+        {/* Note & Child CTA */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-blue-50/80 border border-blue-200">
+          <div className="flex items-start gap-3 text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold">
+            <Users className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+            <div>
+              <strong>Ý nghĩa rèn luyện: </strong>
+              {isElderly
+                ? "Bảng theo dõi giúp người học và gia đình xác định nhóm kỹ năng cần cải thiện để tập trung luyện tập, từ đó hình thành phản xạ tự vệ số bền vững."
+                : "Hoàn thành các ải thử thách để tích lũy XP, tăng chỉ số phòng thủ và thăng hạng Hiệp Sĩ Số Xuất Sắc!"}
+            </div>
           </div>
+
+          {!isElderly && (
+            <Link
+              href="/play"
+              onClick={() => playClickBeep()}
+              className="px-6 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs sm:text-sm border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+            >
+              <Sword className="w-4 h-4 text-amber-200" />
+              <span>Vào Đấu Trường Luyện Tập (+250 XP)</span>
+            </Link>
+          )}
         </div>
       </div>
     </section>

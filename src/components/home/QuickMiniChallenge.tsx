@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, PhoneCall, HelpCircle, ShieldCheck } from "lucide-react";
+import { useDemographic } from "@/context/DemographicContext";
+import { CheckCircle2, AlertTriangle, ArrowRight, RotateCcw, PhoneCall, HelpCircle, ShieldCheck, Zap, Sparkles } from "lucide-react";
+import { playClickBeep, playSuccessChime, playWarningBlip } from "@/utils/gameAudio";
 
 export function QuickMiniChallenge() {
+  const { isElderly, isChild } = useDemographic();
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -15,25 +18,33 @@ export function QuickMiniChallenge() {
   const handleChoose = (answer: boolean) => {
     setSelectedAnswer(answer);
     setShowFeedback(true);
+    if (answer === false) {
+      playSuccessChime();
+    } else {
+      playWarningBlip();
+    }
   };
 
   const handleReset = () => {
+    playClickBeep();
     setSelectedAnswer(null);
     setShowFeedback(false);
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+    <section id="mini-challenge" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
       <div className="max-w-5xl mx-auto p-6 sm:p-10 rounded-3xl bg-white border border-slate-200 shadow-sm relative overflow-hidden space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-5 border-b border-slate-200">
           <div>
-            <div className="flex items-center gap-2 text-xs font-black text-blue-700 uppercase tracking-widest mb-1.5">
-              <HelpCircle className="w-4 h-4 text-blue-600" />
-              <span>Thử Thách Phản Xạ Nhanh 30 Giây</span>
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest mb-1.5">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-amber-600" />
+                <span>{isChild ? "⚡ SPEED RUN 30S • ĐẤU TRƯỜNG PHẢN XẠ" : "Thử Thách Phản Xạ Nhanh 30 Giây"}</span>
+              </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Bạn Sẽ Xử Lý Thế Nào Trước Cuộc Gọi Này?
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {isChild ? "CÚP MÁY HAY CHUYỂN TIỀN? BẮT BẪY NGAY!" : "Bạn Sẽ Xử Lý Thế Nào Trước Cuộc Gọi Này?"}
             </h2>
           </div>
 
@@ -49,7 +60,7 @@ export function QuickMiniChallenge() {
 
         {/* Question Content */}
         <div className="space-y-6">
-          <div className="p-5 sm:p-7 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-5">
+          <div className="p-5 sm:p-7 rounded-3xl bg-slate-50 border-2 border-slate-200 text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-5">
             <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 border border-rose-200 shrink-0 flex items-center justify-center animate-pulse">
               <PhoneCall className="w-7 h-7 text-rose-600" />
             </div>
@@ -58,7 +69,7 @@ export function QuickMiniChallenge() {
               <span className="text-xs text-blue-700 font-black uppercase tracking-wider block">
                 Tình huống thực tế:
               </span>
-              <p className="text-base sm:text-lg font-medium leading-relaxed text-slate-800">
+              <p className="text-base sm:text-lg font-semibold leading-relaxed text-slate-800">
                 Một người gọi điện thoại tự xưng là cán bộ Công an điều tra, thông báo số CCCD của bạn liên quan đường dây tội phạm. Họ yêu cầu bạn{" "}
                 <span className="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
                   chuyển ngay tiền tiết kiệm vào &apos;Tài khoản tạm giữ của Tòa án&apos;
@@ -74,17 +85,25 @@ export function QuickMiniChallenge() {
               {/* Option A: ĐÚNG */}
               <button
                 onClick={() => handleChoose(true)}
-                className="p-5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-base sm:text-lg border-2 border-slate-200 hover:border-blue-400 shadow-xs hover-lift transition-all flex items-center justify-center gap-2 cursor-pointer text-center"
+                className={`p-5 rounded-2xl font-bold text-base sm:text-lg transition-all flex items-center justify-center gap-2 cursor-pointer text-center ${
+                  isChild
+                    ? "bg-white text-slate-800 border-2 border-slate-300 border-b-5 border-slate-400 active:border-b-2 active:translate-y-1 shadow-xs hover:bg-slate-50"
+                    : "bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 hover:border-blue-400 shadow-xs"
+                }`}
               >
                 <span>A. ĐÚNG — Chuyển tiền để hợp tác điều tra</span>
               </button>
 
-              {/* Option B: SAI (Giữ trung tính, không tô màu trước làm lộ đáp án) */}
+              {/* Option B: SAI */}
               <button
                 onClick={() => handleChoose(false)}
-                className="p-5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-base sm:text-lg border-2 border-slate-200 hover:border-blue-400 shadow-xs hover-lift transition-all flex items-center justify-center gap-2 cursor-pointer text-center"
+                className={`p-5 rounded-2xl font-black text-base sm:text-lg transition-all flex items-center justify-center gap-2 cursor-pointer text-center ${
+                  isChild
+                    ? "bg-emerald-500 hover:bg-emerald-400 text-white border-2 border-emerald-600 border-b-6 border-emerald-700 active:border-b-2 active:translate-y-1 shadow-md"
+                    : "bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 hover:border-blue-400 shadow-xs"
+                }`}
               >
-                <span>B. SAI — Đây là hành vi mạo danh lừa đảo</span>
+                <span>B. SAI — Đây là hành vi mạo danh lừa đảo!</span>
               </button>
             </div>
           ) : (
