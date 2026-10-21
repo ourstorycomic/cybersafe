@@ -145,7 +145,7 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
-                  &quot;Chào anh/chị, tôi là cán bộ Cơ quan Điều tra. Số CCCD của anh/chị đang dính líu vào đường dây rửa tiền 12 tỷ. Yêu cầu chuyển ngay 50 triệu vào tài khoản tạm giữ trong 30 phút để thanh tra chứng minh vô tội, nếu không sẽ bị bắt tạm giam!&quot;
+                  “Chào anh/chị, tôi là cán bộ Cơ quan Điều tra. Số CCCD của anh/chị đang dính líu vào đường dây rửa tiền 12 tỷ. Yêu cầu chuyển ngay 50 triệu vào tài khoản tạm giữ trong 30 phút để thanh tra chứng minh vô tội, nếu không sẽ bị bắt tạm giam!”
                 </div>
 
                 {/* Hotspot Selector Tabs */}

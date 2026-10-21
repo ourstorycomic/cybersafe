@@ -36,7 +36,7 @@ export default function RootLayout({
         <AuthProvider>
           <DemographicProvider>
             <Navbar />
-            <main className="flex-1 flex flex-col">{children}</main>
+            <main className="flex-1 flex flex-col" suppressHydrationWarning>{children}</main>
             <Footer />
             <AuthModal />
             <FloatingCyberGuardBot />

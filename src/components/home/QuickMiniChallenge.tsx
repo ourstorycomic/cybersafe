@@ -72,7 +72,7 @@ export function QuickMiniChallenge() {
               <p className="text-base sm:text-lg font-semibold leading-relaxed text-slate-800">
                 Một người gọi điện thoại tự xưng là cán bộ Công an điều tra, thông báo số CCCD của bạn liên quan đường dây tội phạm. Họ yêu cầu bạn{" "}
                 <span className="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
-                  chuyển ngay tiền tiết kiệm vào &apos;Tài khoản tạm giữ của Tòa án&apos;
+                  chuyển ngay tiền tiết kiệm vào “Tài khoản tạm giữ của Tòa án”
                 </span>{" "}
                 để thanh tra chứng minh vô tội. Điều này có đúng quy định pháp luật Việt Nam không?
               </p>
