@@ -236,7 +236,7 @@ export function PlayChildView({
                               ? "bg-emerald-500 shadow-xs"
                               : "bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-600"
                           }`}
-                          style={{ width: `${Math.max(5, chapterPercent)}%` }}
+                          style={{ width: `${chapterPercent > 0 ? Math.max(2, chapterPercent) : 0}%` }}
                         />
                       </div>
                     </div>

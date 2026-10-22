@@ -202,7 +202,7 @@ export function PlayerHeaderBar({
           <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
             <div
               className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-500 rounded-full transition-all duration-500"
-              style={{ width: `${Math.max(5, progressPercent)}%` }}
+              style={{ width: `${progressPercent > 0 ? Math.max(2, progressPercent) : 0}%` }}
             />
           </div>
         </div>

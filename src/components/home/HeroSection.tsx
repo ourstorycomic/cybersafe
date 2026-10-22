@@ -382,7 +382,7 @@ function ChildHero({ onStart }: { onStart: () => void }) {
       ? "Hiệp Sĩ Tinh Nhuệ"
       : "Đại Hiệp Sĩ An Toàn";
   const xpInCurrentLevel = totalXp % 100;
-  const progressPercent = Math.max(8, xpInCurrentLevel);
+  const progressPercent = Math.min(100, Math.max(0, xpInCurrentLevel));
 
   return (
     <section className="relative overflow-hidden bg-white text-slate-900 border-b border-slate-200 py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
@@ -435,7 +435,9 @@ function ChildHero({ onStart }: { onStart: () => void }) {
             <div className="space-y-1">
               <div className="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-500 transition-all duration-700"
+                  className={`h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-500 transition-all duration-700 ${
+                    progressPercent === 0 ? "opacity-0" : "opacity-100"
+                  }`}
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
