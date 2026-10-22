@@ -289,9 +289,20 @@ function ElderlyHero({ onStart }: { onStart: () => void }) {
  * 2. Chế độ Trẻ Em (ChildHero) — Trẻ trung, năng động, gamified phong cách Duolingo & Roblox
  */
 function ChildHero({ onStart }: { onStart: () => void }) {
+  const { profile, addXp } = useAuth();
   const [activeTrapIdx, setActiveTrapIdx] = useState<number>(0);
-  const [bonusXp, setBonusXp] = useState<number>(50);
   const [hasScanned, setHasScanned] = useState<boolean>(true);
+  const [scannedTrapIds, setScannedTrapIds] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("cybersafe_scanned_traps");
+        return saved ? JSON.parse(saved) : ["trap-robux"];
+      } catch {
+        return ["trap-robux"];
+      }
+    }
+    return ["trap-robux"];
+  });
 
   const demoTraps = [
     {
@@ -334,13 +345,44 @@ function ChildHero({ onStart }: { onStart: () => void }) {
 
   const currentTrap = demoTraps[activeTrapIdx];
 
+  // Chỉ cộng XP lần đầu tiên học sinh khám phá tình huống đó
   const handleSelectTrap = (idx: number) => {
     playClickBeep();
     setActiveTrapIdx(idx);
     setHasScanned(true);
-    setBonusXp((prev) => prev + 50);
-    playSuccessChime();
+
+    const trap = demoTraps[idx];
+    if (!scannedTrapIds.includes(trap.id)) {
+      const updated = [...scannedTrapIds, trap.id];
+      setScannedTrapIds(updated);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("cybersafe_scanned_traps", JSON.stringify(updated));
+        } catch {}
+      }
+      addXp(trap.xpReward);
+      playSuccessChime();
+    }
   };
+
+  const totalTraps = demoTraps.length;
+  const scannedCount = scannedTrapIds.length;
+  const isAllScanned = scannedCount >= totalTraps;
+
+  // Tính toán chỉ số chuẩn luồng từ profile người dùng
+  const totalXp = profile?.total_score || 0;
+  const streakDays = profile?.streak_days || 1;
+  const levelNumber = Math.max(1, Math.floor(totalXp / 100) + 1);
+  const levelTitle =
+    levelNumber === 1
+      ? "Hiệp Sĩ Tập Sự"
+      : levelNumber === 2
+      ? "Vệ Binh Số"
+      : levelNumber === 3
+      ? "Hiệp Sĩ Tinh Nhuệ"
+      : "Đại Hiệp Sĩ An Toàn";
+  const xpInCurrentLevel = totalXp % 100;
+  const progressPercent = Math.max(8, xpInCurrentLevel);
 
   return (
     <section className="relative overflow-hidden bg-white text-slate-900 border-b border-slate-200 py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
@@ -360,41 +402,47 @@ function ChildHero({ onStart }: { onStart: () => void }) {
           {/* Game Title: Punchy & Bold */}
           <div className="space-y-3">
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight uppercase text-slate-900">
-              Rèn Luyện Bản Lĩnh Số, <span className="text-sky-600 underline decoration-amber-400 decoration-wavy">Bảo Vệ Tài Khoản</span> & Vượt 39 Thử Thách!
+              Rèn Luyện Bản Lĩnh Số, <span className="text-sky-600">Bảo Vệ Tài Khoản</span> & Vượt 39 Thử Thách!
             </h1>
             <p className="text-base sm:text-lg text-slate-600 font-semibold leading-relaxed max-w-xl mx-auto lg:mx-0">
               Học cách nhận diện liên kết độc hại, chiêu trò đánh cắp mật khẩu và tin nhắn lừa đảo mượn tiền qua các tình huống tương tác thực tế.
             </p>
           </div>
 
-          {/* Gamification Stats Strip */}
+          {/* Gamification Stats Strip - Động theo Profile học viên */}
           <div className="p-4 sm:p-5 rounded-3xl bg-slate-50 border-2 border-slate-200 shadow-xs max-w-lg mx-auto lg:mx-0 space-y-3">
             <div className="flex items-center justify-between text-xs sm:text-sm font-black">
               <div className="flex items-center gap-2">
                 <span className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center font-black shadow-xs">
-                  LV1
+                  LV{levelNumber}
                 </span>
-                <span className="text-slate-800">Hiệp Sĩ Tập Sự</span>
+                <span className="text-slate-800">{levelTitle}</span>
               </div>
 
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1.5 text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-xl">
                   <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
-                  <span>3 Ngày Streak</span>
+                  <span>{streakDays} Ngày Streak</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
                   <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-                  <span>{250 + bonusXp} XP</span>
+                  <span>{totalXp} XP</span>
                 </span>
               </div>
             </div>
 
             {/* XP Bar */}
-            <div className="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-500 transition-all duration-700"
-                style={{ width: `${Math.min(100, (250 + bonusXp) / 5)}%` }}
-              />
+            <div className="space-y-1">
+              <div className="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-500 transition-all duration-700"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] font-bold text-slate-500 px-0.5">
+                <span>Cấp độ hiện tại: {xpInCurrentLevel}/100 XP</span>
+                <span>Mục tiêu tiếp theo: LV{levelNumber + 1}</span>
+              </div>
             </div>
           </div>
 
@@ -434,14 +482,18 @@ function ChildHero({ onStart }: { onStart: () => void }) {
                     Mô Phỏng Nhận Diện Tình Huống
                   </h3>
                   <span className="text-[11px] text-sky-700 font-bold">
-                    Bấm chọn 3 tình huống mẫu bên dưới để xem phân tích:
+                    Khám phá 3 bẫy lừa đảo mạng phổ biến:
                   </span>
                 </div>
               </div>
 
-              <span className="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-800 text-xs font-black flex items-center gap-1 border border-amber-300">
+              <span className={`px-2.5 py-1 rounded-xl text-xs font-black flex items-center gap-1 border ${
+                isAllScanned
+                  ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                  : "bg-amber-100 text-amber-800 border-amber-300"
+              }`}>
                 <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                <span>+50 XP</span>
+                <span>{isAllScanned ? "Đã soi 3/3 bẫy" : `Đã soi ${scannedCount}/${totalTraps}`}</span>
               </span>
             </div>
 
@@ -449,12 +501,14 @@ function ChildHero({ onStart }: { onStart: () => void }) {
             <div className="grid grid-cols-1 gap-2">
               {demoTraps.map((trap, idx) => {
                 const TrapIcon = trap.icon;
+                const isSelected = activeTrapIdx === idx;
+                const isScanned = scannedTrapIds.includes(trap.id);
                 return (
                   <button
                     key={trap.id}
                     onClick={() => handleSelectTrap(idx)}
                     className={`p-2.5 rounded-xl text-left font-bold text-xs sm:text-sm transition-all border-2 cursor-pointer flex items-center justify-between ${
-                      activeTrapIdx === idx
+                      isSelected
                         ? "bg-sky-50 border-sky-500 text-sky-950 shadow-xs scale-101"
                         : "bg-slate-50 border-slate-200 text-slate-700 hover:border-sky-300 hover:bg-white"
                     }`}
@@ -463,9 +517,17 @@ function ChildHero({ onStart }: { onStart: () => void }) {
                       <TrapIcon className={`w-4 h-4 ${trap.iconColor} shrink-0`} />
                       <span>{trap.label}</span>
                     </span>
-                    {activeTrapIdx === idx && (
-                      <span className="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                    {isSelected ? (
+                      <span className="text-[11px] font-black text-sky-800 bg-sky-100 px-2 py-0.5 rounded-md">
                         Đang soi
+                      </span>
+                    ) : isScanned ? (
+                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                        Đã xong ✓
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md">
+                        +{trap.xpReward} XP
                       </span>
                     )}
                   </button>

@@ -76,111 +76,98 @@ export function PlatformIntroSection() {
 
   if (isElderly) {
     return (
-      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
-        <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12">
-          {/* Header chuẩn mực, thanh lịch */}
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+      <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-slate-50/60 border-b border-slate-200">
+        <div className="max-w-5xl mx-auto space-y-8 sm:space-y-10">
+          {/* Header ân cần, súc tích */}
+          <div className="text-center space-y-2 max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 text-blue-900 border border-blue-200 text-xs sm:text-sm font-bold">
-              <Target className="w-4 h-4 text-blue-700" />
-              <span>Giới Thiệu Nền Tảng An Toàn Số</span>
+              <ShieldCheck className="w-4 h-4 text-blue-700" />
+              <span>Lời Dặn An Toàn Dành Cho Bác & Gia Đình</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight">
-              Mục Tiêu, Đối Tượng & Chức Năng Của Hệ Thống
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              3 Nguyên Tắc Vàng & 3 Công Cụ Hỗ Trợ Bác
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed">
-              Nền tảng hỗ trợ cộng đồng phòng ngừa các thủ đoạn lừa đảo công nghệ cao, bảo vệ an toàn tài chính cho người lớn tuổi và các gia đình Việt Nam.
+            <p className="text-base text-slate-700 font-normal">
+              Ghi nhớ 3 điều không làm và sử dụng các công cụ bên dưới để an tâm dùng mạng mỗi ngày:
             </p>
           </div>
 
-          {/* 1. Mục tiêu cốt lõi */}
-          <div className="p-6 sm:p-7 rounded-2xl bg-blue-50/50 border border-blue-200 shadow-xs space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-700 text-white flex items-center justify-center font-bold shrink-0">
-                <Target className="w-5 h-5" />
+          {/* 1. 3 Điều KHÔNG LÀM (To, rõ ràng) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 rounded-2xl bg-white border-2 border-rose-200 shadow-2xs space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 font-black text-xl flex items-center justify-center border border-rose-200">
+                ❌
               </div>
-              <div>
-                <span className="text-xs font-bold uppercase text-blue-700 tracking-wider">
-                  Mục tiêu đề tài
-                </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                  Phát hiện & Phòng ngừa các hình thức lừa đảo trực tuyến
-                </h3>
-              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                1. Không Tin Cuộc Gọi Dọa Nạt
+              </h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Công an, Viện kiểm sát thật <strong>không bao giờ</strong> gọi điện thoại làm việc hay yêu cầu Bác chuyển tiền.
+              </p>
             </div>
-            <p className="text-base sm:text-lg text-slate-700 leading-relaxed pl-0 sm:pl-13">
-              Hỗ trợ người cao tuổi và gia đình rèn luyện phản xạ nhận diện các bẫy tâm lý mạo danh cơ quan nhà nước, cuộc gọi dọa nạt và liên kết độc hại, giúp bảo vệ an toàn tài sản tích lũy và thông tin cá nhân.
-            </p>
-          </div>
 
-          {/* 2. Đối tượng phục vụ */}
-          <div className="space-y-4">
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <Users className="w-6 h-6 text-blue-700" />
-              <span>Đối Tượng Phục Vụ Trọng Tâm</span>
-            </h3>
+            <div className="p-5 rounded-2xl bg-white border-2 border-rose-200 shadow-2xs space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 font-black text-xl flex items-center justify-center border border-rose-200">
+                ❌
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                2. Không Gửi Mã OTP & Mật Khẩu
+              </h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Mã OTP gửi về điện thoại giống như chìa khóa tủ tiền. Tuyệt đối không đọc cho bất kỳ ai.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {targetAudiences.map((target, idx) => {
-                const TargetIcon = target.icon;
-                return (
-                  <div
-                    key={idx}
-                    className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200">
-                          <TargetIcon className="w-5 h-5" />
-                        </div>
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                          {target.highlight}
-                        </span>
-                      </div>
-                      <h4 className="text-lg font-bold text-slate-900">
-                        {target.role}
-                      </h4>
-                      <p className="text-sm text-slate-600 leading-relaxed">
-                        {target.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="p-5 rounded-2xl bg-white border-2 border-rose-200 shadow-2xs space-y-2">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 font-black text-xl flex items-center justify-center border border-rose-200">
+                ❌
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                3. Không Bấm Vào Link Nhận Quà
+              </h3>
+              <p className="text-sm text-slate-700 leading-relaxed">
+                Tin nhắn báo trúng thưởng, tặng quà tri ân đều là bẫy để lừa Bác bấm vào cài đặt mã độc.
+              </p>
             </div>
           </div>
 
-          {/* 3. 4 Chức năng chính */}
-          <div className="space-y-4">
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
-              <ShieldCheck className="w-6 h-6 text-emerald-700" />
-              <span>4 Chức Năng Cốt Lõi Của Nền Tảng</span>
+          {/* 2. 3 Công cụ sẵn có giúp Bác */}
+          <div className="p-6 sm:p-7 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-blue-700" />
+              <span>3 Tiện Ích Giúp Bác Luyện Tập & Phòng Tránh:</span>
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {coreFeatures.map((feat, idx) => {
-                const Icon = feat.icon;
-                return (
-                  <div
-                    key={feat.id}
-                    className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5 flex flex-col justify-between"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="w-9 h-9 rounded-xl bg-slate-100 text-blue-700 flex items-center justify-center font-bold">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                        {feat.badge}
-                      </span>
-                    </div>
-                    <h4 className="text-base sm:text-lg font-bold text-slate-900">
-                      {idx + 1}. {feat.title}
-                    </h4>
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      {feat.desc}
-                    </p>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-200 space-y-1.5">
+                <div className="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <Gamepad2 className="w-4 h-4 text-blue-700" />
+                  <span>Bài Luyện Tập Tình Huống</span>
+                </div>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  Xem các mẫu cuộc gọi, tin nhắn lừa đảo quen thuộc để tập phản xạ cúp máy dứt khoát.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200 space-y-1.5">
+                <div className="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-emerald-700" />
+                  <span>Trợ Lý Kiểm Tra Tin Nhắn</span>
+                </div>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  Bác chỉ cần dán tin nhắn hoặc số lạ vào, trợ lý sẽ kiểm tra và cảnh báo có an toàn hay không.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-amber-50/50 border border-amber-200 space-y-1.5">
+                <div className="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-amber-700" />
+                  <span>Cẩm Nang Bỏ Túi</span>
+                </div>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  Tổng hợp ngắn gọn các chiêu trò lừa đảo thường gặp nhất tại Việt Nam kèm số điện thoại khẩn cấp.
+                </p>
+              </div>
             </div>
           </div>
         </div>

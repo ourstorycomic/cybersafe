@@ -18,9 +18,6 @@ import {
   Eye,
   EyeOff,
   UserCheck,
-  GraduationCap,
-  Heart,
-  Compass,
   KeyRound,
   Calendar,
 } from "lucide-react";
@@ -41,6 +38,7 @@ export function AuthModal() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [dob, setDob] = useState("");
   const [age, setAge] = useState<number | "">("");
   const [targetGroup, setTargetGroup] = useState<"student" | "elder" | "general">(
     userRole === "elderly" ? "elder" : "student"
@@ -51,31 +49,44 @@ export function AuthModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const handleRoleSelect = (role: UserRole) => {
-    setUserRole(role);
-    setTargetGroup(role === "elderly" ? "elder" : "student");
-    if (role === "elderly" && (age === "" || Number(age) < 50)) {
-      setAge(65);
-    } else if (role === "child" && (age === "" || Number(age) >= 18)) {
-      setAge(14);
-    }
-  };
-
-  // Tự động gợi ý nhóm đối tượng khi người dùng nhập độ tuổi
-  const handleAgeChange = (val: string) => {
-    const num = parseInt(val, 10);
-    if (isNaN(num)) {
+  // Tự động tính tuổi và cấu hình giao diện khi người dùng chọn ngày sinh
+  const handleDobChange = (dateVal: string) => {
+    setDob(dateVal);
+    setFieldErrors((prev) => ({ ...prev, dob: "" }));
+    if (!dateVal) {
       setAge("");
       return;
     }
-    setAge(num);
-    if (num < 18) {
-      setTargetGroup("student");
-      setUserRole("child");
-    } else if (num >= 50) {
+    const today = new Date();
+    const birthDate = new Date(dateVal);
+    if (isNaN(birthDate.getTime())) {
+      setAge("");
+      return;
+    }
+    let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      calculatedAge--;
+    }
+
+    if (calculatedAge < 6 || calculatedAge > 120) {
+      setAge(calculatedAge);
+      setFieldErrors((prev) => ({
+        ...prev,
+        dob: "Độ tuổi hợp lệ từ 6 đến 120 tuổi. Vui lòng kiểm tra lại ngày sinh.",
+      }));
+      return;
+    }
+
+    setAge(calculatedAge);
+    if (calculatedAge >= 50) {
       setTargetGroup("elder");
       setUserRole("elderly");
+    } else {
+      setTargetGroup("student");
+      setUserRole("child");
     }
   };
 
@@ -95,68 +106,98 @@ export function AuthModal() {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
       if (authModalTab === "signin") {
+        const errors: Record<string, string> = {};
         if (!identifier.trim()) {
-          setErrorMessage("Vui lòng nhập Số điện thoại hoặc Email của bạn.");
-          setIsSubmitting(false);
-          return;
+          errors.identifier = "Vui lòng nhập Số điện thoại hoặc Email của bạn.";
         }
         if (!password) {
-          setErrorMessage("Vui lòng nhập mật khẩu.");
+          errors.password = "Vui lòng nhập mật khẩu tài khoản.";
+        }
+        if (Object.keys(errors).length > 0) {
+          setFieldErrors(errors);
           setIsSubmitting(false);
           return;
         }
+
         const res = await signIn(identifier, password);
         if (!res.success) {
-          setErrorMessage(res.error || "Đăng nhập thất bại.");
+          const err = res.error || "Đăng nhập thất bại.";
+          if (
+            err.includes("không chính xác") ||
+            err.includes("credentials") ||
+            err.includes("Invalid login")
+          ) {
+            setFieldErrors({
+              identifier: "Số điện thoại / Email hoặc mật khẩu không chính xác.",
+              password: "Vui lòng kiểm tra lại mật khẩu.",
+            });
+          } else {
+            setErrorMessage(err);
+          }
         }
       } else if (authModalTab === "signup") {
-        if (!identifier.trim()) {
-          setErrorMessage("Vui lòng nhập Số điện thoại hoặc Email để làm tên đăng nhập.");
-          setIsSubmitting(false);
-          return;
-        }
+        const errors: Record<string, string> = {};
         if (!displayName.trim()) {
-          setErrorMessage("Vui lòng nhập họ và tên hoặc biệt danh của bạn.");
-          setIsSubmitting(false);
-          return;
+          errors.displayName = "Vui lòng nhập họ và tên hoặc biệt danh của bạn.";
         }
-        if (age === "" || Number(age) < 6 || Number(age) > 120) {
-          setErrorMessage("Vui lòng điền độ tuổi hợp lệ (từ 6 đến 120 tuổi) để hệ thống phân tích và tối ưu giao diện.");
-          setIsSubmitting(false);
-          return;
+        if (!identifier.trim()) {
+          errors.identifier = "Vui lòng nhập Số điện thoại hoặc Email để làm tên đăng nhập.";
+        }
+        if (!dob) {
+          errors.dob = "Vui lòng chọn ngày tháng năm sinh của bạn.";
+        } else if (age === "" || Number(age) < 6 || Number(age) > 120) {
+          errors.dob = "Độ tuổi tính toán không hợp lệ (hỗ trợ từ 6 đến 120 tuổi).";
         }
         if (password.length < 8) {
-          setErrorMessage("Mật khẩu bảo mật phải có tối thiểu 8 ký tự theo đúng quy chuẩn an toàn.");
-          setIsSubmitting(false);
-          return;
+          errors.password = "Mật khẩu bảo mật phải có tối thiểu 8 ký tự.";
         }
         if (password !== confirmPassword) {
-          setErrorMessage("Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.");
+          errors.confirmPassword = "Mật khẩu xác nhận không khớp. Vui lòng nhập lại chính xác.";
+        }
+
+        if (Object.keys(errors).length > 0) {
+          setFieldErrors(errors);
           setIsSubmitting(false);
           return;
         }
+
+        const userAge = Number(age);
+        const resolvedGroup = userAge >= 50 ? "elder" : "student";
+        const resolvedRole = userAge >= 50 ? "elderly" : "child";
+        setUserRole(resolvedRole);
 
         const res = await signUp({
           identifier,
           pass: password,
           displayName,
-          age: Number(age),
-          targetGroup,
+          age: userAge,
+          dob,
+          targetGroup: resolvedGroup,
           avatarId: selectedAvatarId,
         });
 
         if (!res.success) {
-          setErrorMessage(res.error || "Đăng ký thất bại.");
+          const err = res.error || "Đăng ký thất bại.";
+          if (err.includes("đã được đăng ký") || err.includes("already registered")) {
+            setFieldErrors({
+              identifier: "Số điện thoại hoặc Email này đã tồn tại trên hệ thống. Vui lòng chuyển sang tab Đăng Nhập.",
+            });
+          } else {
+            setErrorMessage(err);
+          }
         } else {
           setSuccessMessage("Đăng ký tài khoản thành công! Đang đăng nhập...");
         }
       } else if (authModalTab === "forgot") {
         if (!identifier.trim()) {
-          setErrorMessage("Vui lòng nhập Số điện thoại hoặc Email đã đăng ký để khôi phục mật khẩu.");
+          setFieldErrors({
+            identifier: "Vui lòng nhập Số điện thoại hoặc Email đã đăng ký để khôi phục mật khẩu.",
+          });
           setIsSubmitting(false);
           return;
         }
@@ -277,60 +318,11 @@ export function AuthModal() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* BẮT BUỘC CHỌN ĐỐI TƯỢNG (Trẻ Em / Người Cao Tuổi) THEO YÊU CẦU ĐỀ TÀI */}
-          <div className="p-3.5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                <span>Bắt Buộc Chọn Đối Tượng Trải Nghiệm:</span>
-              </label>
-              <span className="text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full uppercase">
-                Tự đổi giao diện
-              </span>
-            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleRoleSelect("child")}
-                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                  userRole === "child"
-                    ? "border-sky-500 bg-sky-50/80 text-sky-950 shadow-xs ring-2 ring-sky-300"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm">
-                  <span className="text-base sm:text-lg">🧒</span>
-                  <span>Trẻ Em (Dưới 18)</span>
-                </div>
-                <p className="text-[11px] text-slate-600 font-medium leading-tight line-clamp-2">
-                  Giao diện trò chơi sôi động, nút 3D, mascot đồng hành.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleSelect("elderly")}
-                className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                  userRole === "elderly"
-                    ? "border-amber-600 bg-amber-50/80 text-amber-950 shadow-xs ring-2 ring-amber-300"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm">
-                  <span className="text-base sm:text-lg">👴</span>
-                  <span>Người Cao Tuổi (50+)</span>
-                </div>
-                <p className="text-[11px] text-slate-600 font-medium leading-tight line-clamp-2">
-                  Chữ to rõ, nút bấm khổng lồ, giảm bớt rối mắt & dễ đọc.
-                </p>
-              </button>
-            </div>
-          </div>
 
           {/* Display Name (Only for signup) */}
           {authModalTab === "signup" && (
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="text-xs font-bold text-slate-700">Họ và Tên hoặc Biệt Danh</label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -339,15 +331,28 @@ export function AuthModal() {
                   required
                   placeholder="Ví dụ: Nguyễn Văn An"
                   value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold transition-all"
+                  onChange={(e) => {
+                    setDisplayName(e.target.value);
+                    if (fieldErrors.displayName) setFieldErrors((p) => ({ ...p, displayName: "" }));
+                  }}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 outline-none text-sm font-semibold transition-all ${
+                    fieldErrors.displayName
+                      ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  }`}
                 />
               </div>
+              {fieldErrors.displayName && (
+                <p className="mt-1 text-xs font-semibold text-rose-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.displayName}</span>
+                </p>
+              )}
             </div>
           )}
 
           {/* SĐT hoặc Email (Identifier chung cho tất cả các tab) */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
               <span>Số điện thoại hoặc Email</span>
               <span className="text-[11px] font-normal text-slate-500">Dùng làm tên đăng nhập</span>
@@ -363,41 +368,80 @@ export function AuthModal() {
                 required
                 placeholder="0912345678 hoặc name@example.com"
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full pl-14 pr-4 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold transition-all"
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                  if (fieldErrors.identifier) setFieldErrors((p) => ({ ...p, identifier: "" }));
+                }}
+                className={`w-full pl-14 pr-4 py-2.5 rounded-2xl border-2 outline-none text-sm font-semibold transition-all ${
+                  fieldErrors.identifier
+                    ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200"
+                    : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                }`}
               />
             </div>
+            {fieldErrors.identifier && (
+              <p className="mt-1 text-xs font-semibold text-rose-600 flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{fieldErrors.identifier}</span>
+              </p>
+            )}
           </div>
 
-          {/* Độ tuổi (Bắt buộc khi đăng ký - dùng để phân tích & tùy biến giao diện) */}
+          {/* Ngày sinh (Bắt buộc khi đăng ký - dùng để tính tuổi và cấu hình giao diện chuẩn) */}
           {authModalTab === "signup" && (
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700">Độ tuổi của bạn</label>
-                <span className="text-[11px] text-blue-600 font-semibold">Bắt buộc theo đề tài</span>
+                <label className="text-xs font-bold text-slate-700">Ngày sinh của bạn</label>
+                <span className="text-[11px] text-blue-600 font-semibold">Tự tính tuổi & đổi giao diện</span>
               </div>
               <div className="relative">
                 <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
-                  type="number"
-                  min="6"
-                  max="120"
+                  type="date"
+                  max={new Date().toISOString().split("T")[0]}
                   required
-                  placeholder="Ví dụ: 16 (Học sinh) hoặc 65 (Cao tuổi)"
-                  value={age}
-                  onChange={(e) => handleAgeChange(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold transition-all"
+                  value={dob}
+                  onChange={(e) => handleDobChange(e.target.value)}
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border-2 outline-none text-sm font-semibold transition-all ${
+                    fieldErrors.dob
+                      ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200 text-rose-950"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  }`}
                 />
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">
-                Hệ thống dựa vào độ tuổi để phân tích thang đo năng lực số và tự động cấu hình giao diện (cỡ chữ lớn, độ tương phản cao cho người lớn tuổi).
-              </p>
+
+              {fieldErrors.dob && (
+                <p className="mt-1 text-xs font-semibold text-rose-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.dob}</span>
+                </p>
+              )}
+
+              {dob && age !== "" && !isNaN(Number(age)) && !fieldErrors.dob && (
+                <div
+                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2.5 transition-all ${
+                    Number(age) >= 50
+                      ? "bg-amber-50 border-amber-300 text-amber-950"
+                      : "bg-sky-50 border-sky-300 text-sky-950"
+                  }`}
+                >
+                  <span className="text-xl shrink-0">{Number(age) >= 50 ? "👴" : "🧒"}</span>
+                  <div>
+                    <span className="font-bold">Độ tuổi tính toán: {age} tuổi.</span>{" "}
+                    <span className="font-normal block text-[11px] leading-relaxed">
+                      {Number(age) >= 50
+                        ? "Hệ thống tự động kích hoạt Giao diện Người Cao Tuổi (Chữ to rõ, màu sắc ấm áp, phòng ngừa lừa đảo gia đình)."
+                        : "Hệ thống tự động kích hoạt Giao diện Học Sinh & Trẻ Em (Gamified sôi động, vượt ải an toàn số)."}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
           {/* Password (Chỉ cho signin và signup) */}
           {authModalTab !== "forgot" && (
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-slate-700">Mật Khẩu Bảo Mật</label>
                 {authModalTab === "signin" && (
@@ -406,6 +450,7 @@ export function AuthModal() {
                     onClick={() => {
                       setErrorMessage(null);
                       setSuccessMessage(null);
+                      setFieldErrors({});
                       openAuthModal("forgot");
                     }}
                     className="text-[11px] font-bold text-blue-600 hover:text-blue-800 underline cursor-pointer"
@@ -421,8 +466,15 @@ export function AuthModal() {
                   required
                   placeholder="Tối thiểu 8 ký tự bảo mật"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold transition-all"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
+                  }}
+                  className={`w-full pl-10 pr-10 py-2.5 rounded-2xl border-2 outline-none text-sm font-semibold transition-all ${
+                    fieldErrors.password
+                      ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  }`}
                 />
                 <button
                   type="button"
@@ -432,17 +484,22 @@ export function AuthModal() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {authModalTab === "signup" && (
+              {fieldErrors.password ? (
+                <p className="mt-1 text-xs font-semibold text-rose-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.password}</span>
+                </p>
+              ) : authModalTab === "signup" ? (
                 <span className="text-[11px] text-slate-500 font-medium block">
                   Quy định bảo mật: Mật khẩu tối thiểu 8 ký tự.
                 </span>
-              )}
+              ) : null}
             </div>
           )}
 
           {/* Confirm Password (Chỉ khi Sign Up) */}
           {authModalTab === "signup" && (
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="text-xs font-bold text-slate-700">Xác Nhận Lại Mật Khẩu</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -451,8 +508,15 @@ export function AuthModal() {
                   required
                   placeholder="Nhập lại mật khẩu vừa đặt"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold transition-all"
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" }));
+                  }}
+                  className={`w-full pl-10 pr-10 py-2.5 rounded-2xl border-2 outline-none text-sm font-semibold transition-all ${
+                    fieldErrors.confirmPassword
+                      ? "border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-2 focus:ring-rose-200"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  }`}
                 />
                 <button
                   type="button"
@@ -462,61 +526,18 @@ export function AuthModal() {
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {fieldErrors.confirmPassword && (
+                <p className="mt-1 text-xs font-semibold text-rose-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{fieldErrors.confirmPassword}</span>
+                </p>
+              )}
             </div>
           )}
 
-          {/* Target Group & Avatar Selection (Chỉ khi Sign Up) */}
+          {/* Avatar Selection (Chỉ khi Sign Up) */}
           {authModalTab === "signup" && (
-            <>
-              {/* Target Group */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700">
-                  Giao diện phù hợp (Tự động cập nhật theo độ tuổi)
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setTargetGroup("student")}
-                    className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
-                      targetGroup === "student"
-                        ? "bg-blue-50 border-blue-500 text-blue-900 font-black shadow-xs ring-2 ring-blue-200"
-                        : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    <GraduationCap className="w-4 h-4" />
-                    <span className="text-[11px]">Học Sinh / Trẻ Em</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setTargetGroup("elder")}
-                    className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
-                      targetGroup === "elder"
-                        ? "bg-amber-50 border-amber-500 text-amber-900 font-black shadow-xs ring-2 ring-amber-200"
-                        : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    <Heart className="w-4 h-4" />
-                    <span className="text-[11px]">Người Cao Tuổi</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setTargetGroup("general")}
-                    className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
-                      targetGroup === "general"
-                        ? "bg-emerald-50 border-emerald-500 text-emerald-900 font-black shadow-xs ring-2 ring-emerald-200"
-                        : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    <Compass className="w-4 h-4" />
-                    <span className="text-[11px]">Phổ Thông</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Avatar Selection */}
-              <div className="space-y-1.5">
+            <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700">
                   Chọn Huy Hiệu Đại Diện
                 </label>
@@ -544,8 +565,7 @@ export function AuthModal() {
                   ))}
                 </div>
               </div>
-            </>
-          )}
+            )}
 
           {/* Submit Button */}
           <button

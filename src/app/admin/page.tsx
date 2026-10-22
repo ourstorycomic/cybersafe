@@ -56,7 +56,26 @@ interface UserProfileRecord {
   total_score?: number;
   streak_days?: number;
   role?: string;
+  badges?: any[];
+  pretest_score?: number;
+  pretest_level?: string;
+  pretest_completed?: boolean;
+  needs_improvement?: string[];
   created_at?: string;
+}
+
+export interface PreTestReportRecord {
+  id: string;
+  userId: string;
+  displayName: string;
+  targetGroup: string;
+  score: number;
+  totalQuestions: number;
+  percent: number;
+  competencyLevel: string;
+  needsImprovement: string[];
+  testType: string;
+  completedAt: string;
 }
 
 export interface StudentReport {
@@ -75,6 +94,9 @@ export interface StudentReport {
   classification: string;
   lastCompleted: string;
   records: UserProgressRecord[];
+  pretestScore?: number;
+  pretestLevel?: string;
+  needsImprovement?: string[];
 }
 
 export default function AdminPage() {
@@ -83,7 +105,8 @@ export default function AdminPage() {
   const [progressList, setProgressList] = useState<UserProgressRecord[]>([]);
   const [chatbotList, setChatbotList] = useState<ChatbotRecord[]>([]);
   const [profilesList, setProfilesList] = useState<UserProfileRecord[]>([]);
-  const [activeTab, setActiveTab] = useState<"students" | "progress" | "chatbot" | "profiles">("students");
+  const [pretestResultsList, setPretestResultsList] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"students" | "progress" | "chatbot" | "profiles" | "pretest">("students");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<StudentReport | null>(null);
 
@@ -131,16 +154,35 @@ export default function AdminPage() {
         } else {
           setProfilesList([]);
         }
+
+        // 4. Fetch bài kiểm tra đầu vào trực tiếp từ bảng pretest_results (nếu có)
+        try {
+          const { data: preData, error: preErr } = await supabase
+            .from("pretest_results")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .limit(200);
+
+          if (!preErr && preData) {
+            setPretestResultsList(preData);
+          } else {
+            setPretestResultsList([]);
+          }
+        } catch {
+          setPretestResultsList([]);
+        }
       } else {
         setProgressList([]);
         setChatbotList([]);
         setProfilesList([]);
+        setPretestResultsList([]);
       }
     } catch (err) {
       console.warn("Lỗi tải dữ liệu quản trị từ Supabase:", err);
       setProgressList([]);
       setChatbotList([]);
       setProfilesList([]);
+      setPretestResultsList([]);
     } finally {
       setLoading(false);
     }
@@ -216,6 +258,28 @@ export default function AdminPage() {
       else if (safeRate >= 75 && avgScore >= 70) classification = "Đạt chuẩn Khá";
       else if (safeRate >= 60) classification = "Trung bình";
 
+      let pretestScore: number | undefined = prof?.pretest_score;
+      let pretestLevel: string | undefined = prof?.pretest_level;
+      let needsImprovement: string[] | undefined = prof?.needs_improvement;
+
+      if (pretestScore === undefined && Array.isArray(prof?.badges)) {
+        const preBadge = prof.badges.find(
+          (b: any) => b && typeof b === "object" && b.id === "badge_pretest"
+        );
+        if (preBadge) {
+          pretestScore = preBadge.score;
+          pretestLevel = preBadge.level;
+          needsImprovement = preBadge.needs_improvement;
+        }
+      }
+
+      const matchedPre = pretestResultsList.find((p) => p.user_id === uid);
+      if (matchedPre) {
+        pretestScore = matchedPre.score;
+        pretestLevel = matchedPre.competency_level;
+        needsImprovement = matchedPre.needs_improvement;
+      }
+
       reports.push({
         userId: uid,
         displayName,
@@ -232,11 +296,183 @@ export default function AdminPage() {
         classification,
         lastCompleted: records[0]?.completed_at || "",
         records,
+        pretestScore,
+        pretestLevel,
+        needsImprovement,
       });
     }
 
+    // Bổ sung các học viên có trong profilesList nhưng chưa làm ải nào (ví dụ mới làm bài pretest)
+    profilesList.forEach((prof) => {
+      if (!userMap.has(prof.id)) {
+        let pretestScore: number | undefined = prof.pretest_score;
+        let pretestLevel: string | undefined = prof.pretest_level;
+        let needsImprovement: string[] | undefined = prof.needs_improvement;
+
+        if (pretestScore === undefined && Array.isArray(prof.badges)) {
+          const preBadge = prof.badges.find(
+            (b: any) => b && typeof b === "object" && b.id === "badge_pretest"
+          );
+          if (preBadge) {
+            pretestScore = preBadge.score;
+            pretestLevel = preBadge.level;
+            needsImprovement = preBadge.needs_improvement;
+          }
+        }
+        const matchedPre = pretestResultsList.find((p) => p.user_id === prof.id);
+        if (matchedPre) {
+          pretestScore = matchedPre.score;
+          pretestLevel = matchedPre.competency_level;
+          needsImprovement = matchedPre.needs_improvement;
+        }
+
+        reports.push({
+          userId: prof.id,
+          displayName: prof.display_name,
+          targetGroup:
+            prof.target_group === "student"
+              ? "Học sinh - Sinh viên"
+              : prof.target_group === "elder"
+              ? "Người cao tuổi"
+              : "Người dùng phổ thông",
+          completedCount: 0,
+          safeCount: 0,
+          safeRate: 0,
+          avgScore: 0,
+          avgAttempts: "0.0",
+          detScore: 0,
+          verScore: 0,
+          accScore: 0,
+          resScore: 0,
+          classification: pretestLevel ? "Đã làm khảo sát đầu vào" : "Chưa làm bài",
+          lastCompleted: prof.created_at || "",
+          records: [],
+          pretestScore,
+          pretestLevel,
+          needsImprovement,
+        });
+      }
+    });
+
     return reports;
-  }, [progressList, profilesList]);
+  }, [progressList, profilesList, pretestResultsList]);
+
+  // Tổng hợp dữ liệu Pre-Test / Re-test
+  const pretestReports: PreTestReportRecord[] = useMemo(() => {
+    const list: PreTestReportRecord[] = [];
+
+    // 1. Thêm từ bảng pretestResultsList nếu có
+    pretestResultsList.forEach((r) => {
+      const prof = profilesList.find((p) => p.id === r.user_id);
+      list.push({
+        id: r.id || `${r.user_id}-${r.created_at}`,
+        userId: r.user_id,
+        displayName: prof?.display_name || `Học viên (${r.user_id.slice(0, 8)}...)`,
+        targetGroup:
+          prof?.target_group === "student"
+            ? "Học sinh"
+            : prof?.target_group === "elder"
+            ? "Người cao tuổi"
+            : "Phổ thông",
+        score: r.score,
+        totalQuestions: r.total_questions || 10,
+        percent: Math.round((r.score / (r.total_questions || 10)) * 100),
+        competencyLevel: r.competency_level || "Chưa phân hạng",
+        needsImprovement: Array.isArray(r.needs_improvement) ? r.needs_improvement : [],
+        testType: r.test_type === "retest" ? "Re-test" : "Pre-test",
+        completedAt: r.created_at,
+      });
+    });
+
+    // 2. Thêm hoặc bổ sung từ profilesList nếu chưa có trong list
+    profilesList.forEach((prof) => {
+      const alreadyInList = list.some((item) => item.userId === prof.id);
+      if (alreadyInList) return;
+
+      let score: number | undefined = prof.pretest_score;
+      let level: string | undefined = prof.pretest_level;
+      let needs: string[] = prof.needs_improvement || [];
+      let completedAt: string = prof.created_at || new Date().toISOString();
+
+      if (score === undefined && Array.isArray(prof.badges)) {
+        const preBadge = prof.badges.find(
+          (b: any) => b && typeof b === "object" && b.id === "badge_pretest"
+        );
+        if (preBadge) {
+          score = preBadge.score;
+          level = preBadge.level;
+          needs = preBadge.needs_improvement || [];
+          if (preBadge.completed_at) completedAt = preBadge.completed_at;
+        }
+      }
+
+      if (score !== undefined) {
+        list.push({
+          id: `profile-pretest-${prof.id}`,
+          userId: prof.id,
+          displayName: prof.display_name,
+          targetGroup:
+            prof.target_group === "student"
+              ? "Học sinh"
+              : prof.target_group === "elder"
+              ? "Người cao tuổi"
+              : "Phổ thông",
+          score,
+          totalQuestions: 10,
+          percent: Math.round((score / 10) * 100),
+          competencyLevel: level || "Chưa phân hạng",
+          needsImprovement: needs,
+          testType: "Pre-test",
+          completedAt,
+        });
+      }
+    });
+
+    return list.sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+  }, [pretestResultsList, profilesList]);
+
+  // Xuất file CSV kết quả Pre-test
+  const exportPreTestCSV = () => {
+    const headers = [
+      "STT",
+      "Mã Học Viên",
+      "Tên Học Viên",
+      "Nhóm Đối Tượng",
+      "Loại Bài Thi",
+      "Điểm Số (Số Câu Đúng)",
+      "Tổng Số Câu",
+      "Tỷ Lệ Chính Xác (%)",
+      "Bậc Năng Lực Được Đánh Giá",
+      "Các Chủ Đề Cần Cải Thiện",
+      "Thời Gian Hoàn Thành",
+    ];
+
+    const rows = pretestReports.map((item, idx) => [
+      idx + 1,
+      item.userId,
+      `"${item.displayName}"`,
+      `"${item.targetGroup}"`,
+      `"${item.testType}"`,
+      item.score,
+      item.totalQuestions,
+      `${item.percent}%`,
+      `"${item.competencyLevel}"`,
+      `"${item.needsImprovement.join("; ")}"`,
+      formatDate(item.completedAt),
+    ]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8,\uFEFF" +
+      [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Bao_cao_KHKT_Danh_gia_Nang_luc_Pretest_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // Export CSV tổng hợp theo Học Viên (Mỗi học viên = 1 dòng, dùng cho SPSS / Excel báo cáo KHKT)
   const exportStudentReportsCSV = () => {
@@ -335,6 +571,14 @@ export default function AdminPage() {
       (pr.display_name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (pr.id || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (pr.target_group || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredPretest = pretestReports.filter(
+    (pt) =>
+      pt.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pt.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pt.competencyLevel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pt.targetGroup.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // 1. Loading State
@@ -494,6 +738,15 @@ export default function AdminPage() {
             </button>
 
             <button
+              onClick={exportPreTestCSV}
+              className="px-3.5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer transition-all"
+              title="Xuất bảng điểm đánh giá năng lực đầu vào và phân loại rủi ro của từng học viên"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Xuất Báo Cáo Pre-Test</span>
+            </button>
+
+            <button
               onClick={exportProgressCSV}
               className="px-3 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold text-xs flex items-center gap-1.5 cursor-pointer transition-all"
               title="Xuất nhật ký từng ải riêng lẻ"
@@ -560,6 +813,17 @@ export default function AdminPage() {
                 <span>Báo Cáo Theo Học Viên ({studentReports.length})</span>
               </button>
               <button
+                onClick={() => setActiveTab("pretest")}
+                className={`px-3.5 py-2 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === "pretest"
+                    ? "bg-white text-indigo-700 shadow-xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Đánh Giá Năng Lực Pre-Test ({pretestReports.length})</span>
+              </button>
+              <button
                 onClick={() => setActiveTab("progress")}
                 className={`px-3.5 py-2 rounded-lg transition-all cursor-pointer ${
                   activeTab === "progress"
@@ -611,6 +875,7 @@ export default function AdminPage() {
                 <thead>
                   <tr className="border-b border-slate-200 text-slate-400 font-mono uppercase tracking-wider">
                     <th className="py-3 px-3">Học viên & Nhóm đối tượng</th>
+                    <th className="py-3 px-3 text-center">Đầu Vào (Pre-Test)</th>
                     <th className="py-3 px-3 text-center">Tiến độ 39 Ải</th>
                     <th className="py-3 px-3 text-center">Điểm TB</th>
                     <th className="py-3 px-3 text-center">Tỷ lệ An Toàn</th>
@@ -622,7 +887,7 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {filteredStudents.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-12 text-center text-slate-400 space-y-2">
+                      <td colSpan={8} className="py-12 text-center text-slate-400 space-y-2">
                         <GraduationCap className="w-8 h-8 mx-auto text-slate-300" />
                         <div className="text-sm font-semibold text-slate-600">
                           Chưa có dữ liệu học viên thực nghiệm
@@ -648,6 +913,23 @@ export default function AdminPage() {
                               </span>
                             </div>
                           </div>
+                        </td>
+
+                        <td className="py-3.5 px-3 text-center">
+                          {st.pretestScore !== undefined ? (
+                            <div className="inline-flex flex-col items-center">
+                              <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 text-xs">
+                                {st.pretestScore}/10 ({st.pretestScore * 10}%)
+                              </span>
+                              {st.pretestLevel && (
+                                <span className="text-[10px] text-slate-500 font-medium truncate max-w-[120px]" title={st.pretestLevel}>
+                                  {st.pretestLevel.split(":")[0]}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic text-[11px]">Chưa làm</span>
+                          )}
                         </td>
 
                         <td className="py-3.5 px-3 text-center">
@@ -913,6 +1195,143 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* TAB 5: BÁO CÁO & QUẢN LÝ ĐÁNH GIÁ NĂNG LỰC ĐẦU VÀO (PRE-TEST & RE-TEST) */}
+          {activeTab === "pretest" && (
+            <div className="space-y-6">
+              {/* Thống kê nhanh Pre-Test */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200 space-y-1">
+                  <span className="text-xs font-bold text-indigo-900 uppercase">Tổng Lượt Đánh Giá</span>
+                  <div className="text-2xl font-black text-indigo-900">{pretestReports.length} Lượt</div>
+                  <p className="text-[11px] text-slate-500">Khảo sát năng lực đầu vào & re-test</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-1">
+                  <span className="text-xs font-bold text-emerald-900 uppercase">Điểm Trung Bình Khảo Sát</span>
+                  <div className="text-2xl font-black text-emerald-900">
+                    {pretestReports.length > 0
+                      ? (pretestReports.reduce((a, b) => a + b.score, 0) / pretestReports.length).toFixed(1)
+                      : "0.0"} / 10
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Tương đương {pretestReports.length > 0
+                      ? Math.round((pretestReports.reduce((a, b) => a + b.percent, 0) / pretestReports.length))
+                      : 0}% tỷ lệ xử lý an toàn
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-1">
+                  <span className="text-xs font-bold text-amber-900 uppercase">Nhóm Cần Hỗ Trợ (Bậc 1-3)</span>
+                  <div className="text-2xl font-black text-amber-900">
+                    {pretestReports.filter((p) => p.score < 7).length} Học Viên
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    {pretestReports.length > 0
+                      ? Math.round((pretestReports.filter((p) => p.score < 7).length / pretestReports.length) * 100)
+                      : 0}% học viên có nguy cơ rủi ro số
+                  </p>
+                </div>
+              </div>
+
+              {/* Bảng danh sách Pre-Test */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-slate-400 font-mono uppercase tracking-wider">
+                      <th className="py-3 px-3">Học Viên</th>
+                      <th className="py-3 px-3">Nhóm Đối Tượng</th>
+                      <th className="py-3 px-3 text-center">Loại Bài Khảo Sát</th>
+                      <th className="py-3 px-3 text-center">Điểm Đạt Được</th>
+                      <th className="py-3 px-3">Bậc Năng Lực Chuẩn Đoán</th>
+                      <th className="py-3 px-3">Chủ Đề Cần Cải Thiện</th>
+                      <th className="py-3 px-3 text-right">Ngày Hoàn Thành</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium">
+                    {filteredPretest.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-12 text-center text-slate-400 space-y-2">
+                          <ShieldCheck className="w-8 h-8 mx-auto text-slate-300" />
+                          <div className="text-sm font-semibold text-slate-600">
+                            Chưa có dữ liệu bài khảo sát năng lực đầu vào
+                          </div>
+                          <p className="text-xs text-slate-400 max-w-md mx-auto">
+                            Khi học viên vào trang Luyện Tập và làm 10 câu trắc nghiệm thực tế, kết quả đánh giá năng lực và các chủ đề yếu sẽ được tự động lưu trữ và hiển thị tại đây.
+                          </p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredPretest.map((row) => (
+                        <tr key={row.id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-3 px-3">
+                            <div className="font-bold text-slate-900">{row.displayName}</div>
+                            <div className="font-mono text-[10px] text-slate-400">
+                              {row.userId.slice(0, 8)}...
+                            </div>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-semibold">
+                              {row.targetGroup}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <span className={`px-2 py-0.5 rounded-md font-bold text-[10px] ${
+                              row.testType === "Re-test"
+                                ? "bg-purple-50 text-purple-700 border border-purple-200"
+                                : "bg-blue-50 text-blue-700 border border-blue-200"
+                            }`}>
+                              {row.testType}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <div className="font-black text-slate-900 text-sm">
+                              {row.score} / {row.totalQuestions}
+                            </div>
+                            <span className="text-[10px] text-slate-500 font-mono">
+                              ({row.percent}%)
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold inline-block ${
+                              row.score >= 9
+                                ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                                : row.score >= 7
+                                ? "bg-blue-50 text-blue-800 border border-blue-200"
+                                : row.score >= 4
+                                ? "bg-amber-50 text-amber-800 border border-amber-200"
+                                : "bg-rose-50 text-rose-800 border border-rose-200"
+                            }`}>
+                              {row.competencyLevel}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            {row.needsImprovement.length === 0 ? (
+                              <span className="text-emerald-600 font-semibold text-[11px]">
+                                Không có chủ đề yếu
+                              </span>
+                            ) : (
+                              <div className="flex flex-wrap gap-1 max-w-xs">
+                                {row.needsImprovement.map((topic, ti) => (
+                                  <span
+                                    key={ti}
+                                    className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-medium"
+                                  >
+                                    {topic}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-right text-slate-500 whitespace-nowrap">
+                            {formatDate(row.completedAt)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Modal Xem Chi Tiết Toàn Bộ Ải Của 1 Học Viên Được Chọn */}
           {selectedStudent && (
             <div
@@ -959,6 +1378,40 @@ export default function AdminPage() {
                       <span className="text-slate-500 font-medium">Tỷ Lệ An Toàn</span>
                       <div className="font-black text-emerald-600 text-base">{selectedStudent.safeRate}%</div>
                     </div>
+                  </div>
+
+                  {/* Khối đánh giá năng lực đầu vào Pre-Test */}
+                  <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-200/80 space-y-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-indigo-900 uppercase tracking-wider font-mono text-[11px] flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+                        <span>Đánh Giá Năng Lực Đầu Vào (Pre-Test)</span>
+                      </span>
+                      {selectedStudent.pretestScore !== undefined ? (
+                        <span className="font-black text-indigo-700 bg-white px-2 py-0.5 rounded-md border border-indigo-200">
+                          {selectedStudent.pretestScore} / 10 Điểm ({selectedStudent.pretestScore * 10}%)
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 italic">Chưa thực hiện</span>
+                      )}
+                    </div>
+                    {selectedStudent.pretestLevel && (
+                      <div className="font-bold text-slate-800">
+                        {selectedStudent.pretestLevel}
+                      </div>
+                    )}
+                    {selectedStudent.needsImprovement && selectedStudent.needsImprovement.length > 0 && (
+                      <div className="space-y-1 pt-1">
+                        <span className="text-[11px] text-slate-500 font-semibold">Chủ đề yếu cần củng cố:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {selectedStudent.needsImprovement.map((topic, ti) => (
+                            <span key={ti} className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200 text-[10px] font-semibold">
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">

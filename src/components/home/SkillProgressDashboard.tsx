@@ -51,32 +51,38 @@ export function SkillProgressDashboard() {
 
   return (
     <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
-      <div className="max-w-6xl mx-auto p-6 sm:p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-sm space-y-8">
+      <div className={`max-w-6xl mx-auto space-y-8 ${
+        isElderly
+          ? "p-6 sm:p-8 rounded-xl bg-white border border-slate-300 shadow-xs"
+          : "p-6 sm:p-8 rounded-3xl bg-white border-2 border-slate-200 shadow-sm"
+      }`}>
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
-          <div>
-            <span className={`text-xs uppercase font-black tracking-wider px-3.5 py-1 rounded-full border ${
-              isElderly ? "bg-blue-50 text-blue-800 border-blue-200" : "bg-amber-100 text-amber-900 border-amber-300"
+          <div className="space-y-1.5">
+            <span className={`text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-md border ${
+              isElderly ? "bg-slate-100 text-slate-800 border-slate-300" : "bg-amber-100 text-amber-900 border-amber-300"
             }`}>
-              {isElderly ? "Theo Dõi Năng Lực & Tiến Độ" : "🏅 BẢNG CHIẾN TÍCH HIỆP SĨ SỐ • 4 SIÊU NĂNG LỰC"}
+              {isElderly ? "ĐÁNH GIÁ NĂNG LỰC PHÒNG VỆ SỐ" : "🏅 BẢNG CHIẾN TÍCH HIỆP SĨ SỐ • 4 SIÊU NĂNG LỰC"}
             </span>
             <h2 className={
               isElderly
-                ? "text-2xl sm:text-3xl font-bold text-slate-900 mt-2"
-                : "text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mt-2 uppercase tracking-tight"
+                ? "text-2xl sm:text-3xl font-extrabold text-slate-900"
+                : "text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 uppercase tracking-tight"
             }>
-              {isElderly ? "Tiến Trình Rèn Luyện & Đánh Giá Năng Lực Số" : "Bảng Vàng Năng Lực & Thăng Cấp Hiệp Sĩ"}
+              {isElderly ? "Khung Tiêu Chuẩn An Toàn Thông Tin Dành Cho Người Cao Tuổi" : "Bảng Vàng Năng Lực & Thăng Cấp Hiệp Sĩ"}
             </h2>
           </div>
 
-          <div className="p-3.5 sm:p-4 rounded-2xl bg-sky-50 border-2 border-sky-200 text-left md:text-right shadow-2xs">
-            <div className="font-bold text-xs text-slate-600">
-              {isElderly ? "Chỉ số an toàn tổng hợp" : "Chỉ Số Năng Lực Tổng Hợp"}
+          <div className={`p-4 rounded-xl border text-left md:text-right ${
+            isElderly ? "bg-slate-50 border-slate-200" : "bg-blue-50 border-2 border-blue-200 shadow-2xs"
+          }`}>
+            <div className="font-semibold text-xs text-slate-600">
+              {isElderly ? "Mức độ an toàn thông tin cá nhân" : "Chỉ Số Năng Lực Tổng Hợp"}
             </div>
-            <div className="font-black text-lg sm:text-2xl text-sky-700 flex items-center gap-1.5 justify-start md:justify-end">
-              <span>84%</span>
-              <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold">
-                Cấp Tốt
+            <div className="font-extrabold text-xl sm:text-2xl text-slate-900 flex items-center gap-2 justify-start md:justify-end mt-0.5">
+              <span>85%</span>
+              <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold border border-emerald-200">
+                Đạt Tiêu Chuẩn
               </span>
             </div>
           </div>
@@ -84,55 +90,68 @@ export function SkillProgressDashboard() {
 
         {/* 4 Competency Bars */}
         <div className="space-y-4">
-          <div className="text-xs font-black text-blue-700 uppercase tracking-wider">
-            Đánh giá 4 trụ cột năng lực cốt lõi:
+          <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {isElderly ? "4 Trụ Cột Kỹ Năng Phòng Thủ Quan Trọng:" : "Đánh giá 4 trụ cột năng lực cốt lõi:"}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {competencies.map((comp, idx) => (
-              <div
-                key={idx}
-                className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3 transition-all hover:border-blue-300"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <h3 className="font-bold text-base sm:text-lg text-slate-900">
-                      {comp.name}
-                    </h3>
-                    <span className="font-bold text-xs sm:text-sm px-2.5 py-1 rounded-md border bg-slate-50 text-slate-700 border-slate-200">
-                      {comp.score}% • {comp.level}
-                    </span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
-                    {comp.desc}
-                  </p>
-                </div>
+            {competencies.map((comp, idx) => {
+              // Văn phong mộc mạc cho người lớn tuổi
+              const elderlyCompTitles: Record<number, { name: string; desc: string }> = {
+                0: { name: "1. Nhận Biết Cuộc Gọi Giả Danh Công An", desc: "Cúp máy dứt khoát, không để kẻ gian dọa nạt, ép chuyển tiền." },
+                1: { name: "2. Cảnh Giác Với Tin Nhắn Trúng Thưởng & Link Lạ", desc: "Không bấm vào đường link nhận quà hay thông báo khóa tài khoản." },
+                2: { name: "3. Giữ Kín Mã OTP & Mật Khẩu Ngân Hàng", desc: "Tuyệt đối không đọc mã gửi về máy cho bất kỳ người lạ nào." },
+                3: { name: "4. Thói Quen Hỏi Con Cháu Khi Nghi Ngờ", desc: "Luôn bình tĩnh trao đổi với con cháu hoặc công an trước khi làm theo." },
+              };
 
-                <div className="w-full bg-slate-200 rounded-full overflow-hidden h-2.5">
-                  <div
-                    className={`h-full rounded-full transition-all duration-700 ${comp.barColor}`}
-                    style={{ width: `${comp.score}%` }}
-                  />
+              const compName = isElderly ? (elderlyCompTitles[idx]?.name || comp.name) : comp.name;
+              const compDesc = isElderly ? (elderlyCompTitles[idx]?.desc || comp.desc) : comp.desc;
+
+              return (
+                <div
+                  key={idx}
+                  className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-3 transition-all hover:border-blue-300"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <h3 className="font-bold text-base sm:text-lg text-slate-900">
+                        {compName}
+                      </h3>
+                      <span className="font-bold text-xs sm:text-sm px-2.5 py-1 rounded-md border bg-slate-50 text-slate-800 border-slate-200">
+                        {comp.score}% • {isElderly ? "Đạt Tốt" : comp.level}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-600 font-normal leading-relaxed">
+                      {compDesc}
+                    </p>
+                  </div>
+
+                  <div className="w-full bg-slate-200 rounded-full overflow-hidden h-2.5">
+                    <div
+                      className={`h-full rounded-full transition-all duration-700 ${comp.barColor}`}
+                      style={{ width: `${comp.score}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Verified Indicators */}
         <div className="space-y-4 pt-2">
-          <div className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-            {isElderly ? "Tiêu chuẩn kỹ năng an toàn số đạt chuẩn:" : "Huy hiệu kỹ năng đã kiểm chứng đạt chuẩn:"}
+          <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {isElderly ? "4 Cam Kết An Toàn Bác Đã Nắm Rõ:" : "Huy hiệu kỹ năng đã kiểm chứng đạt chuẩn:"}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {badges.map((b, idx) => {
               if (isElderly) {
                 const elderlyIcons = [
-                  { icon: ShieldCheck, color: "text-blue-700", bg: "bg-blue-50" },
-                  { icon: CheckCircle2, color: "text-emerald-700", bg: "bg-emerald-50" },
-                  { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50" },
-                  { icon: Users, color: "text-indigo-700", bg: "bg-indigo-50" },
+                  { icon: ShieldCheck, color: "text-blue-700", bg: "bg-blue-50", title: "Bảo Vệ Tiền Tiết Kiệm", sub: "Không chuyển tiền theo lệnh gọi điện thoại." },
+                  { icon: CheckCircle2, color: "text-emerald-700", bg: "bg-emerald-50", title: "Cúp Máy Dứt Khoát", sub: "Không hoảng sợ trước lời dọa bắt giam." },
+                  { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50", title: "Giữ Kín Mã OTP", sub: "Bảo vệ tài khoản ngân hàng an toàn tuyệt đối." },
+                  { icon: Users, color: "text-indigo-700", bg: "bg-indigo-50", title: "Có Con Cháu Đồng Hành", sub: "Luôn hỏi ý kiến người thân trước khi giao dịch." },
                 ];
                 const cur = elderlyIcons[idx % elderlyIcons.length];
                 const IconComp = cur.icon;
@@ -140,20 +159,20 @@ export function SkillProgressDashboard() {
                 return (
                   <div
                     key={idx}
-                    className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5 flex flex-col justify-between"
+                    className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2 flex flex-col justify-between"
                   >
                     <div className="flex items-center justify-between pb-1">
                       <div className={`w-8 h-8 rounded-lg ${cur.bg} ${cur.color} flex items-center justify-center shrink-0`}>
                         <IconComp className="w-4 h-4" />
                       </div>
-                      <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                         Đạt chuẩn
                       </span>
                     </div>
 
                     <div>
-                      <div className="font-bold text-sm text-slate-900 leading-snug">{b.name}</div>
-                      <div className="text-xs text-slate-600 leading-relaxed mt-1 font-normal">{b.desc}</div>
+                      <div className="font-bold text-sm text-slate-900 leading-snug">{cur.title}</div>
+                      <div className="text-xs text-slate-600 leading-relaxed mt-1 font-normal">{cur.sub}</div>
                     </div>
                   </div>
                 );

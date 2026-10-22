@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PRE_TEST_QUESTIONS, calculateCompetencyScale } from "@/data/preTestData";
 import {
   Shield,
@@ -20,9 +20,18 @@ import {
 
 interface PreTestModalProps {
   isOpen: boolean;
-  onComplete: (score: number, details: { competencyLevel: string; needsImprovement: string[] }) => void;
+  onComplete: (
+    score: number,
+    details: {
+      competencyLevel: string;
+      needsImprovement: string[];
+      answers?: Record<number, number>;
+      isRetest?: boolean;
+    }
+  ) => void;
   onClose?: () => void;
   userDisplayName?: string;
+  isRetest?: boolean;
 }
 
 export function PreTestModal({
@@ -30,11 +39,21 @@ export function PreTestModal({
   onComplete,
   onClose,
   userDisplayName = "Học Viên",
+  isRetest = false,
 }: PreTestModalProps) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showIntroStep, setShowIntroStep] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentIdx(0);
+      setSelectedAnswers({});
+      setIsSubmitted(false);
+      setShowIntroStep(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -85,21 +104,35 @@ export function PreTestModal({
     onComplete(score, {
       competencyLevel: competency.level,
       needsImprovement: uniqueNeedsImprovement,
+      answers: selectedAnswers,
+      isRetest,
     });
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/70 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
       <div className="relative w-full max-w-3xl rounded-3xl bg-white border-2 border-slate-300 shadow-2xl p-5 sm:p-8 my-4 text-slate-900 flex flex-col gap-6 max-h-[92vh] overflow-y-auto">
+        {/* Nút đóng góc trên bên phải khi làm lại hoặc cho phép đóng */}
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors z-20 cursor-pointer"
+            title="Đóng cửa sổ"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+
         {/* State 1: Làm bài kiểm tra 10 câu */}
         {!isSubmitted && (
           <>
             {/* Header */}
             <div className="space-y-2 border-b border-slate-200 pb-4">
-              <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center justify-between flex-wrap gap-2 pr-8">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-xs font-bold uppercase tracking-wider font-mono">
                   <Shield className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Bài Kiểm Tra Đầu Vào (Pre-Test)</span>
+                  <span>{isRetest ? "Khảo Sát Năng Lực (Re-test)" : "Bài Kiểm Tra Đầu Vào (Pre-Test)"}</span>
                 </div>
                 <span className="text-xs font-bold font-mono text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
                   Câu {currentIdx + 1} / {totalQ}
@@ -107,7 +140,7 @@ export function PreTestModal({
               </div>
 
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Khảo Sát Năng Lực An Toàn Số Ban Đầu
+                {isRetest ? "Kiểm Tra Lại Bậc Năng Lực An Toàn Số" : "Khảo Sát Năng Lực An Toàn Số Ban Đầu"}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 font-medium">
                 Chào mừng <span className="font-bold text-slate-900">{userDisplayName}</span>! Hãy hoàn thành 10 câu trắc nghiệm thực tế để hệ thống đo lường phản xạ số và thiết lập thang đo năng lực cho bạn.

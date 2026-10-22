@@ -21,6 +21,7 @@ import {
   RefreshCw,
   FileCode,
   X,
+  Award,
 } from "lucide-react";
 
 export default function PlayPage() {
@@ -66,6 +67,12 @@ export default function PlayPage() {
     (typeof window !== "undefined" && user?.id && localStorage.getItem(`cybersafe_pretest_done_${user.id}`) === "true")
   );
   const [showPreTestModal, setShowPreTestModal] = useState<boolean>(!isPretestDone);
+  const [isRetestMode, setIsRetestMode] = useState<boolean>(false);
+
+  const handleStartRetest = () => {
+    setIsRetestMode(true);
+    setShowPreTestModal(true);
+  };
 
   const handleSeedDatabase = async () => {
     setSeedLoading(true);
@@ -123,11 +130,65 @@ export default function PlayPage() {
 
   const handlePreTestComplete = async (
     score: number,
-    details: { competencyLevel: string; needsImprovement: string[] }
+    details: {
+      competencyLevel: string;
+      needsImprovement: string[];
+      answers?: Record<number, number>;
+      isRetest?: boolean;
+    }
   ) => {
     setShowPreTestModal(false);
+    setIsRetestMode(false);
     await recordPreTestResult(score, details);
   };
+
+  const renderPreTestBanner = () => (
+    <div className="p-4 sm:p-5 rounded-3xl bg-linear-to-r from-blue-50/90 via-indigo-50/60 to-slate-50 border-2 border-blue-200 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+      <div className="flex items-start sm:items-center gap-3.5">
+        <div className="w-12 h-12 rounded-2xl bg-blue-700 text-white flex items-center justify-center shrink-0 shadow-xs">
+          <Award className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-mono text-[11px] font-bold text-blue-800 bg-white px-2.5 py-0.5 rounded-full border border-blue-200 uppercase">
+              Đánh Giá Năng Lực Đầu Vào
+            </span>
+            {isPretestDone ? (
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                Đã xác lập • {authProfile?.pretest_score ?? 10}/10 câu ({((authProfile?.pretest_score ?? 10) * 10)}%)
+              </span>
+            ) : (
+              <span className="text-[11px] font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-full border border-amber-200">
+                Chưa làm bài kiểm tra ban đầu
+              </span>
+            )}
+          </div>
+          <h3 className="text-base sm:text-lg font-black text-slate-900">
+            {isPretestDone
+              ? (authProfile?.pretest_level || "Bậc năng lực đã được xác lập")
+              : "Khảo sát 10 câu mẫu để xác định phản xạ an toàn số của bạn"}
+          </h3>
+          {isPretestDone && authProfile?.needs_improvement && authProfile.needs_improvement.length > 0 && (
+            <p className="text-xs text-slate-600 font-medium">
+              Chủ đề cần củng cố: <span className="font-bold text-slate-800">{authProfile.needs_improvement.slice(0, 3).join(", ")}</span>
+              {authProfile.needs_improvement.length > 3 && ` (+${authProfile.needs_improvement.length - 3} chủ đề)`}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="shrink-0 w-full md:w-auto">
+        <button
+          type="button"
+          onClick={handleStartRetest}
+          className="w-full md:w-auto px-5 py-2.5 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-all"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>{isPretestDone ? "Làm Lại Khảo Sát (Re-test)" : "Bắt Đầu Bài Kiểm Tra"}</span>
+        </button>
+      </div>
+    </div>
+  );
 
   // 1. Kiểm tra trạng thái đăng nhập bắt buộc theo yêu cầu đề tài
   if (!user) {
@@ -188,8 +249,14 @@ export default function PlayPage() {
         <PreTestModal
           isOpen={showPreTestModal}
           onComplete={handlePreTestComplete}
+          onClose={() => setShowPreTestModal(false)}
+          isRetest={isRetestMode}
           userDisplayName={authProfile?.display_name || user.email || "Bác"}
         />
+
+        <div className="max-w-4xl mx-auto mb-6">
+          {renderPreTestBanner()}
+        </div>
 
         <PlayElderlyView
           allScenarios={allScenarios}
@@ -221,10 +288,14 @@ export default function PlayPage() {
       <PreTestModal
         isOpen={showPreTestModal}
         onComplete={handlePreTestComplete}
+        onClose={() => setShowPreTestModal(false)}
+        isRetest={isRetestMode}
         userDisplayName={authProfile?.display_name || user.email || "Học Viên"}
       />
 
       <div className="max-w-6xl mx-auto space-y-8">
+        {renderPreTestBanner()}
+
         <PlayChildView
           allScenarios={allScenarios}
           completedLevels={completedLevels}

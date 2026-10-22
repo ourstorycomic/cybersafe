@@ -10,14 +10,17 @@ export interface UserProfileData {
   avatar_id: string;
   target_group: "student" | "elder" | "general";
   age?: number;
+  date_of_birth?: string;
   phone_or_email?: string;
   total_score: number;
   streak_days: number;
   badges: any[];
   role?: string;
   pretest_score?: number;
+  pretest_level?: string;
   pretest_completed?: boolean;
   needs_improvement?: string[];
+  pretest_history?: any[];
 }
 
 export type AuthTabType = "signin" | "signup" | "forgot";
@@ -38,11 +41,21 @@ interface AuthContextType {
     pass: string;
     displayName: string;
     age: number;
+    dob?: string;
     targetGroup?: "student" | "elder" | "general";
     avatarId: string;
   }) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (identifier: string) => Promise<{ success: boolean; message?: string; error?: string }>;
-  recordPreTestResult: (score: number, details: { competencyLevel: string; needsImprovement: string[] }) => Promise<void>;
+  recordPreTestResult: (
+    score: number,
+    details: {
+      competencyLevel: string;
+      needsImprovement: string[];
+      answers?: Record<number, number>;
+      isRetest?: boolean;
+    }
+  ) => Promise<void>;
+  addXp: (amount: number) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -81,8 +94,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthModalOpen(false);
   };
 
-  // Tải hồ sơ từ Supabase user_profiles kèm dự phòng localStorage
-  const fetchProfile = async (userId: string) => {
+  // Tải hồ sơ từ Supabase user_profiles kèm dự phòng từ user metadata và localStorage
+  const fetchProfile = async (userId: string, authUser?: User | null) => {
+    const activeUser = authUser || user;
+    const meta = (activeUser?.user_metadata as any) || {};
+
     let localExtra: any = {};
     if (typeof window !== "undefined") {
       try {
@@ -91,43 +107,84 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch {}
     }
 
-    if (!supabase) {
-      if (localExtra) {
-        setProfile(localExtra);
-        return localExtra;
+    // Xác định nhóm đối tượng mục tiêu dựa trên metadata, localExtra và độ tuổi
+    let targetGroup: "student" | "elder" | "general" =
+      localExtra.target_group || meta.target_group || "general";
+    const age = localExtra.age ?? meta.age;
+    if (targetGroup === "general" && typeof age === "number") {
+      if (age >= 50) targetGroup = "elder";
+      else if (age < 18) targetGroup = "student";
+    }
+
+    // Hồ sơ mặc định được dựng từ auth user metadata + localStorage
+    let constructed: UserProfileData = {
+      id: userId,
+      display_name: localExtra.display_name || meta.display_name || activeUser?.email?.split("@")[0] || "Học Viên",
+      avatar_id: localExtra.avatar_id || meta.avatar_id || "guardian",
+      target_group: targetGroup,
+      age: age,
+      phone_or_email: localExtra.phone_or_email || meta.phone_or_email || activeUser?.email,
+      total_score: localExtra.total_score || 0,
+      streak_days: localExtra.streak_days || 1,
+      badges: localExtra.badges || [],
+      role: localExtra.role || meta.role,
+      pretest_completed: localExtra.pretest_completed ?? false,
+      pretest_score: localExtra.pretest_score,
+      needs_improvement: localExtra.needs_improvement,
+    };
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("id", userId)
+          .maybeSingle();
+
+        if (!error && data) {
+          constructed = {
+            ...constructed,
+            ...(data as UserProfileData),
+            ...localExtra,
+          };
+          if (data.target_group) {
+            constructed.target_group = data.target_group;
+          }
+        }
+      } catch (e) {
+        console.warn("Could not fetch user profile from table:", e);
       }
-      return null;
     }
 
-    try {
-      const { data, error } = await supabase
-        .from("user_profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (!error && data) {
-        const merged: UserProfileData = {
-          ...(data as UserProfileData),
-          ...localExtra,
-        };
-        setProfile(merged);
-        return merged;
+    // Phục hồi dữ liệu Pre-test từ badges nếu bảng user_profiles chưa có cột riêng
+    if (Array.isArray(constructed.badges)) {
+      const preBadge = constructed.badges.find(
+        (b: any) => b && typeof b === "object" && b.id === "badge_pretest"
+      );
+      if (preBadge) {
+        constructed.pretest_completed = true;
+        if (constructed.pretest_score === undefined) constructed.pretest_score = preBadge.score;
+        if (!constructed.pretest_level) constructed.pretest_level = preBadge.level;
+        if (!constructed.needs_improvement) constructed.needs_improvement = preBadge.needs_improvement;
       }
-    } catch (e) {
-      console.warn("Could not fetch user profile:", e);
     }
 
-    if (localExtra?.id) {
-      setProfile(localExtra);
-      return localExtra;
+    // Tự động phân loại nếu target_group vẫn là general nhưng có tuổi cụ thể
+    if (constructed.target_group === "general" && typeof constructed.age === "number") {
+      if (constructed.age >= 50) constructed.target_group = "elder";
+      else if (constructed.age < 18) constructed.target_group = "student";
     }
-    return null;
+
+    setProfile(constructed);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`cybersafe_profile_extra_${userId}`, JSON.stringify(constructed));
+    }
+    return constructed;
   };
 
   const refreshProfile = async () => {
     if (user?.id) {
-      await fetchProfile(user.id);
+      await fetchProfile(user.id, user);
     }
   };
 
@@ -140,9 +197,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // 1. Get initial session
     supabase.auth.getSession().then(({ data: { session: initSession } }) => {
       setSession(initSession);
-      setUser(initSession?.user ?? null);
-      if (initSession?.user) {
-        fetchProfile(initSession.user.id).finally(() => setIsLoading(false));
+      const initialUser = initSession?.user ?? null;
+      setUser(initialUser);
+      if (initialUser) {
+        fetchProfile(initialUser.id, initialUser).finally(() => setIsLoading(false));
       } else {
         setIsLoading(false);
       }
@@ -153,9 +211,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       setSession(newSession);
-      setUser(newSession?.user ?? null);
-      if (newSession?.user) {
-        await fetchProfile(newSession.user.id);
+      const newUser = newSession?.user ?? null;
+      setUser(newUser);
+      if (newUser) {
+        await fetchProfile(newUser.id, newUser);
       } else {
         setProfile(null);
       }
@@ -190,7 +249,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data.user) {
-        await fetchProfile(data.user.id);
+        setUser(data.user);
+        setSession(data.session);
+        await fetchProfile(data.user.id, data.user);
         closeAuthModal();
       }
       return { success: true };
@@ -205,6 +266,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     pass: string;
     displayName: string;
     age: number;
+    dob?: string;
     targetGroup?: "student" | "elder" | "general";
     avatarId: string;
   }) => {
@@ -235,6 +297,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             display_name: signupData.displayName.trim() || (isPhone ? `Học Viên ${original}` : "Học Viên An Toàn Số"),
             target_group: inferredGroup,
             age: signupData.age,
+            date_of_birth: signupData.dob,
             phone_or_email: original,
             avatar_id: signupData.avatarId,
           },
@@ -264,6 +327,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           avatar_id: signupData.avatarId,
           target_group: inferredGroup,
           age: signupData.age,
+          date_of_birth: signupData.dob,
           phone_or_email: original,
           total_score: 0,
           streak_days: 1,
@@ -335,17 +399,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Lưu kết quả bài kiểm tra đầu vào Pre-Test (10 câu)
-  const recordPreTestResult = async (score: number, details: { competencyLevel: string; needsImprovement: string[] }) => {
+  // Lưu kết quả bài kiểm tra đầu vào Pre-Test & Re-test
+  const recordPreTestResult = async (
+    score: number,
+    details: {
+      competencyLevel: string;
+      needsImprovement: string[];
+      answers?: Record<number, number>;
+      isRetest?: boolean;
+    }
+  ) => {
     if (!user) return;
     const extraKey = `cybersafe_profile_extra_${user.id}`;
+    const historyKey = `cybersafe_pretest_history_${user.id}`;
     let currentExtra: any = {};
+    let testHistory: any[] = [];
+
     if (typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem(extraKey);
         if (stored) currentExtra = JSON.parse(stored);
+        const storedHist = localStorage.getItem(historyKey);
+        if (storedHist) testHistory = JSON.parse(storedHist);
       } catch {}
     }
+
+    const completedAt = new Date().toISOString();
+    const newAttempt = {
+      score,
+      total_questions: 10,
+      competency_level: details.competencyLevel,
+      needs_improvement: details.needsImprovement,
+      answers: details.answers || {},
+      test_type: details.isRetest ? "retest" : "pretest",
+      completed_at: completedAt,
+    };
+    testHistory.push(newAttempt);
+
+    // Đồng bộ vào danh sách huy hiệu badges
+    const existingBadges: any[] = profile?.badges || currentExtra?.badges || [];
+    const filteredBadges = existingBadges.filter(
+      (b: any) => typeof b === "string" || (b && b.id !== "badge_pretest")
+    );
+    const pretestBadge = {
+      id: "badge_pretest",
+      name: "Đánh Giá Năng Lực Đầu Vào",
+      type: "pretest",
+      score,
+      total: 10,
+      level: details.competencyLevel,
+      needs_improvement: details.needsImprovement,
+      completed_at: completedAt,
+    };
+    const updatedBadges = [...filteredBadges, pretestBadge];
 
     const updatedExtra: UserProfileData = {
       ...profile,
@@ -354,39 +460,139 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       display_name: profile?.display_name || "Học Viên",
       avatar_id: profile?.avatar_id || "guardian",
       target_group: profile?.target_group || "general",
-      total_score: (profile?.total_score || 0) + score * 10,
+      total_score: (profile?.total_score || 0) + (details.isRetest ? Math.max(0, score * 5) : score * 10),
       streak_days: profile?.streak_days || 1,
-      badges: profile?.badges || [],
+      badges: updatedBadges,
       pretest_score: score,
+      pretest_level: details.competencyLevel,
       pretest_completed: true,
       needs_improvement: details.needsImprovement,
+      pretest_history: testHistory,
     };
 
     if (typeof window !== "undefined") {
       localStorage.setItem(extraKey, JSON.stringify(updatedExtra));
       localStorage.setItem(`cybersafe_pretest_done_${user.id}`, "true");
+      localStorage.setItem(historyKey, JSON.stringify(testHistory));
     }
 
     setProfile(updatedExtra);
 
     if (supabase) {
+      // 1. Đồng bộ vào bảng user_profiles
       try {
-        await supabase.from("user_profiles").upsert({
+        const { error: fullErr } = await supabase.from("user_profiles").upsert({
           id: user.id,
           total_score: updatedExtra.total_score,
+          badges: updatedExtra.badges,
+          pretest_score: score,
+          pretest_level: details.competencyLevel,
+          needs_improvement: details.needsImprovement,
+          pretest_completed: true,
         });
-      } catch {}
+
+        if (fullErr) {
+          // Fallback nếu database chưa có các cột mới: lưu qua badges JSONB & total_score
+          await supabase.from("user_profiles").upsert({
+            id: user.id,
+            total_score: updatedExtra.total_score,
+            badges: updatedExtra.badges,
+          });
+        }
+      } catch (err) {
+        console.warn("Lỗi lưu user_profiles pretest:", err);
+      }
+
+      // 2. Thử lưu vào bảng chuyên biệt pretest_results nếu đã tồn tại
+      try {
+        await supabase.from("pretest_results").insert({
+          user_id: user.id,
+          score,
+          total_questions: 10,
+          competency_level: details.competencyLevel,
+          needs_improvement: details.needsImprovement,
+          answers: details.answers || {},
+          test_type: details.isRetest ? "retest" : "pretest",
+        });
+      } catch {
+        // Bỏ qua nếu bảng chưa được tạo
+      }
     }
   };
 
-  // Đăng xuất
-  const signOut = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
+  // Cộng XP điểm kinh nghiệm động và đồng bộ vào profile & storage
+  const addXp = async (amount: number) => {
+    if (amount <= 0) return;
+    const currentScore = profile?.total_score || 0;
+    const newScore = currentScore + amount;
+
+    if (user) {
+      const extraKey = `cybersafe_profile_extra_${user.id}`;
+      let currentExtra: any = {};
+      try {
+        const stored = localStorage.getItem(extraKey);
+        if (stored) currentExtra = JSON.parse(stored);
+      } catch {}
+
+      const updated: UserProfileData = {
+        ...profile,
+        ...currentExtra,
+        id: user.id,
+        display_name: profile?.display_name || "Học Viên",
+        avatar_id: profile?.avatar_id || "guardian",
+        target_group: profile?.target_group || "general",
+        total_score: newScore,
+        streak_days: profile?.streak_days || 1,
+        badges: profile?.badges || [],
+      };
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(extraKey, JSON.stringify(updated));
+      }
+      setProfile(updated);
+
+      if (supabase) {
+        try {
+          await supabase.from("user_profiles").upsert({
+            id: user.id,
+            total_score: newScore,
+          });
+        } catch {}
+      }
+    } else {
+      // Khách vãng lai: Lưu tạm XP
+      if (typeof window !== "undefined") {
+        const guestXp = Number(localStorage.getItem("cybersafe_guest_xp") || "0") + amount;
+        localStorage.setItem("cybersafe_guest_xp", guestXp.toString());
+      }
     }
-    setUser(null);
-    setSession(null);
-    setProfile(null);
+  };
+
+  // Đăng xuất an toàn, xử lý triệt để lỗi mạng/phiên hết hạn và dọn dẹp bộ nhớ
+  const signOut = async () => {
+    try {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+    } catch (e) {
+      console.warn("Lỗi khi đăng xuất từ Supabase:", e);
+    } finally {
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      if (typeof window !== "undefined") {
+        try {
+          for (const key of Object.keys(localStorage)) {
+            if (
+              (key.startsWith("sb-") && (key.endsWith("-auth-token") || key.includes("supabase.auth"))) ||
+              key.startsWith("supabase.auth.")
+            ) {
+              localStorage.removeItem(key);
+            }
+          }
+        } catch {}
+      }
+    }
   };
 
   // Kiểm tra quyền Admin dựa trên role trong profile, user metadata hoặc email
@@ -418,6 +624,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUp,
         resetPassword,
         recordPreTestResult,
+        addXp,
         signOut,
         refreshProfile,
       }}

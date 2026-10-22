@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Trophy, Flame, Award, Medal, Shield, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trophy, Flame, Award, Medal, Shield, Sparkles, Loader2, RefreshCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export interface LeaderboardEntry {
   rank: number;
@@ -14,22 +15,89 @@ export interface LeaderboardEntry {
   badgeCount: number;
 }
 
-const MOCK_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, id: "top-1", name: "Trần Minh Quân", group: "student", score: 3820, streakDays: 14, badgeCount: 7 },
-  { rank: 2, id: "top-2", name: "Bác Lê Văn Hùng", group: "elder", score: 3750, streakDays: 21, badgeCount: 7 },
-  { rank: 3, id: "top-3", name: "Nguyễn Thu Hà", group: "general", score: 3640, streakDays: 11, badgeCount: 6 },
-  { rank: 4, id: "top-4", name: "Cô Vũ Thị Mai", group: "elder", score: 3490, streakDays: 18, badgeCount: 6 },
-  { rank: 5, id: "top-5", name: "Phạm Đăng Khoa", group: "student", score: 3320, streakDays: 9, badgeCount: 5 },
-  { rank: 6, id: "top-6", name: "Hoàng Gia Bảo", group: "student", score: 3150, streakDays: 8, badgeCount: 5 },
-  { rank: 7, id: "top-7", name: "Bùi Thanh Trúc", group: "general", score: 2980, streakDays: 7, badgeCount: 4 },
-  { rank: 8, id: "top-8", name: "Ông Nguyễn Văn Đức", group: "elder", score: 2840, streakDays: 15, badgeCount: 4 },
-  { rank: 9, id: "top-9", name: "Đỗ Quốc Cường", group: "general", score: 2710, streakDays: 5, badgeCount: 4 },
-  { rank: 10, id: "top-10", name: "Lê Ngọc Hân", group: "student", score: 2560, streakDays: 6, badgeCount: 3 },
-];
-
 export function WeeklyLeaderboard() {
   const { profile } = useAuth();
   const [tab, setTab] = useState<"week" | "topic">("week");
+  const [dbUsers, setDbUsers] = useState<LeaderboardEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Tải danh sách học viên THỰC TẾ từ Supabase Database
+  const fetchLeaderboard = async () => {
+    setIsLoading(true);
+    if (!isSupabaseConfigured || !supabase) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("id, display_name, target_group, total_score, streak_days, badges")
+        .order("total_score", { ascending: false })
+        .limit(20);
+
+      if (!error && data) {
+        const mapped: LeaderboardEntry[] = data.map((item, idx) => ({
+          rank: idx + 1,
+          id: item.id,
+          name: item.display_name || "Học Viên",
+          group: (item.target_group as any) || "student",
+          score: item.total_score || 0,
+          streakDays: item.streak_days || 1,
+          badgeCount: Array.isArray(item.badges) ? item.badges.length : 0,
+        }));
+        setDbUsers(mapped);
+      }
+    } catch (e) {
+      console.warn("Lỗi tải bảng xếp hạng từ Supabase:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [profile?.total_score]);
+
+  // Hợp nhất dữ liệu học viên thực tế từ hồ sơ (profile) với danh sách từ Supabase
+  const combinedList = [...dbUsers];
+  if (profile) {
+    const existingIndex = combinedList.findIndex(
+      (item) => item.id === profile.id
+    );
+    const userEntry: LeaderboardEntry = {
+      rank: 0,
+      id: profile.id,
+      name: profile.display_name || "Bạn (Học Viên)",
+      group: profile.target_group || "student",
+      score: profile.total_score || 0,
+      streakDays: profile.streak_days || 1,
+      badgeCount: Array.isArray(profile.badges) ? profile.badges.length : 0,
+    };
+
+    if (existingIndex >= 0) {
+      combinedList[existingIndex] = {
+        ...combinedList[existingIndex],
+        ...userEntry,
+      };
+    } else {
+      combinedList.push(userEntry);
+    }
+  }
+
+  // Sắp xếp chuẩn xác theo điểm XP giảm dần
+  combinedList.sort((a, b) => b.score - a.score);
+
+  // Đánh lại số thứ hạng thực tế
+  const rankedList = combinedList.map((item, index) => ({
+    ...item,
+    rank: index + 1,
+  }));
+
+  const displayList = rankedList.slice(0, 10);
+  const currentUserRanked = profile
+    ? rankedList.find((item) => item.id === profile.id)
+    : null;
 
   return (
     <div className="rounded-3xl bg-white border border-slate-200 shadow-xs p-5 sm:p-7 space-y-5">
@@ -67,7 +135,15 @@ export function WeeklyLeaderboard() {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            Theo Chủ Đề
+            Theo Nhóm
+          </button>
+          <button
+            type="button"
+            onClick={fetchLeaderboard}
+            title="Làm mới bảng xếp hạng từ cơ sở dữ liệu"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-white transition-colors cursor-pointer"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-blue-600" : ""}`} />
           </button>
         </div>
       </div>
@@ -86,8 +162,24 @@ export function WeeklyLeaderboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
-            {MOCK_LEADERBOARD.map((item) => {
-              const isCurrentUser = profile && profile.display_name === item.name;
+            {isLoading ? (
+              <tr>
+                <td colSpan={6} className="py-10 text-center text-slate-500">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600 mx-auto mb-2" />
+                  <span className="text-xs font-semibold">Đang tải bảng xếp hạng thực tế từ máy chủ Supabase...</span>
+                </td>
+              </tr>
+            ) : displayList.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="py-10 text-center text-slate-500">
+                  <Shield className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                  <span className="text-xs font-semibold">Chưa có dữ liệu học viên trong bảng xếp hạng.</span>
+                </td>
+              </tr>
+            ) : (
+              displayList.map((item) => {
+                const isCurrentUser =
+                  profile && (profile.id === item.id || profile.display_name === item.name);
               return (
                 <tr
                   key={item.id}
@@ -169,10 +261,37 @@ export function WeeklyLeaderboard() {
                   </td>
                 </tr>
               );
-            })}
+            })
+          )}
           </tbody>
         </table>
       </div>
+
+      {/* Vị trí của người dùng hiện tại nếu nằm ngoài Top 10 */}
+      {currentUserRanked && currentUserRanked.rank > 10 && (
+        <div className="p-3.5 rounded-2xl bg-blue-50 border-2 border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-xl bg-blue-700 text-white font-black text-xs inline-flex items-center justify-center shadow-xs">
+              #{currentUserRanked.rank}
+            </span>
+            <div>
+              <span className="font-bold text-slate-900">{currentUserRanked.name}</span>
+              <span className="text-[11px] text-blue-700 font-semibold ml-2 bg-blue-100 px-2 py-0.5 rounded-md">
+                Vị trí hiện tại của bạn
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 sm:justify-end">
+            <span className="inline-flex items-center gap-1 font-bold text-rose-600">
+              <Flame className="w-3.5 h-3.5 fill-rose-500" />
+              <span>{currentUserRanked.streakDays} ngày</span>
+            </span>
+            <span className="font-mono font-black text-blue-700 text-sm">
+              {currentUserRanked.score.toLocaleString()} XP
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

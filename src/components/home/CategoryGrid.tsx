@@ -154,88 +154,105 @@ export function CategoryGrid() {
   const { isElderly } = useDemographic();
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200">
+    <section
+      id="so-tay-lua-dao"
+      className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-slate-200 scroll-mt-20"
+    >
       <div className="max-w-6xl mx-auto space-y-10">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className={`text-xs font-black uppercase tracking-wider px-4 py-1.5 rounded-full border ${
-            isElderly ? "bg-blue-50 text-blue-900 border-blue-200" : "text-amber-900 bg-amber-100 border-amber-300"
+        {/* Header */}
+        <div className="max-w-3xl space-y-2">
+          <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md border ${
+            isElderly ? "bg-slate-100 text-slate-800 border-slate-300" : "text-amber-900 bg-amber-100 border-amber-300"
           }`}>
-            {isElderly ? "Kho Dữ Liệu Đời Thực Tại Việt Nam" : "Bản Đồ 11 Nhóm Chiêu Thức Lừa Đảo Phổ Biến"}
+            {isElderly ? "CẨM NANG NGHIỆP VỤ NHẬN DIỆN THỦ ĐOẠN" : "Bản Đồ 11 Nhóm Chiêu Thức Lừa Đảo Phổ Biến"}
           </span>
           <h2 className={
             isElderly
-              ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
+              ? "text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight"
               : "text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight"
           }>
-            {isElderly ? "11 Nhóm Chiêu Thức Lừa Đảo Thường Gặp & Cách Nhận Diện" : "11 Tình Huống Cảnh Giác Cần Nhận Biết"}
+            {isElderly ? "6 Phương Thức Lừa Đảo Phổ Biến Nhằm Vào Người Cao Tuổi" : "11 Tình Huống Cảnh Giác Cần Nhận Biết"}
           </h2>
           <p className={
             isElderly
-              ? "text-base sm:text-lg text-slate-600 font-medium leading-relaxed"
+              ? "text-base text-slate-600 font-normal leading-relaxed"
               : "text-sm sm:text-base text-slate-600 font-semibold leading-relaxed"
           }>
             {isElderly
-              ? "Được tổng hợp từ các vụ việc thực tế để Quý độc giả và gia đình dễ dàng đối chiếu, nhận diện và chủ động phòng ngừa:"
+              ? "Tổng hợp các phương thức, thủ đoạn tội phạm công nghệ cao thường sử dụng đối với người lớn tuổi tại Việt Nam và khuyến cáo phòng ngừa:"
               : "Tổng hợp các chiêu trò lừa đảo mạo danh, bẫy liên kết độc hại và đánh cắp tài khoản để học sinh chủ động phòng ngừa:"}
           </p>
         </div>
 
-        {/* Grid Cards: Elderly mode has dignified advisory cards; Child mode has illustrated game cards */}
+        {/* Grid Cards: Elderly mode has clean, authoritative cards; Child mode has illustrated game cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CATEGORIES_DATA.map((cat, idx) => {
+          {CATEGORIES_DATA.slice(0, isElderly ? 6 : CATEGORIES_DATA.length).map((cat, idx) => {
             const iconConfig = CATEGORY_ICONS[idx % CATEGORY_ICONS.length];
             const Icon = iconConfig.icon;
 
             if (isElderly) {
+              const elderlySummaries: Record<number, { warning: string; action: string }> = {
+                0: { warning: "Dọa bắt giam, dính líu vụ án rửa tiền xuyên quốc gia, ép chuyển tiền trong 30 phút.", action: "Ngắt máy ngay lập tức! Cơ quan Công an chỉ làm việc trực tiếp tại trụ sở, không yêu cầu chuyển tiền qua điện thoại." },
+                1: { warning: "Mạo danh nhân viên y tế báo người thân tai nạn, yêu cầu chuyển tiền viện phí cấp cứu gấp.", action: "Bình tĩnh ngắt máy và liên hệ trực tiếp đến số điện thoại của người thân hoặc gia đình để kiểm chứng." },
+                2: { warning: "Thông báo trúng thưởng quà tặng có giá trị cao, yêu cầu nộp lệ phí hoặc tiền thuế trước.", action: "Không tin các chương trình trúng thưởng qua mạng. Tuyệt đối không chuyển tiền đặt cọc nhận quà." },
+                3: { warning: "Mạo danh cán bộ BHXH hoặc Công an yêu cầu cài đặt ứng dụng Dịch vụ công qua đường link lạ.", action: "Không bấm vào đường link lạ. Mọi thủ tục hành chính chỉ thực hiện tại cơ quan có thẩm quyền hoặc cổng gov.vn." },
+                4: { warning: "Lôi kéo tham gia các sàn đầu tư tài chính ảo hoặc gửi tiết kiệm với lãi suất cao bất thường.", action: "Cảnh giác với bẫy tài chính đa cấp. Chỉ gửi tiền tiết kiệm tại các tổ chức tín dụng được cấp phép." },
+                5: { warning: "Tin nhắn giả mạo ngân hàng thông báo khóa tài khoản, yêu cầu truy cập liên kết nhập mã OTP.", action: "Không truy cập liên kết trong tin nhắn. Ngân hàng không bao giờ yêu cầu khách hàng cung cấp mã OTP." },
+              };
+              const summary = elderlySummaries[idx] || {
+                warning: cat.warningNote,
+                action: "Chủ động ngắt kết nối và trao đổi với người thân trong gia đình trước khi thực hiện.",
+              };
+
               return (
                 <div
                   key={cat.id}
-                  className="rounded-xl p-5 bg-white border border-slate-200 hover:border-blue-600 hover:shadow-sm transition-all duration-200 flex flex-col justify-between space-y-4 shadow-2xs"
+                  className="rounded-xl p-6 bg-white border border-slate-300 hover:border-blue-900 hover:shadow-md transition-all flex flex-col justify-between space-y-4 shadow-xs"
                 >
-                  {/* Top Bar: Code & Severity */}
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 flex items-center justify-center shrink-0">
-                        <Icon className="w-4 h-4 text-blue-800" />
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 text-slate-800">
+                        <Icon className="w-5 h-5 text-slate-800" />
                       </div>
-                      <span className="text-xs font-semibold text-slate-700">
-                        Chuyên mục {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                      <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        Phương thức 0{idx + 1}
                       </span>
                     </div>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200">
-                      Cảnh báo rủi ro
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
+                      Nguy cơ cao
                     </span>
                   </div>
 
-                  {/* Title & Warning Bullet Points */}
+                  {/* Title & Short Bullet Points */}
                   <div className="space-y-3 flex-1">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
                       {cat.name}
                     </h3>
 
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                      <div className="flex items-start gap-2">
-                        <span className="font-bold text-rose-700 shrink-0">Thủ đoạn:</span>
-                        <span className="text-slate-700 leading-relaxed font-normal">{cat.warningNote}</span>
+                    <div className="space-y-2.5 text-sm bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+                      <div>
+                        <span className="font-bold text-rose-800 block text-xs uppercase tracking-wider">Đặc điểm nhận diện:</span>
+                        <p className="text-slate-700 leading-relaxed font-normal mt-0.5">{summary.warning}</p>
                       </div>
-                      <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60 text-xs">
-                        <span className="font-semibold text-slate-500">Đối tượng nhắm tới:</span>
-                        <span className="font-medium text-slate-800">{cat.vulnerableTarget}</span>
+                      <div className="pt-2 border-t border-slate-200">
+                        <span className="font-bold text-blue-900 block text-xs uppercase tracking-wider">Khuyến cáo phòng ngừa:</span>
+                        <p className="text-slate-800 leading-relaxed font-medium mt-0.5">{summary.action}</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Bottom: Count & Action Button */}
-                  <div className="pt-2 flex items-center justify-between gap-3 text-xs">
+                  {/* Bottom: Action Button */}
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3 text-xs">
                     <span className="text-slate-500 font-medium">
-                      {cat.scenariosCount} tình huống mẫu
+                      {cat.scenariosCount} tình huống phân tích
                     </span>
 
                     <Link
                       href={`/play/chuong-${idx + 1}`}
-                      className="px-3.5 py-2 rounded-lg bg-blue-800 hover:bg-blue-900 text-white font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer"
                     >
-                      <span>Xem hướng dẫn</span>
+                      <span>Xem chi tiết</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>

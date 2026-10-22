@@ -17,7 +17,7 @@ import {
   Bot,
   Gamepad2,
   HeartHandshake,
-  Users,
+  Info,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useDemographic } from "@/context/DemographicContext";
@@ -31,12 +31,11 @@ function ElderlyNavbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, profile, openAuthModal, signOut } = useAuth();
-  const { setUserRole } = useDemographic();
 
   const elderlyLinks = [
     { href: "/", label: "Trang Chủ" },
     { href: "/play", label: "Luyện Tập" },
-    { href: "/chatbot", label: "Kiểm Tra Tin Nhắn" },
+    { href: "/about", label: "Giới Thiệu" },
     { href: "/guide", label: "Cẩm Nang" },
   ];
 
@@ -81,29 +80,22 @@ function ElderlyNavbar() {
             })}
           </nav>
 
-          {/* Cụm chức năng: Đổi chế độ + Đăng nhập/Đăng xuất trang nhã */}
+          {/* Cụm chức năng: Đăng nhập/Đăng xuất trang nhã */}
           <div className="hidden sm:flex items-center gap-2 xl:gap-3 shrink-0">
-            {/* Nút chuyển sang chế độ Trẻ em */}
-            <button
-              type="button"
-              onClick={() => setUserRole("child")}
-              className="px-2.5 xl:px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
-              title="Chuyển sang giao diện Trẻ em / Học sinh"
-            >
-              <Gamepad2 className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden xl:inline">Chế độ: Học Sinh & Trẻ Em</span>
-              <span className="xl:hidden">Trẻ Em</span>
-            </button>
 
             {/* Auth Button */}
             {user ? (
               <div className="flex items-center gap-2">
-                <span className="hidden xl:inline text-xs font-semibold text-slate-800 bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200">
-                  {profile?.display_name || user.email?.split("@")[0] || "Học Viên"}
+                <span className="hidden xl:inline text-xs font-semibold text-slate-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                  Kính chào Bác {profile?.display_name || user.email?.split("@")[0] || "Học Viên"}
                 </span>
                 <button
-                  onClick={() => signOut()}
+                  type="button"
+                  onClick={async () => {
+                    await signOut();
+                  }}
                   className="px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs shadow-xs cursor-pointer transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0"
+                  title="Đăng xuất khỏi tài khoản"
                 >
                   <LogOut className="w-3.5 h-3.5 text-white" />
                   <span>Đăng Xuất</span>
@@ -122,14 +114,6 @@ function ElderlyNavbar() {
 
           {/* Mobile Menu Toggle cho Elderly */}
           <div className="flex lg:hidden items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setUserRole("child")}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold"
-              title="Chuyển sang Chế độ Trẻ Em"
-            >
-              <Gamepad2 className="w-4 h-4 text-indigo-600" />
-            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
@@ -156,10 +140,15 @@ function ElderlyNavbar() {
           <div className="pt-2 border-t border-slate-200">
             {user ? (
               <button
-                onClick={() => signOut()}
-                className="w-full py-2.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs transition-colors"
+                type="button"
+                onClick={async () => {
+                  setMobileMenuOpen(false);
+                  await signOut();
+                }}
+                className="w-full py-2.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
               >
-                Đăng Xuất
+                <LogOut className="w-3.5 h-3.5 text-white" />
+                <span>Đăng Xuất ({profile?.display_name || user.email?.split("@")[0]})</span>
               </button>
             ) : (
               <button
@@ -189,7 +178,7 @@ function ChildNavbar() {
   const navLinks = [
     { href: "/", label: "Trang Chủ", icon: Gamepad2 },
     { href: "/play", label: "Luyện Tập", icon: Sword },
-    { href: "/chatbot", label: "Trợ Lý AI", icon: Bot },
+    { href: "/about", label: "Giới Thiệu", icon: Info },
     { href: "/guide", label: "Cẩm Nang", icon: Zap },
     ...(isAdmin ? [{ href: "/admin", label: "Quản Trị", isAdminOnly: true }] : []),
   ];
@@ -244,41 +233,32 @@ function ChildNavbar() {
           {/* Gamification Stats: XP, Streak, Avatar & Mode Switcher */}
           <div className="hidden sm:flex items-center gap-2 xl:gap-3 shrink-0">
             {/* Gamified Stats Badges: Full badges on xl, compact on lg */}
+            {/* Gamified Stats Badges: Full badges on xl, compact on lg */}
             <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 whitespace-nowrap shrink-0">
               <div className="flex items-center gap-1.5 text-xs font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md border border-orange-200 shrink-0">
                 <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500 shrink-0" />
-                <span>3 Ngày</span>
+                <span>{profile?.streak_days || 1} Ngày</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200 shrink-0">
                 <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" />
-                <span>250 XP</span>
+                <span>{profile?.total_score || 0} XP</span>
               </div>
             </div>
 
             {/* Compact stats pill for medium/lg screens */}
             <div className="flex xl:hidden items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-bold shrink-0">
-              <span className="flex items-center gap-0.5 text-orange-600" title="Chuỗi 3 ngày">
+              <span className="flex items-center gap-0.5 text-orange-600" title={`Chuỗi ${profile?.streak_days || 1} ngày`}>
                 <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
-                3
+                {profile?.streak_days || 1}
               </span>
               <span className="text-slate-300">•</span>
-              <span className="flex items-center gap-0.5 text-amber-600" title="250 XP">
+              <span className="flex items-center gap-0.5 text-amber-600" title={`${profile?.total_score || 0} XP`}>
                 <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                250
+                {profile?.total_score || 0}
               </span>
             </div>
 
-            {/* Quick Switch to Elderly Mode (Responsive text) */}
-            <button
-              type="button"
-              onClick={() => setUserRole("elderly")}
-              className="px-2.5 xl:px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0"
-              title="Chuyển sang giao diện Người Cao Tuổi"
-            >
-              <Users className="w-3.5 h-3.5 text-slate-600" />
-              <span className="hidden xl:inline">Chế độ Cao Tuổi</span>
-              <span className="xl:hidden">Cao Tuổi</span>
-            </button>
+
 
             {/* Auth Button */}
             {user ? (
@@ -287,7 +267,10 @@ function ChildNavbar() {
                   {profile?.display_name || user.email?.split("@")[0]}
                 </span>
                 <button
-                  onClick={() => signOut()}
+                  type="button"
+                  onClick={async () => {
+                    await signOut();
+                  }}
                   className="p-1 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-white transition-colors cursor-pointer"
                   title="Đăng xuất"
                 >
@@ -307,14 +290,6 @@ function ChildNavbar() {
 
           {/* Mobile Menu Toggle */}
           <div className="flex lg:hidden items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setUserRole("elderly")}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold"
-              title="Chuyển sang Chế độ Cao Tuổi"
-            >
-              <Users className="w-4 h-4 text-slate-700" />
-            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors"
@@ -341,10 +316,15 @@ function ChildNavbar() {
           <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
             {user ? (
               <button
-                onClick={() => signOut()}
-                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors"
+                type="button"
+                onClick={async () => {
+                  setMobileMenuOpen(false);
+                  await signOut();
+                }}
+                className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5"
               >
-                Đăng Xuất
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Đăng Xuất ({profile?.display_name || user.email?.split("@")[0]})</span>
               </button>
             ) : (
               <button

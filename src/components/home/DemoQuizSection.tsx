@@ -134,25 +134,25 @@ export function DemoQuizSection() {
     }`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Section Heading */}
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border bg-blue-50 border-blue-200 text-blue-900">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border bg-blue-50 border-blue-200 text-blue-900">
             <HelpCircle className="w-3.5 h-3.5 text-blue-700" />
-            <span>{isElderly ? "Tình Huống Trực Quan • Trải Nghiệm Trực Tiếp" : "Trải Nghiệm Thử Ngay (Không Cần Đăng Nhập)"}</span>
+            <span>{isElderly ? "Tập Nhận Diện Tình Huống Thực Tế" : "Trải Nghiệm Thử Ngay (Không Cần Đăng Nhập)"}</span>
           </div>
           <h2 className={
             isElderly 
-              ? "text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight"
+              ? "text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight"
               : "text-3xl sm:text-4xl font-black text-slate-900 tracking-tight"
           }>
-            {isElderly ? "Tình Huống Minh Họa & Hướng Dẫn Phòng Ngừa" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
+            {isElderly ? "Bác Hãy Thử Xử Lý Tình Huống Thực Tế Này" : "2 Câu Hỏi Thử Thách Phá Án Demo"}
           </h2>
           <p className={
             isElderly 
-              ? "text-base sm:text-lg text-slate-600 font-normal leading-relaxed"
+              ? "text-base text-slate-700 font-normal leading-relaxed"
               : "text-sm sm:text-base text-slate-600 font-medium"
           }>
             {isElderly 
-              ? "Kính mời Quý độc giả theo dõi tình huống giả định và lựa chọn phương án xử lý an toàn nhất:"
+              ? "Bác hãy quan sát mẫu điện thoại bên trái và chọn cách ứng xử an toàn nhất ở bên phải:"
               : "Thử tài nhận diện bẫy thao túng tâm lý và dấu hiệu lừa đảo phổ biến trước khi vào trọn bộ 39 ải:"}
           </p>
 
@@ -163,7 +163,7 @@ export function DemoQuizSection() {
                 key={demo.id}
                 type="button"
                 onClick={() => handleSwitchQuestion(idx)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer text-xs sm:text-sm ${
+                className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs sm:text-sm ${
                   activeDemoIdx === idx
                     ? "bg-white text-blue-800 shadow-xs border border-slate-200 font-bold"
                     : "text-slate-600 hover:text-slate-900"
@@ -171,8 +171,8 @@ export function DemoQuizSection() {
               >
                 {isElderly
                   ? idx === 0
-                    ? "Tình huống 1: Mạo danh Công an"
-                    : "Tình huống 2: Mạo danh Ngân hàng"
+                    ? "Tình huống 1: Giả danh Công an"
+                    : "Tình huống 2: Giả tin nhắn Ngân hàng"
                   : demo.badge}
               </button>
             ))}
