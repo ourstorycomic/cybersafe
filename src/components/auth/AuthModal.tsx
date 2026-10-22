@@ -431,7 +431,7 @@ export function AuthModal() {
                     <span className="font-normal block text-[11px] leading-relaxed">
                       {Number(age) >= 50
                         ? "Hệ thống tự động kích hoạt Giao diện Người Cao Tuổi (Chữ to rõ, màu sắc ấm áp, phòng ngừa lừa đảo gia đình)."
-                        : "Hệ thống tự động kích hoạt Giao diện Học Sinh & Trẻ Em (Gamified sôi động, vượt ải an toàn số)."}
+                        : "Hệ thống tự động kích hoạt Giao diện Học Sinh & Trẻ Em."}
                     </span>
                   </div>
                 </div>
